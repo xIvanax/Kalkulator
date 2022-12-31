@@ -5,6 +5,7 @@
 package KalkulatorSucelja;
 
 import Kalkulator.CalculatorInputException;
+import java.util.function.DoubleBinaryOperator;
 
 /**
  *
@@ -12,15 +13,30 @@ import Kalkulator.CalculatorInputException;
  */
 public interface CalcModel {
     /**
+     * Prijava Listenera koje treba obavijestiti o promjeni vrijednosti pohranjene u kalkulatoru
+     * @param l 
+     */
+    void addCalcValueListener(CalcValueListener l);
+    /**
+     * Odjava listenera s popisa listenera koje treba obavijestiti o promjeni vrijednosti pohranjene u kalkulatoru
+     * @param l 
+     */
+    void removeCalcValueListener(CalcValueListener l);
+    /**
      * 
      * @return vrijednost pohranjena u kalkulatoru
      */
     public double getValue();
     /**
-     * upisivanje broja u kalkulator
+     * vrijednost broja koji treba upisati u kalkulator
      * @param value broj koji treba upisati
      */
     public void setValue(double value);
+    /**
+     * Resetira trenutno vrijednost (započinje unos nove operacije) i vraća kalkulator na editable stanje
+     * @return 
+     */
+    boolean isEditable();
     /**
      * soft delete, tj. čistimo samo unos
      */
@@ -50,6 +66,11 @@ public interface CalcModel {
      */
     public void setActiveOperand(double operand);
     /**
+     * Provjera je li postavljen aktivni operand
+     * @return true ako je aktivni operand postavljen, false inače
+     */
+    boolean isActiveOperandSet();
+    /**
      * dohvaćanje aktivnog operanda (ukoliko je validan)
      * @return aktivni operand
      */
@@ -58,6 +79,15 @@ public interface CalcModel {
      * uklanjanje aktivnog operanda
      */
     public void clearActiveOperand();
+    /**
+     * dohvat zakazane binarne operacije
+     * @return zakazana operacija (null ako nema zakazane operacije)
+     */
+    DoubleBinaryOperator getPendingBinaryOperation();
+    /**
+     * postavljanje zakazane operacije (ako zakazana operacija već postoji, ovaj je poziv nadjačava predanom vrijednošću
+     */
+    void setPendingBinaryOperation(DoubleBinaryOperator op);
     /**
      * Vraca tekst koji treba pokazati na zaslonu
      * @return tekst za prikaz na zaslonu kalkulatora
