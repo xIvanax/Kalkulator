@@ -28,7 +28,10 @@ public class CalculatorGUI extends JPanel{
     private String zadnjaBinarnaOperacija="=";
     private String zadnjaUnarnaOperacija="";
     JButton jednako = new JButton();
-    
+    /**
+     * @Ivana
+     * u konstruktoru raspoređujemo gumbe i aktiviramo ActionListeners
+     */
     public CalculatorGUI(){
         setLayout(new BorderLayout());
         ekran = new JTextField();
@@ -69,7 +72,11 @@ public class CalculatorGUI extends JPanel{
         dodajGumb("CE",brisanje); dodajGumb("%",unar_naredba);
         add(spremnik, BorderLayout.CENTER);
     }
-    
+    /**
+     * @Ivana
+     * InputTipkovnice potreban je za registriranje brojeva unesenih putem tipkovnice
+     * umjesto putem gumbi
+     */
     private class InputTipkovnice implements KeyListener{
         String unos="";
         
@@ -82,7 +89,12 @@ public class CalculatorGUI extends JPanel{
                 start=false;
             }
         }
-
+        /**
+         * @Ivana
+         * sljedeca je funkcija pokusaj implementacije funkcije da je pritisak tipke enter
+         * ekvivalentan pritisku gumba za jednakost, ali ne radi
+         * @param event 
+         */
         @Override
         public void keyPressed(KeyEvent event) {
             if(event.getKeyChar()=='\n'){
@@ -113,7 +125,10 @@ public class CalculatorGUI extends JPanel{
             ekran.setText(ekran.getText()+unos);
         }
     }
-    
+    /**
+     * @Ivana
+     * implementacija tipki D, CE i C
+     */
     private class AkcijaBrisanja implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent event) {
@@ -147,7 +162,12 @@ public class CalculatorGUI extends JPanel{
             }
         }
     }
-    
+    /**
+     * @Ivana
+     * metoda za dodavanje gumbi
+     * @param oznaka
+     * @param slusac 
+     */
     private void dodajGumb(String oznaka, ActionListener slusac){
         JButton gumb = new JButton(oznaka);
         if(oznaka=="=")
@@ -155,7 +175,10 @@ public class CalculatorGUI extends JPanel{
         gumb.addActionListener(slusac);
         spremnik.add(gumb);
     }
-    
+    /**
+     * @Ivana
+     * implementacija binarnih operacija
+     */
     private class AkcijaBinarneOperacije implements ActionListener{
 
         @Override
@@ -200,7 +223,10 @@ public class CalculatorGUI extends JPanel{
             ekran.setText(""+rezultat);
         }
     }
-    
+    /**
+     * @Ivana
+     * implementacija unarnih opracija
+     */
     private class AkcijaUnarneOperacije implements ActionListener{
         double unaryResult=rezultat;
         @Override

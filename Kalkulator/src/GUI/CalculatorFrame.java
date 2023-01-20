@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author Ivana
+ * @author Dorotea, Ivana
  */
 public class CalculatorFrame extends JFrame implements ActionListener{
     JMenuBar menubar;
@@ -29,7 +29,9 @@ public class CalculatorFrame extends JFrame implements ActionListener{
     private JPanel grafovi; //graficki prikaz unesenih funkcija
     private JPanel stan; //standardni kalkulator
     private JPanel pol;
-    
+    /**
+     * @Dorotea
+     */
     public CalculatorFrame(){
         setTitle("Kalkulator");
         stan = new CalculatorGUI();
@@ -54,7 +56,7 @@ public class CalculatorFrame extends JFrame implements ActionListener{
         //nazive mozemo kasnije promijeniti, ja sam stavila za sada
         glavni.add(stan, "Standardni kalkulator");
         glavni.add(grafovi,"Grafički kalkulator");
-        glavni.add(pol,"Polinomi");
+        glavni.add(pol,"Polinomni kalkulator");
         cl.show(glavni, "Standardni kalkulator");
         
         add(glavni);
@@ -95,7 +97,10 @@ public class CalculatorFrame extends JFrame implements ActionListener{
         });
         
     }
-
+    /**
+     * @Dorotea
+     * @param e 
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==standardni){

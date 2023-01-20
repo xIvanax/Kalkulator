@@ -8,7 +8,9 @@ import Kalkulator.CalcModelImpl;
 import Kalkulator.MyLabel;
 import KalkulatorSucelja.CalcModel;
 import KalkulatorSucelja.CalcValueListener;
-
+/**
+ * Ovo trenutno nije u upotrebi!!!!!!!!!!!!!!!!
+ */
 /**
  *
  * @author ivana
