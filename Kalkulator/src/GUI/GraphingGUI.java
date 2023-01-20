@@ -10,103 +10,104 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
 /**
- * GUI made by hand
- * @author Ivana
+ *
+ * @author Dorotea
  */
-public class CalculatorGUI extends JPanel{
-    private JPanel spremnik; 
+public class GraphingGUI extends JPanel{ 
+    private JPanel spremnik;
+    private JPanel unos;
+    private JPanel nacrtaj;
     private JTextField ekran;
-    private boolean start = true;
-    private double rezultat=0.0;
-    private String zadnjaBinarnaOperacija="=";
-    private String zadnjaUnarnaOperacija="";
+    JTabbedPane tab;
     JButton jednako = new JButton();
     
-    public CalculatorGUI(){
-        setLayout(new BorderLayout());
+    //obrisi
+    private boolean start = true;
+    private ArrayList<String> funkcija;
+    private String zadnjaBinarnaOperacija="=";
+    private String zadnjaUnarnaOperacija="";
+    
+    public GraphingGUI(){
+        spremnik=new JPanel();
+        nacrtaj=new JPanel();
+        unos=new JPanel();
+        unos.setLayout(new BorderLayout());
+        
         ekran = new JTextField();
         ekran.setSize(800, 100);
         ekran.setPreferredSize(new Dimension(800,100));
-        //watch out
         ekran.setEnabled(true);
         ekran.setFont(ekran.getFont().deriveFont(Font.BOLD, 28f));
-        add(ekran, BorderLayout.NORTH);
-        spremnik=new JPanel();
-        spremnik.setLayout(new GridLayout(4,8));
+        unos.add(ekran, BorderLayout.NORTH);
         
-        ActionListener pisanje = new AkcijaPisanja();
-        ActionListener brisanje = new AkcijaBrisanja();
-        ActionListener bin_naredba = new AkcijaBinarneOperacije();
-        ActionListener unar_naredba = new AkcijaUnarneOperacije();
-        KeyListener s_tipkovnice = new InputTipkovnice();
-        ekran.addKeyListener(s_tipkovnice);
+        spremnik.setLayout(new GridLayout(6,7));
+        
+        ActionListener pisanje = new GraphingGUI.AkcijaPisanja();
+        ActionListener brisanje = new GraphingGUI.AkcijaBrisanja();
+        ActionListener bin_naredba = new GraphingGUI.AkcijaBinarneOperacije();
+        ActionListener unar_naredba = new GraphingGUI.AkcijaUnarneOperacije();
     
-        dodajGumb("7",pisanje); dodajGumb("8",pisanje);
-        dodajGumb("9",pisanje); dodajGumb("/",bin_naredba);
-        dodajGumb("sin",unar_naredba); dodajGumb("cos",unar_naredba);
-        dodajGumb("tg",unar_naredba); dodajGumb("ctg",unar_naredba);
+        //koristim gumbe kao u CalculatorGUI, uz neke promijene i dodatke
+        //potrebno je dodati gumbe za: (, ), x, y, e, pi, x^y, ceiling, floor, sqrtx, proizvoljni korijen od x, x^2
+        //x^2 sam stavila jer nemam bolje ideje, a bio mi je potreban jos jedan gumb
         
-        dodajGumb("4",pisanje); dodajGumb("5",pisanje);
-        dodajGumb("6",pisanje); dodajGumb("*",bin_naredba);
-        dodajGumb("arcsin",unar_naredba); dodajGumb("arccos",unar_naredba);
-        dodajGumb("arctg",unar_naredba); dodajGumb("arcctg",unar_naredba);
+        //dodatno priliko implementacije provijeri jesu li unarana ili binarna operacija, za svaki slucaj
+        dodajGumb("⌈x⌉",unar_naredba); dodajGumb("⌊x⌋",unar_naredba);
+        //ne mogu stavit da bude oznaka za korijen cijela?? izbor: √x ili x^(1/2)
+        dodajGumb("√x",unar_naredba); dodajGumb("x^(1/y)",bin_naredba);
+        dodajGumb("π",pisanje); dodajGumb("e",pisanje); dodajGumb("C",brisanje);
         
-        dodajGumb("1",pisanje); dodajGumb("2",pisanje);
-        dodajGumb("3",pisanje); dodajGumb("-",bin_naredba);
-        dodajGumb("log(x)",unar_naredba); dodajGumb("ln(x)",unar_naredba);
-        dodajGumb("D",brisanje); dodajGumb("C",brisanje);
+        dodajGumb("x^2",unar_naredba); dodajGumb("1/x",unar_naredba);
+        dodajGumb("|x|",unar_naredba); dodajGumb("(",pisanje);
+        dodajGumb(")",pisanje); dodajGumb("D",brisanje); dodajGumb("CE",brisanje);
         
-        dodajGumb("0",pisanje); dodajGumb(".",pisanje);
-        dodajGumb("=",bin_naredba); dodajGumb("+",bin_naredba);
-        dodajGumb("10^x",unar_naredba); dodajGumb("e^x",unar_naredba);
-        dodajGumb("CE",brisanje); dodajGumb("%",unar_naredba);
-        add(spremnik, BorderLayout.CENTER);
+        dodajGumb("x^y",bin_naredba); dodajGumb("7",pisanje);
+        dodajGumb("8",pisanje); dodajGumb("9",pisanje);
+        dodajGumb("/",bin_naredba); dodajGumb("sin",unar_naredba); dodajGumb("arcsin",unar_naredba);
+        
+        dodajGumb("10^x",unar_naredba); dodajGumb("4",pisanje);
+        dodajGumb("5",pisanje); dodajGumb("6",pisanje);
+        dodajGumb("*",bin_naredba); dodajGumb("cos",unar_naredba); dodajGumb("arccos",unar_naredba);
+        
+        dodajGumb("logx",unar_naredba); dodajGumb("1",pisanje);
+        dodajGumb("2",pisanje); dodajGumb("3",pisanje);
+        dodajGumb("-",bin_naredba); dodajGumb("tg",unar_naredba); dodajGumb("arctg",unar_naredba);
+        
+        dodajGumb("ln",unar_naredba); dodajGumb("0",pisanje);
+        dodajGumb(".",pisanje); dodajGumb("=",bin_naredba);
+        dodajGumb("+",bin_naredba); dodajGumb("ctg",unar_naredba); dodajGumb("arcctg",unar_naredba);
+        
+        unos.add(spremnik, BorderLayout.CENTER);
+        tab=new JTabbedPane();
+        tab.add("Unos",unos);
+        tab.add("Graf",nacrtaj);
+        //ne uspijevam namjestiti da se jtabbedpane nalazi preko cijelog frame-a te da se dinamicki resize-a
+        this.add(tab);
     }
     
-    private class InputTipkovnice implements KeyListener{
-        String unos="";
-        
-        @Override
-        public void keyTyped(KeyEvent event) {
-            unos += event.getKeyChar();
-            System.out.println("Unos: "+unos);
-            if(start){
-                ekran.setText("");
-                start=false;
-            }
-        }
-
-        @Override
-        public void keyPressed(KeyEvent event) {
-            if(event.getKeyChar()=='\n'){
-                if(start){
-                //System.out.println("Sad je start true");
-                zadnjaBinarnaOperacija="=";
-                }
-                else{
-                    
-                }
-            }
-        }
-
-        @Override
-        public void keyReleased(KeyEvent event) {
-        }
-        
-}
+    //ove su funkcije samo kopirane iz file-a CalculatorGUI
+    //kasnije cu ih prepraviti, a sada su mi samo potrebne kako bih mogla pokrenuti aplikaciju
+    //zakomentirane su neke linije da se ne pojavljuje greska, kasnije prepravljamo
+    private void dodajGumb(String oznaka, ActionListener slusac){
+        JButton gumb = new JButton(oznaka);
+        if(oznaka=="=")
+            jednako=gumb;
+        gumb.addActionListener(slusac);
+        spremnik.add(gumb);
+    }
+    
     private class AkcijaPisanja implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent event) {
             String unos = event.getActionCommand();
             if(start){
-                //System.out.println("sad je start true");
                 ekran.setText("");
                 start=false;
             }
@@ -137,7 +138,7 @@ public class CalculatorGUI extends JPanel{
                 case "C":
                     //brišem cijeli input kalkulatora (back to square one)
                     start = true;
-                    rezultat=0.0;
+                    //rezultat=0.0;
                     zadnjaBinarnaOperacija="=";
                     zadnjaUnarnaOperacija="";
                     ekran.setText("");
@@ -147,17 +148,9 @@ public class CalculatorGUI extends JPanel{
             }
         }
     }
-    
-    private void dodajGumb(String oznaka, ActionListener slusac){
-        JButton gumb = new JButton(oznaka);
-        if(oznaka=="=")
-            jednako=gumb;
-        gumb.addActionListener(slusac);
-        spremnik.add(gumb);
-    }
-    
     private class AkcijaBinarneOperacije implements ActionListener{
-
+        
+        //ovaj dio treba prepraviti, za sada je kopija funkcije iz CalculatorGUI
         @Override
         public void actionPerformed(ActionEvent event) {
             String operacija = event.getActionCommand();
@@ -180,29 +173,29 @@ public class CalculatorGUI extends JPanel{
         public void racunaj(double x){
             switch (zadnjaBinarnaOperacija) {
                 case "+":
-                    rezultat+=x;
+                    //rezultat+=x;
                     break;
                 case "-":
-                    rezultat-=x;
+                    //rezultat-=x;
                     break;
                 case "*":
-                    rezultat*=x;
+                    //rezultat*=x;
                     break;
                 case "/":
-                    rezultat/=x;
+                    //rezultat/=x;
                     break;
                 case "=":
-                    rezultat=x;
+                    //rezultat=x;
                     break;
                 default:
                     break;
             }
-            ekran.setText(""+rezultat);
+            //ekran.setText(""+rezultat);
         }
     }
     
     private class AkcijaUnarneOperacije implements ActionListener{
-        double unaryResult=rezultat;
+        //double unaryResult=rezultat;
         @Override
         public void actionPerformed(ActionEvent event) {
             String operacija = event.getActionCommand();
@@ -214,70 +207,70 @@ public class CalculatorGUI extends JPanel{
         public void racunaj(double x){
             switch (zadnjaUnarnaOperacija) {
                 case "sin":
-                    unaryResult=Math.sin(x);
+                    //unaryResult=Math.sin(x);
                     break;
                 case "arcsin":
-                    unaryResult=Math.asin(x);
+                    //unaryResult=Math.asin(x);
                     break;
                 case "cos":
-                    unaryResult=Math.cos(x);
+                    //unaryResult=Math.cos(x);
                     break;
                 case "arccos":
-                    unaryResult=Math.acos(x);
+                    //unaryResult=Math.acos(x);
                     break;
                 case "tg":
-                    unaryResult=Math.tan(x);
+                    //unaryResult=Math.tan(x);
                     break;
                 case "arctg":
-                    unaryResult=Math.atan(x);
+                    //unaryResult=Math.atan(x);
                     break;
                 case "ctg":
-                    unaryResult=1/Math.tan(x);
+                    //unaryResult=1/Math.tan(x);
                     break;
                 case "arcctg":
-                    unaryResult=1/Math.atan(x);
+                    //unaryResult=1/Math.atan(x);
                     break;
                 case "1/x":
-                    unaryResult=1/x;
+                    //unaryResult=1/x;
                     break;
                 case "ln(x)":
-                    unaryResult=Math.log(x);
+                    //unaryResult=Math.log(x);
                     break;
                 case "log(x)":
-                    unaryResult=Math.log10(x);
+                    //unaryResult=Math.log10(x);
                     break;
                 case "10^x":
-                    unaryResult=Math.pow(10,x);
+                    //unaryResult=Math.pow(10,x);
                     break;
                 case "e^x":
-                    unaryResult=Math.pow(Math.E, x);
+                    //unaryResult=Math.pow(Math.E, x);
                     break;
                 case "%":
-                    unaryResult=x/100;
+                    //unaryResult=x/100;
                     break;
                 default:
                     break;
             }
             switch (zadnjaBinarnaOperacija) {
                 case "+":
-                    rezultat+=unaryResult;
+                    //rezultat+=unaryResult;
                     break;
                 case "-":
-                    rezultat-=unaryResult;
+                   // rezultat-=unaryResult;
                     break;
                 case "*":
-                    rezultat*=unaryResult;
+                    //rezultat*=unaryResult;
                     break;
                 case "/":
-                    rezultat/=unaryResult;
+                    //rezultat/=unaryResult;
                     break;
                 case "=":
-                    rezultat=unaryResult;
+                    //rezultat=unaryResult;
                     break;
                 default:
                     break;
             }
-            ekran.setText(""+rezultat);
+            //ekran.setText(""+rezultat);
         }
     }
 }
