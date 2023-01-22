@@ -12,7 +12,7 @@ import KalkulatorSucelja.CalcValueListener;
  * Ovo trenutno nije u upotrebi!!!!!!!!!!!!!!!!
  */
 /**
- *
+ * @deprecated 
  * @author ivana
  */
 public class KalkulatorGUI extends javax.swing.JFrame {

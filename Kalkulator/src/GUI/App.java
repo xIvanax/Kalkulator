@@ -16,5 +16,6 @@ public class App {
         okvir.setSize(800, 500);
         okvir.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         okvir.setVisible(true);
+        
     }
 }

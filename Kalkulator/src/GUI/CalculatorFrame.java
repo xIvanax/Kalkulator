@@ -70,7 +70,7 @@ public class CalculatorFrame extends JFrame implements ActionListener{
         standardni=new JMenuItem("Standardni kalkulator");
         graficki=new JMenuItem("Grafički kalkulator");
         polinomi=new JMenuItem("Polinomi");
-        
+       
         odaberi.add(standardni);
         odaberi.addSeparator();
         odaberi.add(graficki);
