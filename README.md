@@ -29,6 +29,6 @@ Problem:
 
 5.2. Ivana:
 Updates:
-1) popravila sam gumb D jer nije radio kako treba
+1) u procesu sam popravljanja gumba D jer ne radi kako treba, mislim da je glavni problem mijesanje screen-a i ekran-a prilikom updateanja jednog ili drugog
 2) obrisala sam gumbe x^2 i y
 3) pocistila sam malo kod (obrisala pakete koje vise ne koristimo i varijable koje ne sluze nicem)
