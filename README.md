@@ -22,6 +22,7 @@ Napredak:
   -uspjela sam implementirati gotovo sve funkcije da se crtaju
   -mislila sam izbaciti tipku y(jer u nigdje necemo koristiti) i tipku x^2 jer imamo vec opcenitu x^y pa mislim da nam ne treba, sto mislis o tome?
       -ugl zato nisam ni implementirala da radi funkcija x^2
+
 Problem:
   -kako je arcsin definirana na segmentu -1<=x<=1, onda bi se samo na njemu i trebalo crtati, ali vidjet ces problem kada pokrenes npr arcsin(x) imam dva pravca paralelna s y osi koji ne bi trebali biti tu. Probala sam ispraviti na nekoliko načina, ali nisam uspjela. Analogno i za arccos. Sve ostale funkcije rade super.
 
