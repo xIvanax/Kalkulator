@@ -27,8 +27,7 @@ import java.util.List;
 import javax.swing.JPanel;
 
 /**
- * ovo radi, ali skroz je nepovezano s unosom u tab-u "Unos" pa cu u klasi IntegratedDrawFunctionScreen 
- * pokusati napraviti da bude povezano s unosom
+ * 
  * @author Ivana
  */
 public class DrawFunctionScreen extends JPanel implements MouseWheelListener, KeyListener, Runnable{
