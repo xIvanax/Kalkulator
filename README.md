@@ -17,11 +17,12 @@ Progress:
 Problems:
 - u originalnom sučelju za crtanje grafa, crtanje se pokreće tipkom enter - kako mi u našem kalkulatoru želimo imati unos preko gumbi, pokušala sam implementirat tako da pritisak gumba jednakosti igra ulogu pritiska tipke enter, ali iz nekog razloga ne funkcionira
       -ovo sada radi
+      
 5.2. Dorotea:
+
 Napredak:
 - uspjela sam implementirati gotovo sve funkcije da se crtaju
 - mislila sam izbaciti tipku y(jer ju nigdje necemo koristiti, barem koliko ja viidm) i tipku x^2 jer imamo vec opcenitu x^y pa mislim da nam ne treba, sto mislis o tome? (time bismo rjesile onaj problem praznih gumba) -@Ivana ma moze 
-      -ugl zato nisam ni implementirala da radi funkcija x^2
 
 Problem:
 - kako je arcsin definirana na segmentu -1<=x<=1, onda bi se samo na njemu i trebalo crtati, ali vidjet ces problem kada pokrenes npr arcsin(x) imam dva pravca paralelna s y osi koji ne bi trebali biti tu. Probala sam ispraviti na nekoliko načina, ali nisam uspjela. Analogno i za arccos. Sve ostale funkcije rade super.
