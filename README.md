@@ -27,4 +27,8 @@ Napredak:
 Problem:
 - kako je arcsin definirana na segmentu -1<=x<=1, onda bi se samo na njemu i trebalo crtati, ali vidjet ces problem kada pokrenes npr arcsin(x) imam dva pravca paralelna s y osi koji ne bi trebali biti tu. Probala sam ispraviti na nekoliko načina, ali nisam uspjela. Analogno i za arccos. Sve ostale funkcije rade super.
 
-
+5.2. Ivana:
+Updates:
+1) popravila sam gumb D jer nije radio kako treba
+2) obrisala sam gumbe x^2 i y
+3) pocistila sam malo kod (obrisala pakete koje vise ne koristimo i varijable koje ne sluze nicem)
