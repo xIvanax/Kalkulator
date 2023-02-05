@@ -35,22 +35,21 @@ public class CalculatorFrame extends JFrame implements ActionListener{
     public CalculatorFrame(){
         setTitle("Kalkulator");
         stan = new CalculatorGUI();
-        stan.setSize(800,400);
-        stan.setPreferredSize(new Dimension(800,400));
-        //naknadno ga je potrebno postaviti, za sada neka bude prazan
+        stan.setSize(800,800);
+        stan.setPreferredSize(new Dimension(800,800));
         grafovi=new GraphingGUI();
-        grafovi.setSize(800,400);
-        grafovi.setPreferredSize(new Dimension(800,400));
+        grafovi.setSize(800,800);
+        grafovi.setPreferredSize(new Dimension(800,800));
         
         //naknadno ga je potrebno postaviti, za sada neka bude prazan
         pol=new JPanel();
-        pol.setSize(800,400);
-        pol.setPreferredSize(new Dimension(800,400));
+        pol.setSize(800,800);
+        pol.setPreferredSize(new Dimension(800,800));
         
-        //prazan spremnik
+        //prazan spremnik, ciji cemo layout postaviti na CardLayout
         glavni=new JPanel();
-        glavni.setSize(800,400);
-        glavni.setPreferredSize(new Dimension(800,400));
+        glavni.setSize(800,800);
+        glavni.setPreferredSize(new Dimension(800,800));
         
         glavni.setLayout(cl);
         //nazive mozemo kasnije promijeniti, ja sam stavila za sada
@@ -60,7 +59,6 @@ public class CalculatorFrame extends JFrame implements ActionListener{
         cl.show(glavni, "Standardni kalkulator");
         
         add(glavni);
-        pack();
         
         menubar=new JMenuBar();
         this.setJMenuBar(menubar);
@@ -96,6 +94,8 @@ public class CalculatorFrame extends JFrame implements ActionListener{
             }
         });
         
+        this.setResizable(false);
+        pack();
     }
     /**
      * @Dorotea
@@ -107,6 +107,8 @@ public class CalculatorFrame extends JFrame implements ActionListener{
             System.out.println("Odabrali ste standardni kalkulator."); 
         }else if(e.getSource()==graficki){
             System.out.println("Odabrali ste grafički kalkulator.");
+        }else if(e.getSource()==pol){
+            System.out.println("Odabrali ste polinomni kalkulator.");
         }
     }
     

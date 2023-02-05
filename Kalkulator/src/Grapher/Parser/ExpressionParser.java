@@ -5,6 +5,8 @@
 package Grapher.Parser;
 
 import Grapher.Expressions.AbsoluteValue;
+import Grapher.Expressions.Acos;
+import Grapher.Expressions.Arcctan;
 import Grapher.Expressions.Ceiling;
 import Grapher.Expressions.Cosecant;
 import Grapher.Expressions.Cosine;
@@ -18,11 +20,15 @@ import Grapher.Expressions.Modulo;
 import Grapher.Expressions.NthRoot;
 import Grapher.Expressions.Quantity;
 import Grapher.Expressions.Variable;
+import Grapher.Expressions.Asin;
+import Grapher.Expressions.Atan;
+import Grapher.Expressions.Natural_log;
 import static java.lang.Double.NaN;
 import java.util.ArrayList;
 import java.util.List;
 import Grapher.Expressions.Number;
 import Grapher.Expressions.Power;
+import Grapher.Expressions.Power10;
 import Grapher.Expressions.Product;
 import Grapher.Expressions.Quotient;
 import Grapher.Expressions.Secant;
@@ -268,6 +274,18 @@ public class ExpressionParser {
 				return new Cosecant(param1);
 			case SQUARE_ROOT:
 				return new SquareRoot(param1);
+                        case ARCSINE:
+                                return new Asin(param1);
+                        case ARCCOSINE:
+                                return new Acos(param1);
+                        case ARCTAN:
+                                return new Atan(param1);
+                        case ARCCTAN:
+                            return new Arcctan(param1);
+                        case NATURAL_LOG:
+                            return new Natural_log(param1);
+                        case POWER10:
+                            return new Power10(param1);
 			default:
 				return null;
 			}
@@ -276,9 +294,11 @@ public class ExpressionParser {
 			Quantity param2 = doOrderOfOperations(params.get(1));
 			switch (type) {
 			case NTHROOT:
-				return new NthRoot(param1, param2);
+                            return new NthRoot(param1, param2);
 			case LOG:
-				return new Log(param1, param2);
+                            return new Log(param1, param2);
+                        case POWER:
+                            return new Power(param1,param2);
 			default:
 				return null;
 			}

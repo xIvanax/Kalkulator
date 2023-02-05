@@ -27,7 +27,8 @@ public enum TokenType {
 	FLOOR("floor"),
 	LOG("log"),
 	MODULO("%"), //nisam sigurna jel se na nekim kalkulatorima gleda kao postotak ili bas kao modulo
-	NTHROOT("nthroot"),
+        //ni ja ne znam, samo sam maknula to iz ovog grafickog dijela
+	NTHROOT("^(1/"),
 	SQUARE_ROOT("sqrt"),
 	ABSOLUTE_VALUE("abs"),
 	COMMA(","),
@@ -35,19 +36,22 @@ public enum TokenType {
 	Y("x"),
 	Z("z"), //mislim da ne treba
 	NUMBER(""),
-        /*PI("π"),
+        PI("π"),
         E("e"),
         SQUARE("square"),
         FRACTION("fraction"),//odnosi se na 1/x
-        ARCSINE("arcsin"),
-        ARCCOSINE("arccos"),
-        NATURAL_LOG("ln")*/;
+        ARCSINE("asin"),
+        ARCCOSINE("acos"),
+        ARCTAN("atan"),
+        ARCCTAN("arcctan"),
+        NATURAL_LOG("ln"),
+        POWER10("power10"),
+        POWER("^");
 	
-	public static final TokenType[] FUNCTIONS = {
+	public static final TokenType[] FUNCTIONS={
 			SINE, COSINE, TANGENT, COTANGENT, SECANT, COSECANT, SQUARE_ROOT,
-			CEILING, FLOOR, LOG, MODULO, ABSOLUTE_VALUE, NTHROOT, /*SQUARE,
-                        FRACTION, ARCSINE, ARCCOSINE, NATURAL_LOG*/
-			};
+			CEILING, FLOOR, LOG, MODULO, ABSOLUTE_VALUE, NTHROOT, SQUARE,
+                        FRACTION, ARCSINE, ARCCOSINE, ARCTAN, ARCCTAN, NATURAL_LOG, POWER10, POWER};
 	
 	public final String name;
 	

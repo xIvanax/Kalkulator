@@ -12,10 +12,9 @@ import javax.swing.JFrame;
  */
 public class App {
     public static void main(String args[]){
-        CalculatorFrame okvir = new CalculatorFrame();
+        CalculatorFrame okvir=new CalculatorFrame();
         okvir.setSize(800, 500);
         okvir.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         okvir.setVisible(true);
-        
     }
 }
