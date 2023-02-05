@@ -20,7 +20,7 @@ Problems:
 
 Napredak:
 - uspjela sam implementirati gotovo sve funkcije da se crtaju
-- mislila sam izbaciti tipku y(jer u nigdje necemo koristiti) i tipku x^2 jer imamo vec opcenitu x^y pa mislim da nam ne treba, sto mislis o tome?
+- mislila sam izbaciti tipku y(jer ju nigdje necemo koristiti, barem koliko ja viidm) i tipku x^2 jer imamo vec opcenitu x^y pa mislim da nam ne treba, sto mislis o tome? (time bismo rjesile onaj problem praznih gumba)
       -ugl zato nisam ni implementirala da radi funkcija x^2
 
 Problem:
