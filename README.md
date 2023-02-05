@@ -17,10 +17,10 @@ Progress:
 Problems:
 - u originalnom sučelju za crtanje grafa, crtanje se pokreće tipkom enter - kako mi u našem kalkulatoru želimo imati unos preko gumbi, pokušala sam implementirat tako da pritisak gumba jednakosti igra ulogu pritiska tipke enter, ali iz nekog razloga ne funkcionira
       -ovo sada radi
-
+5.2. Dorotea:
 Napredak:
 - uspjela sam implementirati gotovo sve funkcije da se crtaju
-- mislila sam izbaciti tipku y(jer ju nigdje necemo koristiti, barem koliko ja viidm) i tipku x^2 jer imamo vec opcenitu x^y pa mislim da nam ne treba, sto mislis o tome? (time bismo rjesile onaj problem praznih gumba)
+- mislila sam izbaciti tipku y(jer ju nigdje necemo koristiti, barem koliko ja viidm) i tipku x^2 jer imamo vec opcenitu x^y pa mislim da nam ne treba, sto mislis o tome? (time bismo rjesile onaj problem praznih gumba) -@Ivana ma moze 
       -ugl zato nisam ni implementirala da radi funkcija x^2
 
 Problem:
