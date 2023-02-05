@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
 
-import GUI.GraphingGUI;
 /**
  * 
  * @author Ivana

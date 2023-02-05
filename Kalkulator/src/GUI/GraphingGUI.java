@@ -42,7 +42,9 @@ import Grapher.Parser.ExpressionParser;
 public class GraphingGUI extends JPanel{ 
     private JPanel spremnik;
     private JPanel unos;
+    private JPanel prikaz;
     private String textBox;
+   
     /**
      * @Ivana
      */
@@ -64,6 +66,7 @@ public class GraphingGUI extends JPanel{
     private ArrayList<String> funkcija;
     private String zadnjaBinarnaOperacija="=";
     private String zadnjaUnarnaOperacija="";
+    private String screen="";
     
     public GraphingGUI(){
         /**
@@ -71,18 +74,25 @@ public class GraphingGUI extends JPanel{
          */
         //sljedeca linija je ok rjesenje
         //nacrtaj = new DrawFunctionScreen();
-        nacrtaj = new IntegratedDrawFunctionScreen();
         
+        nacrtaj=new IntegratedDrawFunctionScreen();
         unos=new JPanel();
+        prikaz=new JPanel();
         
+        //omogucava resize
+        this.setLayout(new BorderLayout());
         unos.setLayout(new BorderLayout());
+        prikaz.setLayout(new BorderLayout());
         
+        //slicno kao u CalCulatorGUI implementiramo unos funkcije koju crtamo
+        //napravljene su neke promijene, npr. nema vise %, te su dodane nove mogucnosti
         ekran = new JTextField();
         ekran.setText("");
         ekran.setSize(800, 100);
         ekran.setPreferredSize(new Dimension(800,100));
         ekran.setEnabled(true);
         ekran.setFont(ekran.getFont().deriveFont(Font.BOLD, 28f));
+        
         unos.add(ekran, BorderLayout.NORTH);
         spremnik=new JPanel();
         spremnik.setLayout(new GridLayout(7,7));
@@ -95,7 +105,6 @@ public class GraphingGUI extends JPanel{
         /**
          * @Dorotea
          */
-        //koristim gumbe kao u CalculatorGUI, uz neke promijene i dodatke
         //x^2 sam stavila jer nemam bolje ideje, a bio mi je potreban jos jedan gumb
         
         //dodatno prilikom implementacije provjeri jesu li unarna ili binarna operacija, za svaki slucaj
@@ -125,7 +134,7 @@ public class GraphingGUI extends JPanel{
         dodajGumb("-",bin_naredba); dodajGumb("tg",unar_naredba); 
         dodajGumb("arctg",unar_naredba);
         
-        dodajGumb("ln",unar_naredba); dodajGumb("0",pisanje);
+        dodajGumb("lnx",unar_naredba); dodajGumb("0",pisanje);
         dodajGumb(".",pisanje); dodajGumb("=",bin_naredba);
         dodajGumb("+",bin_naredba); dodajGumb("ctg",unar_naredba); 
         dodajGumb("arcctg",unar_naredba);
@@ -134,6 +143,8 @@ public class GraphingGUI extends JPanel{
          * @Ivana
          * ? znaci da je taj gumb prazan
          */
+        //mozemo npr. maknut x^2 i sgrt(x) jer vec immo opcenite potencije i korijene 
+        //umijeto njih stavit x i y
         dodajGumb("x",pisanje); dodajGumb("y",pisanje);
         dodajGumb("?",pisanje); dodajGumb("?",pisanje);
         dodajGumb("?",pisanje); dodajGumb("?",pisanje);
@@ -143,9 +154,10 @@ public class GraphingGUI extends JPanel{
          * @Dorotea
          */
         unos.add(spremnik, BorderLayout.CENTER);
+        prikaz.add(nacrtaj, BorderLayout.CENTER);
         tab=new JTabbedPane();
         tab.add("Unos",unos);
-        tab.add("Graf",nacrtaj);
+        tab.add("Graf",prikaz);
         /**
          * kaze da ovo nije sigurna operacija, ali ne znam gdje drugdje staviti (moglo
          * bi bit problema s testovima, a on je to stavio u main, al ja ne znam kak to stavit u main)
@@ -155,7 +167,6 @@ public class GraphingGUI extends JPanel{
         /**
          * @Dorotea
          */
-        //ne uspijevam namjestiti da se jtabbedpane nalazi preko cijelog frame-a te da se dinamicki resize-a
         this.add(tab);
     }
     
@@ -191,20 +202,41 @@ public class GraphingGUI extends JPanel{
         }
     }*/
     /**
-     * moj pokušaj funkcije AKcijaPisanja za integraciju s crtanjem grafa
+     * moj pokušaj funkcije AkcijaPisanja za integraciju s crtanjem grafa
      * @Ivana
      */
     private class AkcijaPisanja implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent event){
-            String unos = event.getActionCommand();
+            String unos=event.getActionCommand();
             if(start){
                 ekran.setText("");
                 textBox=ekran.getText();
                 start=false;
             }
-            ekran.setText(ekran.getText()+unos);
-            textBox=ekran.getText();
+            
+            if(unos.equals("π")){
+                String pi=Double.toString(Math.PI);
+                screen+=pi;
+                ekran.setText(screen);
+                textBox=screen;
+            }else if(unos.equals("e")){
+                String const_e=Double.toString(Math.E);
+                screen+=const_e;
+                ekran.setText(screen);
+                textBox=screen;
+            }else if(unos.equals("=")){
+                function=parser.parse(textBox);
+                    if(function==null){
+			textBox="";
+                    }
+                screen="";
+            }else{
+                screen+=unos;
+                ekran.setText(screen);
+                textBox=screen;
+            }
+            
             /*if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
 			if (textBox.length() > 0) {
 				textBox = textBox.substring(0, textBox.length() - 1);
@@ -227,18 +259,21 @@ public class GraphingGUI extends JPanel{
             String unos = event.getActionCommand();
             switch (unos) {
                 case "D":
-                    String str = ekran.getText();
+                    //brise se samo zadnja znamenka
                     //nema unosa pa nemamo što brisati
-                    if("".equals(str))
+                    if("".equals(screen))
                         break;
                     //na ekran stavljam broj bez zadnje znamenke
-                    if(str.length()>1)
-                        ekran.setText(str.substring(0, str.length()-1));
-                    else 
+                    if(screen.length()>1){
+                        screen=screen.substring(0,screen.length()-1);
+                        ekran.setText(screen);
+                    }else{
                         ekran.setText("");
+                    }
                     break;
                 case "CE":
                     //brišem cijeli zadnji entry
+                    //nisam sigurna kako da ovo popravim
                     ekran.setText("");
                     break;
                 case "C":
@@ -247,6 +282,7 @@ public class GraphingGUI extends JPanel{
                     //rezultat=0.0;
                     zadnjaBinarnaOperacija="=";
                     zadnjaUnarnaOperacija="";
+                    screen="";
                     ekran.setText("");
                     break;
                 default:
@@ -255,56 +291,79 @@ public class GraphingGUI extends JPanel{
         }
     }
     
-    private class AkcijaBinarneOperacije implements ActionListener{
-        
+    private class AkcijaBinarneOperacije implements ActionListener{  
         //ovaj dio treba prepraviti, za sada je kopija funkcije iz CalculatorGUI
         @Override
         public void actionPerformed(ActionEvent event) {
-            String operacija = event.getActionCommand();
+            String op=event.getActionCommand();
+            String operacija=operation(op);
             if(start){
                 //System.out.println("Sad je start true");
                 if(operacija.equals("-")){
                     ekran.setText(operacija);
                     start=false;
+                    screen="-";
+                    if(zadnjaBinarnaOperacija.equals("=")){
+                         ekran.setText(screen.substring(0,screen.length()-1));
+                        start=true;
+                        function=parser.parse(textBox);
+                            if(function==null){
+                                textBox="";
+                            }
+                        screen="";
+                    }
+                }else{
+                    zadnjaBinarnaOperacija=operacija;
+                    screen+=zadnjaBinarnaOperacija;
+                    if(zadnjaBinarnaOperacija.equals("=")){
+                        ekran.setText(screen.substring(0,screen.length()-1));
+                        start=true;
+                        function=parser.parse(textBox);
+                            if(function==null){
+                                textBox="";
+                            }
+                        screen="";
+                    }else{
+                        ekran.setText(screen);
+                    }
                 }
-                else zadnjaBinarnaOperacija=operacija;
-            }
-            else{
+            }else{
                 //System.out.println("Sad je start false i promijenit cu ga true");
  //               racunaj(Double.parseDouble(ekran.getText()));
                 zadnjaBinarnaOperacija=operacija;
-                start=true;
+                screen+=zadnjaBinarnaOperacija;
+                if(zadnjaBinarnaOperacija.equals("=")){
+                   ekran.setText(screen.substring(0,screen.length()-1));
+                   start=true;
+                   function=parser.parse(textBox);
+                        if(function==null){
+                            textBox="";
+                        }
+                   screen="";
+                }else{
+                    ekran.setText(screen);
+                }
             }
         }
         
-        public void racunaj(double x){
-            switch (zadnjaBinarnaOperacija) {
+        public String operation(String operacija){
+            switch(operacija) {
                 case "+":
-                    //rezultat+=x;
-                    break;
+                    return "+";
                 case "-":
-                    //rezultat-=x;
-                    break;
+                    return "-";
                 case "*":
-                    //rezultat*=x;
-                    break;
+                    return "*";
                 case "/":
-                    //rezultat/=x;
-                    break;
+                    return "/";
                 case "=":
-                    //rezultat=x;
-                    /**
-                     * @Ivana
-                     */
-                    function = parser.parse(textBox);
-			if (function == null) {
-				textBox = "";
-			}
-                    break;
-                default:
-                    break;
+                    return "=";
+                case "x^y":
+                    return "^";
+                case "x^(1/y)":
+                    return "^(1/";
             }
-            //ekran.setText(""+rezultat);
+            return "";
         }
     }
     
@@ -312,79 +371,107 @@ public class GraphingGUI extends JPanel{
         //double unaryResult=rezultat;
         @Override
         public void actionPerformed(ActionEvent event) {
-            String operacija = event.getActionCommand();
-            zadnjaUnarnaOperacija=operacija;
-            racunaj(Double.parseDouble(ekran.getText()));
-            start=true;
+            String op=event.getActionCommand();
+            String operacija=operation(op);
+            if(start){
+                //System.out.println("Sad je start true");
+                if(operacija.equals("-")){
+                    ekran.setText(operacija);
+                    start=false;
+                    screen="-";
+                    if(zadnjaUnarnaOperacija.equals("=")){
+                        ekran.setText(screen.substring(0,screen.length()-1));
+                        function=parser.parse(textBox);
+                            if(function==null){
+                                textBox="";
+                            }
+                        screen="";
+                    }
+                }else{
+                    zadnjaUnarnaOperacija=operacija;
+                    screen+=zadnjaUnarnaOperacija;
+                    if(zadnjaUnarnaOperacija.equals("=")){
+                         ekran.setText(screen.substring(0,screen.length()-1));
+                        start=true;
+                        function=parser.parse(textBox);
+                            if(function==null){
+                                textBox="";
+                            }
+                        screen="";
+                    }else{
+                        ekran.setText(screen);
+                    }
+                }
+            }else{
+                //System.out.println("Sad je start false i promijenit cu ga true");
+ //               racunaj(Double.parseDouble(ekran.getText()));
+                zadnjaUnarnaOperacija=operacija;
+                screen+=zadnjaUnarnaOperacija;
+                if(zadnjaUnarnaOperacija.equals("=")){
+                   ekran.setText(screen.substring(0,screen.length()-1));
+                   start=true;
+                   function=parser.parse(textBox);
+                        if(function==null){
+                            textBox="";
+                        }
+                   screen="";
+                }else{
+                   ekran.setText(screen);
+                }
+            }
         }
         
-        public void racunaj(double x){
-            switch (zadnjaUnarnaOperacija) {
+        public String operation(String operacija){
+            switch(operacija){
                 case "sin":
-                    //unaryResult=Math.sin(x);
-                    break;
+                    return "sin(";
                 case "arcsin":
-                    //unaryResult=Math.asin(x);
-                    break;
+                    return "asin(";
                 case "cos":
-                    //unaryResult=Math.cos(x);
-                    break;
+                    return "cos(";
                 case "arccos":
-                    //unaryResult=Math.acos(x);
-                    break;
+                    return "acos(";
                 case "tg":
-                    //unaryResult=Math.tan(x);
-                    break;
+                    return "tan(";
                 case "arctg":
-                    //unaryResult=Math.atan(x);
-                    break;
+                    return "atan(";
                 case "ctg":
-                    //unaryResult=1/Math.tan(x);
-                    break;
+                    return "cot(";
                 case "arcctg":
-                    //unaryResult=1/Math.atan(x);
-                    break;
+                    return "arcctan(";
                 case "1/x":
-                    //unaryResult=1/x;
-                    break;
-                case "ln(x)":
-                    //unaryResult=Math.log(x);
-                    break;
-                case "log(x)":
-                    //unaryResult=Math.log10(x);
-                    break;
+                    return "1/(";
+                case "lnx":
+                    return "ln(";
+                case "logx":
+                    return "log(";
                 case "10^x":
-                    //unaryResult=Math.pow(10,x);
-                    break;
+                    return "10^(";
                 case "e^x":
-                    //unaryResult=Math.pow(Math.E, x);
-                    break;
-                case "%":
-                    //unaryResult=x/100;
-                    break;
-                default:
-                    break;
+                    return "e^(";
+                case "|x|":
+                    return "abs(";
+                case "⌈x⌉":
+                    return "ceil(";
+                case "⌊x⌋":
+                    return "floor(";
+                case "√x":
+                    return "sqrt(";  
             }
-            switch (zadnjaBinarnaOperacija) {
+            
+            switch(operacija) {
                 case "+":
-                    //rezultat+=unaryResult;
-                    break;
+                    return "+";
                 case "-":
-                   // rezultat-=unaryResult;
-                    break;
+                    return "-";
                 case "*":
-                    //rezultat*=unaryResult;
-                    break;
+                    return "*";
                 case "/":
-                    //rezultat/=unaryResult;
-                    break;
+                    return "/";
                 case "=":
-                    //rezultat=unaryResult;
-                    break;
-                default:
-                    break;
+                    return "=";
             }
-            //ekran.setText(""+rezultat);
+            return "";
         }
     }
     /**
@@ -392,8 +479,8 @@ public class GraphingGUI extends JPanel{
      * @Ivana
      */
     public class IntegratedDrawFunctionScreen extends JPanel implements MouseWheelListener, /*KeyListener,*/ Runnable{
-    public static final int WIDTH = 600;
-	public static final int HEIGHT = 600;
+        public static final int WIDTH = 800;
+	public static final int HEIGHT = 400;
 
 	private BufferedImage buff;
 	private Graphics2D g2d;
@@ -407,34 +494,35 @@ public class GraphingGUI extends JPanel{
 	//private String textBox;
 	
 	public IntegratedDrawFunctionScreen() {
-		addMouseWheelListener(this);
-		//addKeyListener(this);
-		this.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                mousePt = e.getPoint();
-                repaint();
-            }
-        });
-        this.addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                int dx = e.getX() - mousePt.x;
-                int dy = e.getY() - mousePt.y;
-                windowX -= dx / (double)WIDTH * windowWidth;
-                windowY += dy / (double)HEIGHT * windowHeight;
-                mousePt = e.getPoint();
-                repaint();
-            }
-        });
-		setFocusable(true);
-		requestFocusInWindow();
-		setPreferredSize(new Dimension(WIDTH, HEIGHT));
-		setMinimumSize(new Dimension(WIDTH, HEIGHT));
-		setMaximumSize(new Dimension(WIDTH, HEIGHT));
+            addMouseWheelListener(this);
+            //addKeyListener(this);
+            this.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    mousePt = e.getPoint();
+                    repaint();
+                }
+            });
+            
+            this.addMouseMotionListener(new MouseMotionAdapter() {
+                @Override
+                public void mouseDragged(MouseEvent e) {
+                    int dx = e.getX() - mousePt.x;
+                    int dy = e.getY() - mousePt.y;
+                    windowX -= dx / (double)WIDTH * windowWidth;
+                    windowY += dy / (double)HEIGHT * windowHeight;
+                    mousePt = e.getPoint();
+                    repaint();
+                }
+            });
+            setFocusable(true);
+            requestFocusInWindow();
+            setPreferredSize(new Dimension(WIDTH, HEIGHT));
+            setMinimumSize(new Dimension(WIDTH, HEIGHT));
+            setMaximumSize(new Dimension(WIDTH, HEIGHT));
 		
-		buff = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-		g2d = buff.createGraphics();
+            buff = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+            g2d = buff.createGraphics();
 		
 		parser = new ExpressionParser();
 		textBox = "";
@@ -444,11 +532,11 @@ public class GraphingGUI extends JPanel{
 		windowY = 0.0;
 		windowHeight = 2.0;
 		windowWidth = windowHeight * WIDTH / HEIGHT;
-	}
+            }
 	
 	// Time variables
-	private double yVar = 0.0;	// Constantly increasing
-	private double zVar = 0.0;	// Cycles smoothly from -1 to 1
+	private double yVar=0.0;	// Constantly increasing
+	private double zVar=0.0;	// Cycles smoothly from -1 to 1
 	private synchronized void updateDT(double dt) {
 		yVar += dt;
 		zVar = Math.sin(yVar);
@@ -469,7 +557,7 @@ public class GraphingGUI extends JPanel{
 				double xx = toRealX(x);
 				
 				double yy = 0.0;
-				if (function != null) yy = function.evaluateAt(xx, yVar, zVar);
+				if (function != null) yy=function.evaluateAt(xx, yVar, zVar);
 				
 				double scaledX = x;
 				double scaledY = toScreenY(yy);
@@ -520,7 +608,6 @@ public class GraphingGUI extends JPanel{
 		double dt = 0.0;
 		
 		while (running) {
-			
 			long newTime = System.nanoTime();
 			dt = (newTime - oldTime) / 1000000000.0;
 			oldTime = newTime;
@@ -529,9 +616,9 @@ public class GraphingGUI extends JPanel{
 			repaint();
 			
 			try {
-				Thread.sleep(1);
+                            Thread.sleep(1);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+                            e.printStackTrace();
 			}
 		}
 	}

@@ -134,7 +134,7 @@ public class CalculatorGUI extends JPanel{
         public void actionPerformed(ActionEvent event) {
             String unos = event.getActionCommand();
             switch (unos) {
-                case "D":
+                case "D"://brise se samo zadnja znamenka
                     String str = ekran.getText();
                     //nema unosa pa nemamo što brisati
                     if("".equals(str))
