@@ -59,9 +59,7 @@ public class GraphingGUI extends JPanel{
      * @Dorotea
      */
     JTabbedPane tab;
-    JButton jednako = new JButton();
     
-    //obrisi
     private boolean start = true;
     private ArrayList<String> funkcija;
     private String zadnjaBinarnaOperacija="=";
@@ -69,12 +67,6 @@ public class GraphingGUI extends JPanel{
     private String screen="";
     
     public GraphingGUI(){
-        /**
-         * @Ivana
-         */
-        //sljedeca linija je ok rjesenje
-        //nacrtaj = new DrawFunctionScreen();
-        
         nacrtaj=new IntegratedDrawFunctionScreen();
         unos=new JPanel();
         prikaz=new JPanel();
@@ -85,7 +77,7 @@ public class GraphingGUI extends JPanel{
         prikaz.setLayout(new BorderLayout());
         
         //slicno kao u CalCulatorGUI implementiramo unos funkcije koju crtamo
-        //napravljene su neke promijene, npr. nema vise %, te su dodane nove mogucnosti
+        //napravljene su neke promjene, npr. nema vise %, te su dodane nove mogucnosti
         ekran = new JTextField();
         ekran.setText("");
         ekran.setSize(800, 100);
@@ -95,26 +87,19 @@ public class GraphingGUI extends JPanel{
         
         unos.add(ekran, BorderLayout.NORTH);
         spremnik=new JPanel();
-        spremnik.setLayout(new GridLayout(7,7));
+        spremnik.setLayout(new GridLayout(6,7));
         
         ActionListener pisanje = new GraphingGUI.AkcijaPisanja();
         ActionListener brisanje = new GraphingGUI.AkcijaBrisanja();
         ActionListener bin_naredba = new GraphingGUI.AkcijaBinarneOperacije();
         ActionListener unar_naredba = new GraphingGUI.AkcijaUnarneOperacije();
         
-        /**
-         * @Dorotea
-         */
-        //x^2 sam stavila jer nemam bolje ideje, a bio mi je potreban jos jedan gumb
-        
-        //dodatno prilikom implementacije provjeri jesu li unarna ili binarna operacija, za svaki slucaj
         dodajGumb("⌈x⌉",unar_naredba); dodajGumb("⌊x⌋",unar_naredba);
-        //ne mogu stavit da bude oznaka za korijen cijela?? izbor: √x ili x^(1/2)
         dodajGumb("√x",unar_naredba); dodajGumb("x^(1/y)",bin_naredba);
         dodajGumb("π",pisanje); dodajGumb("e",pisanje); 
         dodajGumb("C",brisanje);
         
-        dodajGumb("x^2",unar_naredba); dodajGumb("1/x",unar_naredba);
+        dodajGumb("x",pisanje); dodajGumb("1/x",unar_naredba);
         dodajGumb("|x|",unar_naredba); dodajGumb("(",pisanje);
         dodajGumb(")",pisanje); dodajGumb("D",brisanje); 
         dodajGumb("CE",brisanje);
@@ -140,17 +125,6 @@ public class GraphingGUI extends JPanel{
         dodajGumb("arcctg",unar_naredba);
         
         /**
-         * @Ivana
-         * ? znaci da je taj gumb prazan
-         */
-        //mozemo npr. maknut x^2 i sgrt(x) jer vec immo opcenite potencije i korijene 
-        //umijeto njih stavit x i y
-        dodajGumb("x",pisanje); dodajGumb("y",pisanje);
-        dodajGumb("?",pisanje); dodajGumb("?",pisanje);
-        dodajGumb("?",pisanje); dodajGumb("?",pisanje);
-        dodajGumb("?",pisanje);
-        
-        /**
          * @Dorotea
          */
         unos.add(spremnik, BorderLayout.CENTER);
@@ -164,9 +138,7 @@ public class GraphingGUI extends JPanel{
          * @Ivana
          */
         new Thread(nacrtaj).start();
-        /**
-         * @Dorotea
-         */
+        
         this.add(tab);
     }
     
@@ -175,8 +147,6 @@ public class GraphingGUI extends JPanel{
     //zakomentirane su neke linije da se ne pojavljuje greska, kasnije prepravljamo
     private void dodajGumb(String oznaka, ActionListener slusac){
         JButton gumb = new JButton(oznaka);
-        if(oznaka=="=")
-            jednako=gumb;
         gumb.addActionListener(slusac);
         spremnik.add(gumb);
     }
@@ -189,18 +159,7 @@ public class GraphingGUI extends JPanel{
             return "";
         return ekran.getText();
     }
-    //originalna AkcijaPisanja
-    /*private class AkcijaPisanja implements ActionListener{
-        @Override
-        public void actionPerformed(ActionEvent event) {
-            String unos = event.getActionCommand();
-            if(start){
-                ekran.setText("");
-                start=false;
-            }
-            ekran.setText(ekran.getText()+unos);
-        }
-    }*/
+    
     /**
      * moj pokušaj funkcije AkcijaPisanja za integraciju s crtanjem grafa
      * @Ivana
@@ -259,17 +218,23 @@ public class GraphingGUI extends JPanel{
             String unos = event.getActionCommand();
             switch (unos) {
                 case "D":
-                    //brise se samo zadnja znamenka
-                    //nema unosa pa nemamo što brisati
-                    if("".equals(screen))
+                    //brise se samo zadnji znak
+                    String str = ekran.getText();
+                    //nema unosa pa nemamo što brisati:
+                    if("".equals(str))
                         break;
-                    //na ekran stavljam broj bez zadnje znamenke
-                    if(screen.length()>1){
-                        screen=screen.substring(0,screen.length()-1);
-                        ekran.setText(screen);
+                    //na ekran stavljam sadrzaj ekrana bez zadnjeg znaka i updateam "screen":
+                    if(str.length()>1){
+                        ekran.setText(str.substring(0, str.length()-1));
+                        screen=ekran.getText();
+                        /* @Ivana obrisala ovu verziju:
+                        if(screen.length()>1)
+                            screen=screen.substring(0, screen.length()-1);
+                        */
                     }else{
                         ekran.setText("");
                     }
+                    System.out.println("Nakon pritiske gumba D screen="+screen);
                     break;
                 case "CE":
                     //brišem cijeli zadnji entry
@@ -303,8 +268,14 @@ public class GraphingGUI extends JPanel{
                     ekran.setText(operacija);
                     start=false;
                     screen="-";
+                    /**
+                     * ne kuzim koja je poanta ovog tu koda:
+                     * @Ivana
+                     */
+                    System.out.println("flag 4");
                     if(zadnjaBinarnaOperacija.equals("=")){
-                         ekran.setText(screen.substring(0,screen.length()-1));
+                        System.out.println("flag 2");
+                        ekran.setText(screen.substring(0,screen.length()-1));
                         start=true;
                         function=parser.parse(textBox);
                             if(function==null){
@@ -314,25 +285,37 @@ public class GraphingGUI extends JPanel{
                     }
                 }else{
                     zadnjaBinarnaOperacija=operacija;
+                    /**
+                     * zasto se uopce mora updateati "screen" ovdje
+                     * @Ivana
+                     */
                     screen+=zadnjaBinarnaOperacija;
+                    System.out.println("flag 3");
                     if(zadnjaBinarnaOperacija.equals("=")){
+                        System.out.println("flag 1");
                         ekran.setText(screen.substring(0,screen.length()-1));
                         start=true;
                         function=parser.parse(textBox);
                             if(function==null){
                                 textBox="";
                             }
+                        /**
+                         * svaki put kad se stisne jednako se "screen" isprazni
+                         * @Ivana
+                         */
                         screen="";
                     }else{
                         ekran.setText(screen);
                     }
                 }
             }else{
-                //System.out.println("Sad je start false i promijenit cu ga true");
- //               racunaj(Double.parseDouble(ekran.getText()));
+                start=true;
+                //Sad je start false i promijenit ce se u true
+                System.out.println("start je false i screen = "+screen);
                 zadnjaBinarnaOperacija=operacija;
                 screen+=zadnjaBinarnaOperacija;
                 if(zadnjaBinarnaOperacija.equals("=")){
+                    System.out.println(screen);
                    ekran.setText(screen.substring(0,screen.length()-1));
                    start=true;
                    function=parser.parse(textBox);
