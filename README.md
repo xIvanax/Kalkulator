@@ -24,8 +24,9 @@ Napredak:
 - uspjela sam implementirati gotovo sve funkcije da se crtaju
 - mislila sam izbaciti tipku y(jer ju nigdje necemo koristiti, barem koliko ja viidm) i tipku x^2 jer imamo vec opcenitu x^y pa mislim da nam ne treba, sto mislis o tome? (time bismo rjesile onaj problem praznih gumba) -@Ivana ma moze 
 
-Problem:
+Problem: //resolved
 - kako je arcsin definirana na segmentu -1<=x<=1, onda bi se samo na njemu i trebalo crtati, ali vidjet ces problem kada pokrenes npr arcsin(x) imam dva pravca paralelna s y osi koji ne bi trebali biti tu. Probala sam ispraviti na nekoliko načina, ali nisam uspjela. Analogno i za arccos. Sve ostale funkcije rade super.
+
 
 5.2. Ivana:
 Updates:
@@ -39,3 +40,7 @@ Updates:
 2) jos sam pocistila kod, npr. u metodi za listener-a za unarne operacije su se radile provjere hoce li operacija biti =, -, + ..., a to je nemoguce, jer se pritiskom gumbi za dobivanje tih operacija aktiviraju listeneri za binarne operacije pa unutar listener-a za unarne operacije, unarnaOperacija nikad nece biti neka od binarnih
 3) ostavila sam zakomentirano hrpu System.out.println() jer sam ih koristila za debugging, ako ti bas budu smetali mozes ih obrisat, ali sam ih ostavila da ih ne moram opet pisat ak cu morat nes debuggat
 4) pokusala sam malo uskladit varijable screen, ekran, textBox - sve je radilo na primjerima koje sam probavala pa se nadam da je to sad OK
+
+Updates 2.0:
+1) teoretski je graphing GUI zavrsen, trebalo bi dodatno za svaki gumb provjeriti radi li kako treba (za svaku funkciju)
+2) zapocela sam PolynomialGUI ali nisam uspjela dobit da se vidi na tab-u, ti ces vjv znat sta treba jer se i i ove prije ti dodavala 
