@@ -32,3 +32,10 @@ Updates:
 1) u procesu sam popravljanja gumba D jer ne radi kako treba, mislim da je glavni problem mijesanje screen-a i ekran-a prilikom updateanja jednog ili drugog
 2) obrisala sam gumbe x^2 i y
 3) pocistila sam malo kod (obrisala pakete koje vise ne koristimo i varijable koje ne sluze nicem)
+
+6.2. Ivana:
+Updates:
+1) popravila sam gumbe za brisanje, obrisala sam gumb CE (jer mislim da on tu nema smisla - možda ga krivo razumijem, ali lako ga je vratiti nazad ako ga ipak trebamo) i zamijenila sam ga gumbom "eval" koji ce sluziti za evaluaciju funkcije i funckionirat ce kao gumb "=" u standardnom kalkulatoru
+2) jos sam pocistila kod, npr. u metodi za listener-a za unarne operacije su se radile provjere hoce li operacija biti =, -, + ..., a to je nemoguce, jer se pritiskom gumbi za dobivanje tih operacija aktiviraju listeneri za binarne operacije pa unutar listener-a za unarne operacije, unarnaOperacija nikad nece biti neka od binarnih
+3) ostavila sam zakomentirano hrpu System.out.println() jer sam ih koristila za debugging, ako ti bas budu smetali mozes ih obrisat, ali sam ih ostavila da ih ne moram opet pisat ak cu morat nes debuggat
+4) pokusala sam malo uskladit varijable screen, ekran, textBox - sve je radilo na primjerima koje sam probavala pa se nadam da je to sad OK
