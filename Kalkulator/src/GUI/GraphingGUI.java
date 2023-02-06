@@ -102,7 +102,15 @@ public class GraphingGUI extends JPanel{
         dodajGumb("x",pisanje); dodajGumb("1/x",unar_naredba);
         dodajGumb("|x|",unar_naredba); dodajGumb("(",pisanje);
         dodajGumb(")",pisanje); dodajGumb("D",brisanje); 
-        dodajGumb("CE",brisanje);
+        //obrisan gumb CE jer nema smisla u ovom kontekstu/dizajnu kalkulatora (ja mislim, ak ti mislis da ima
+        //lako ga vratim - sad sam ga zamijenila s gumbom eval pomocu kojeg cemo napravit evaluation funckije
+        //zapravo ce funkcionirat isto kao "=" u obicnom kalkulatoru
+        
+        /**
+         * ovaj komentar iznad napisala
+         * @Ivana
+         */
+        dodajGumb("eval",bin_naredba);
         
         dodajGumb("x^y",bin_naredba); dodajGumb("7",pisanje);
         dodajGumb("8",pisanje); dodajGumb("9",pisanje);
@@ -118,15 +126,16 @@ public class GraphingGUI extends JPanel{
         dodajGumb("2",pisanje); dodajGumb("3",pisanje);
         dodajGumb("-",bin_naredba); dodajGumb("tg",unar_naredba); 
         dodajGumb("arctg",unar_naredba);
-        
+        //preimenovala sam gumb "=" u "draw"
+        /**
+         * ovaj komentar iznad napisala
+         * @Ivana
+         */
         dodajGumb("lnx",unar_naredba); dodajGumb("0",pisanje);
-        dodajGumb(".",pisanje); dodajGumb("=",bin_naredba);
+        dodajGumb(".",pisanje); dodajGumb("draw",bin_naredba);
         dodajGumb("+",bin_naredba); dodajGumb("ctg",unar_naredba); 
         dodajGumb("arcctg",unar_naredba);
         
-        /**
-         * @Dorotea
-         */
         unos.add(spremnik, BorderLayout.CENTER);
         prikaz.add(nacrtaj, BorderLayout.CENTER);
         tab=new JTabbedPane();
@@ -142,9 +151,6 @@ public class GraphingGUI extends JPanel{
         this.add(tab);
     }
     
-    //ove su funkcije samo kopirane iz file-a CalculatorGUI
-    //kasnije cu ih prepraviti, a sada su mi samo potrebne kako bih mogla pokrenuti aplikaciju
-    //zakomentirane su neke linije da se ne pojavljuje greska, kasnije prepravljamo
     private void dodajGumb(String oznaka, ActionListener slusac){
         JButton gumb = new JButton(oznaka);
         gumb.addActionListener(slusac);
@@ -160,19 +166,27 @@ public class GraphingGUI extends JPanel{
         return ekran.getText();
     }
     
-    /**
-     * moj pokušaj funkcije AkcijaPisanja za integraciju s crtanjem grafa
-     * @Ivana
-     */
     private class AkcijaPisanja implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent event){
             String unos=event.getActionCommand();
             if(start){
-                ekran.setText("");
+                //ovo nam vise ne treba jer je dizajn drukciji nego kod standardnog kalkulatora,
+                //ne vidi se u svakom trenu samo jedna znamenka nego cijeli niz znakova
+                //ekran.setText("");
+                /**
+                * ovaj komentar iznad napisala
+                * @Ivana
+                */
                 textBox=ekran.getText();
+                //System.out.println("sad je start true i textbox= "+textBox);
                 start=false;
             }
+            
+            //System.out.println("*unos="+unos+" ekran="+ekran.getText());
+            //updateanje ekrana kao prije:
+            ekran.setText(ekran.getText()+unos);
+            //System.out.println("**unos="+unos+" ekran="+ekran.getText());
             
             if(unos.equals("π")){
                 String pi=Double.toString(Math.PI);
@@ -193,6 +207,7 @@ public class GraphingGUI extends JPanel{
             }else{
                 screen+=unos;
                 ekran.setText(screen);
+                
                 textBox=screen;
             }
             
@@ -227,19 +242,11 @@ public class GraphingGUI extends JPanel{
                     if(str.length()>1){
                         ekran.setText(str.substring(0, str.length()-1));
                         screen=ekran.getText();
-                        /* @Ivana obrisala ovu verziju:
-                        if(screen.length()>1)
-                            screen=screen.substring(0, screen.length()-1);
-                        */
                     }else{
                         ekran.setText("");
+                        screen="";
                     }
-                    System.out.println("Nakon pritiske gumba D screen="+screen);
-                    break;
-                case "CE":
-                    //brišem cijeli zadnji entry
-                    //nisam sigurna kako da ovo popravim
-                    ekran.setText("");
+                    //System.out.println("Nakon pritiske gumba D screen="+screen);
                     break;
                 case "C":
                     //brišem cijeli input kalkulatora (back to square one)
@@ -264,67 +271,48 @@ public class GraphingGUI extends JPanel{
             String operacija=operation(op);
             if(start){
                 //System.out.println("Sad je start true");
-                if(operacija.equals("-")){
+                if(operacija.equals("-") && "".equals(ekran.getText())){
                     ekran.setText(operacija);
                     start=false;
                     screen="-";
-                    /**
-                     * ne kuzim koja je poanta ovog tu koda:
-                     * @Ivana
-                     */
-                    System.out.println("flag 4");
-                    if(zadnjaBinarnaOperacija.equals("=")){
-                        System.out.println("flag 2");
-                        ekran.setText(screen.substring(0,screen.length()-1));
-                        start=true;
-                        function=parser.parse(textBox);
-                            if(function==null){
-                                textBox="";
-                            }
-                        screen="";
-                    }
                 }else{
                     zadnjaBinarnaOperacija=operacija;
-                    /**
-                     * zasto se uopce mora updateati "screen" ovdje
-                     * @Ivana
-                     */
-                    screen+=zadnjaBinarnaOperacija;
-                    System.out.println("flag 3");
+                    
+                    //System.out.println("flag 3");
                     if(zadnjaBinarnaOperacija.equals("=")){
-                        System.out.println("flag 1");
-                        ekran.setText(screen.substring(0,screen.length()-1));
-                        start=true;
+                        //System.out.println("flag 1");
+                        
+                        textBox=ekran.getText();
                         function=parser.parse(textBox);
                             if(function==null){
                                 textBox="";
                             }
-                        /**
-                         * svaki put kad se stisne jednako se "screen" isprazni
-                         * @Ivana
-                         */
+                        
                         screen="";
                     }else{
-                        ekran.setText(screen);
+                        ekran.setText(ekran.getText()+zadnjaBinarnaOperacija);
+                        //System.out.println("***ekran="+ekran.getText());
+                        screen=ekran.getText();
                     }
                 }
             }else{
                 start=true;
                 //Sad je start false i promijenit ce se u true
-                System.out.println("start je false i screen = "+screen);
+                //System.out.println("start je false i screen = "+screen);
                 zadnjaBinarnaOperacija=operacija;
-                screen+=zadnjaBinarnaOperacija;
+                
                 if(zadnjaBinarnaOperacija.equals("=")){
-                    System.out.println(screen);
-                   ekran.setText(screen.substring(0,screen.length()-1));
-                   start=true;
+                    //System.out.println("screen nakon pritiska ="+screen);
+                   textBox=ekran.getText();
                    function=parser.parse(textBox);
                         if(function==null){
                             textBox="";
                         }
                    screen="";
                 }else{
-                    ekran.setText(screen);
+                    ekran.setText(ekran.getText()+zadnjaBinarnaOperacija);
+                    //System.out.println("** **ekran="+ekran.getText());
+                    screen=ekran.getText();
                 }
             }
         }
@@ -339,7 +327,7 @@ public class GraphingGUI extends JPanel{
                     return "*";
                 case "/":
                     return "/";
-                case "=":
+                case "draw":
                     return "=";
                 case "x^y":
                     return "^";
@@ -356,52 +344,9 @@ public class GraphingGUI extends JPanel{
         public void actionPerformed(ActionEvent event) {
             String op=event.getActionCommand();
             String operacija=operation(op);
-            if(start){
-                //System.out.println("Sad je start true");
-                if(operacija.equals("-")){
-                    ekran.setText(operacija);
-                    start=false;
-                    screen="-";
-                    if(zadnjaUnarnaOperacija.equals("=")){
-                        ekran.setText(screen.substring(0,screen.length()-1));
-                        function=parser.parse(textBox);
-                            if(function==null){
-                                textBox="";
-                            }
-                        screen="";
-                    }
-                }else{
-                    zadnjaUnarnaOperacija=operacija;
-                    screen+=zadnjaUnarnaOperacija;
-                    if(zadnjaUnarnaOperacija.equals("=")){
-                         ekran.setText(screen.substring(0,screen.length()-1));
-                        start=true;
-                        function=parser.parse(textBox);
-                            if(function==null){
-                                textBox="";
-                            }
-                        screen="";
-                    }else{
-                        ekran.setText(screen);
-                    }
-                }
-            }else{
-                //System.out.println("Sad je start false i promijenit cu ga true");
- //               racunaj(Double.parseDouble(ekran.getText()));
-                zadnjaUnarnaOperacija=operacija;
-                screen+=zadnjaUnarnaOperacija;
-                if(zadnjaUnarnaOperacija.equals("=")){
-                   ekran.setText(screen.substring(0,screen.length()-1));
-                   start=true;
-                   function=parser.parse(textBox);
-                        if(function==null){
-                            textBox="";
-                        }
-                   screen="";
-                }else{
-                   ekran.setText(screen);
-                }
-            }
+            zadnjaUnarnaOperacija=operacija;
+            screen+=zadnjaUnarnaOperacija;
+            ekran.setText(screen);
         }
         
         public String operation(String operacija){
@@ -440,21 +385,9 @@ public class GraphingGUI extends JPanel{
                     return "floor(";
                 case "√x":
                     return "sqrt(";  
+                default:
+                    return "";
             }
-            
-            switch(operacija) {
-                case "+":
-                    return "+";
-                case "-":
-                    return "-";
-                case "*":
-                    return "*";
-                case "/":
-                    return "/";
-                case "=":
-                    return "=";
-            }
-            return "";
         }
     }
     /**
