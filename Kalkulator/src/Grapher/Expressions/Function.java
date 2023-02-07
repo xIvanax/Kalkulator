@@ -15,10 +15,10 @@ public class Function {
 	private Variable z;
 	
 	public Function(Quantity root, Variable x, Variable y, Variable z) {
-		this.root = root;
-		this.x = x;
-		this.y = y;
-		this.z = z;
+		this.root=root;
+		this.x=x;
+		this.y=y;
+		this.z=z;
 	}
 	
 	public double evaluateAt(double x, double y, double z) {

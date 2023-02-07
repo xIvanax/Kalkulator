@@ -14,7 +14,7 @@ public class Error {
 		
 	}
 	
-	public void makeError(String msg) {
+	public void makeError(String msg){
 		System.out.println(msg);
 	}
 }

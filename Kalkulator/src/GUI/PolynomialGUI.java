@@ -90,14 +90,28 @@ public class PolynomialGUI extends JPanel{
         dodajGumb("7",pisanje);
         dodajGumb("8",pisanje); 
         dodajGumb("9",pisanje);
-        dodajGumb("x",pisanje); 
+        dodajGumb("/",bin_naredba);
         dodajGumb("(",pisanje);
-        dodajGumb("D",brisanje); 
-        dodajGumb("x^(1/y)",bin_naredba);
+        dodajGumb(")",pisanje);
+        dodajGumb("D",brisanje);
+        
+        
+        dodajGumb("4",pisanje);
+        dodajGumb("5",pisanje); 
+        dodajGumb("6",pisanje);
+        dodajGumb("*",bin_naredba);
         dodajGumb("π",pisanje); 
         dodajGumb("e",pisanje); 
         dodajGumb("C",brisanje);
-        dodajGumb(")",pisanje); 
+        
+        dodajGumb("1",pisanje);
+        dodajGumb("2",pisanje); 
+        dodajGumb("3",pisanje);
+        dodajGumb("-",bin_naredba); 
+        dodajGumb("x",pisanje);
+        dodajGumb("x^y",bin_naredba);
+        dodajGumb("x^(1/y)",bin_naredba);
+       
         //obrisan gumb CE jer nema smisla u ovom kontekstu/dizajnu kalkulatora (ja mislim, ak ti mislis da ima
         //lako ga vratim - sad sam ga zamijenila s gumbom eval pomocu kojeg cemo napravit evaluation funckije
         //zapravo ce funkcionirat isto kao "=" u obicnom kalkulatoru
@@ -105,28 +119,18 @@ public class PolynomialGUI extends JPanel{
          * ovaj komentar iznad napisala
          * @Ivana
          */
-        dodajGumb("eval",bin_naredba);
-        dodajGumb("x^y",bin_naredba); 
-        dodajGumb("/",bin_naredba);
-        dodajGumb("4",pisanje);
-        dodajGumb("5",pisanje); 
-        dodajGumb("6",pisanje);
-        dodajGumb("*",bin_naredba); 
-        
-        dodajGumb("1",pisanje);
-        dodajGumb("2",pisanje); 
-        dodajGumb("3",pisanje);
-        dodajGumb("-",bin_naredba);  
         
         dodajGumb("0",pisanje);
-        dodajGumb(".",pisanje); 
-        dodajGumb("draw",bin_naredba);
-        dodajGumb("+",bin_naredba);  
-        dodajGumb("?",bin_naredba); 
-        dodajGumb("?",bin_naredba); 
+        dodajGumb(".",pisanje);
+        dodajGumb("eval",bin_naredba);
+        dodajGumb("+",bin_naredba);
+        dodajGumb("derivative",bin_naredba); 
+        dodajGumb("?",bin_naredba);
+        dodajGumb("draw",bin_naredba);   
         
         unos.add(spremnik, BorderLayout.CENTER);
         prikaz.add(nacrtaj, BorderLayout.CENTER);
+        
         tab=new JTabbedPane();
         tab.add("Unos",unos);
         tab.add("Graf",prikaz);
@@ -303,10 +307,155 @@ public class PolynomialGUI extends JPanel{
                     String output = fja + "\n" + "f("+evaluateAt+")="+evaluatedFunction;
                     System.out.println("f("+evaluateAt+")="+evaluatedFunction);
                     JOptionPane.showMessageDialog(spremnik, output, "Rezultat evaluacije", JOptionPane.INFORMATION_MESSAGE);
-                    
+                case "derivative":
+                    String ulaz=ekran.getText();
+                    String izlaz=deriviraj(ulaz);
+                    ekran.setText(izlaz);
+                    if(izlaz.charAt(izlaz.length()-1)=='+' || izlaz.charAt(izlaz.length()-1)=='-'){
+                        ekran.setText(izlaz.substring(0,izlaz.length()-1));
+                    }else{
+                        ekran.setText(izlaz);
+                    }
             }
             return "";
         }
+        
+        /**
+        *@author Dorotea
+        * Sljedeća funkcija će po konstrukciji biti slična funkciji doOrderOfOperations iz EXPressionParser-a
+        * Vraćat će String koji će sadržavati derivaciju unesenog polinoma
+        **/
+        public String deriviraj(String ulaz){
+            String rezultat="";
+            
+            int location=scanFromRight(ulaz,'+');
+            if(location!=-1){
+                String left=ulaz.substring(0,location);
+                String right=ulaz.substring(location+1,ulaz.length());
+                rezultat+=deriviraj(left)+"+"+Der(right);
+            }else{
+                location=scanFromRight(ulaz,'-');
+                if(location!=-1){
+                    if(location==0){
+                        String right=ulaz.substring(location+1,ulaz.length());
+                        rezultat+="-"+Der(right);
+                    }else{
+                        String left=ulaz.substring(0,location);
+                        String right=ulaz.substring(location+1,ulaz.length());
+                        if(left.isEmpty()){
+                            rezultat+=Der(right);
+                        }
+                        else{
+                            rezultat+=deriviraj(left)+"-"+Der(right);
+                        }
+                    } 
+                }else{
+                    rezultat+=Der(ulaz);
+                }
+            }
+            return rezultat;
+        }
+        
+        public int scanFromRight(String ulaz,char token){
+            int openParentheses=0;
+            for(int i=ulaz.length()-1; i>=0; i--){
+                if(ulaz.charAt(i)==')'){
+                       openParentheses++;
+                }else if(ulaz.charAt(i)=='('){
+                    openParentheses--;
+                }else if(ulaz.charAt(i)==token && openParentheses==0){
+                    return i;
+                }
+            }
+            return -1;
+        }
+        
+        public String Der(String expr){
+            String res="";
+            double coef=0, exp=0;
+            //prvo odredujem koliko iznosi koeficijent
+            int location=0;
+            if(expr.contains("*")){//dakle sadrzi i *x
+                location=expr.indexOf("*");
+                coef=Double.parseDouble(expr.substring(0, location));
+            }else if(expr.contains("x") && !(expr.contains("*"))){//ako je koeficijent jednak 1
+                coef=1;
+            }else if(!(expr.contains("x") && !(expr.contains("*")))){//ako je jednak konstanti
+                coef=Double.parseDouble(expr);
+                return res; //derivacija konstante je 0, pa ostavljam da string ostaje prazan
+            }
+
+            int parenthesis=0, jednako=0;//provjeravam ima li jednak broj otvorenih i zatvorenih zagrada
+            if(expr.contains("(") || expr.contains(")"))
+                parenthesis=1;
+
+            for(int i=0; i<expr.length(); i++){
+                if(i==')'){
+                    jednako++;
+                }else if(i=='('){
+                    jednako--;
+                }     
+            }
+
+            if(jednako!=0){
+                System.out.println("Niste zatvorili sve zagrade!");
+            }
+
+            /**
+            *@author Dorotea
+            * Ako je eksponent negativan ili je zapisan u obliku kvocjenta onda mora sadrzavati zagrade
+            * Ako je eksponent negativan, onda se mora nalaziti unutar zagrada
+            **/
+            if(parenthesis==1){
+                int start=expr.indexOf("(");
+                int finish=expr.indexOf(")");
+                
+                int q=-1;
+                if(expr.substring(start+1, finish).contains(("/"))){
+                    q=expr.substring(start+1, finish).indexOf("/");
+                }
+                
+                int negative=0;//provjera je li eksponent negativan
+                if(expr.substring(start+1, finish).contains(("-")))
+                    negative=1;
+                
+                if(q!=-1){
+                    double brojnik=Double.parseDouble(expr.substring(start+1,q));
+                    double nazivnik=Double.parseDouble(expr.substring(q+1,finish));
+                    if(negative==1){
+                        exp=-(brojnik/nazivnik);
+                    }else if(negative==0){
+                        exp=brojnik/nazivnik;
+                    }
+                }else{
+                    if(negative==1){
+                        exp=-(Double.parseDouble(expr.substring(start+1, finish)));
+                    }else{
+                        exp=Double.parseDouble(expr.substring(start+1, finish));
+                    }
+                }
+            }else{
+                if(expr.contains("^")){//x^nesto
+                    int p=expr.indexOf("^");
+                    exp=Double.parseDouble(expr.substring(p+1,expr.length()));
+                }else{//samo je napisann x, dakle nema potenciju, pa stavljamo da je eksponent jednak 1
+                    exp=1;
+                }
+            }
+
+            //sada kada su odredeni koficijent i eksponent mozemo 'derivirati'
+            res+=Double.toString(coef*exp);
+            if(exp==1){
+                return res;
+            }else{
+                double novi=exp-1;
+                res+="*x^"+Double.toString(novi);
+            }
+
+            return res;
+        }
+
+        
     }
     
     public class IntegratedDrawFunctionScreen extends JPanel implements MouseWheelListener, /*KeyListener,*/ Runnable{

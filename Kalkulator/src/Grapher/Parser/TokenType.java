@@ -31,7 +31,7 @@ public enum TokenType {
 	NTHROOT("^(1/"),
 	SQUARE_ROOT("sqrt"),
 	ABSOLUTE_VALUE("abs"),
-	COMMA(","),
+	COMMA(","), //mislim da nam ni ovo ne treba
 	X("x"),
 	Y("x"),
 	Z("z"), //mislim da ne treba
@@ -55,7 +55,7 @@ public enum TokenType {
 	
 	public final String name;
 	
-	private TokenType(String name) {
-		this.name = name;
+	private TokenType(String name){
+		this.name=name;
 	}
 }

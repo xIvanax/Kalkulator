@@ -37,12 +37,12 @@ public class CalculatorFrame extends JFrame implements ActionListener{
         stan = new CalculatorGUI();
         stan.setSize(800,800);
         stan.setPreferredSize(new Dimension(800,800));
+        
         grafovi=new GraphingGUI();
         grafovi.setSize(800,800);
         grafovi.setPreferredSize(new Dimension(800,800));
         
-        //naknadno ga je potrebno postaviti, za sada neka bude prazan
-        pol=new JPanel();
+        pol=new PolynomialGUI();
         pol.setSize(800,800);
         pol.setPreferredSize(new Dimension(800,800));
         
@@ -52,7 +52,6 @@ public class CalculatorFrame extends JFrame implements ActionListener{
         glavni.setPreferredSize(new Dimension(800,800));
         
         glavni.setLayout(cl);
-        //nazive mozemo kasnije promijeniti, ja sam stavila za sada
         glavni.add(stan, "Standardni kalkulator");
         glavni.add(grafovi,"Grafički kalkulator");
         glavni.add(pol,"Polinomni kalkulator");
@@ -67,7 +66,7 @@ public class CalculatorFrame extends JFrame implements ActionListener{
         
         standardni=new JMenuItem("Standardni kalkulator");
         graficki=new JMenuItem("Grafički kalkulator");
-        polinomi=new JMenuItem("Polinomi");
+        polinomi=new JMenuItem("Polinomni kalkulator");
        
         odaberi.add(standardni);
         odaberi.addSeparator();
@@ -90,7 +89,7 @@ public class CalculatorFrame extends JFrame implements ActionListener{
         polinomi.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                cl.show(glavni, "Polinomi");
+                cl.show(glavni, "Polinomni kalkulator");
             }
         });
         
