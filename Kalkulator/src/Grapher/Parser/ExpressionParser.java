@@ -178,11 +178,12 @@ public class ExpressionParser {
 	}
         
         /**
-        * @author Dorotea
-        * String u kojemu je zapisana funkcija pretrazujemo s desna na lijevo.
-        * Sljedeća funkcija prima TokenString tj. listu tokena te neki odredeni tip tokena type.
-        * Vraća lokaciju prvog tokena tipa type
-        */
+         * @author Dorotea
+         * String u kojemu je zapisana funkcija pretrazujemo s desna na lijevo.
+         * @param tokens TokenString tj. lista tokena
+         * @param type tip tokena
+         * @return lokacija prvog tokena tipa type
+         */
         public int scanFromRight(TokenString tokens, TokenType type){
             int openParentheses=0;
             for(int i=tokens.getLength()-1; i>=0; i--){
