@@ -50,7 +50,6 @@ public class PolynomialGUI extends JPanel{
     private boolean start = true;
     private ArrayList<String> funkcija;
     private String zadnjaBinarnaOperacija="=";
-    private String zadnjaUnarnaOperacija="";
     private String screen="";
     
     private double evaluatedFunction;
@@ -220,7 +219,6 @@ public class PolynomialGUI extends JPanel{
                     start = true;
                     //rezultat=0.0;
                     zadnjaBinarnaOperacija="=";
-                    zadnjaUnarnaOperacija="";
                     screen="";
                     ekran.setText("");
                     break;
@@ -311,11 +309,12 @@ public class PolynomialGUI extends JPanel{
                     String ulaz=ekran.getText();
                     String izlaz=deriviraj(ulaz);
                     ekran.setText(izlaz);
-                    if(izlaz.charAt(izlaz.length()-1)=='+' || izlaz.charAt(izlaz.length()-1)=='-'){
-                        ekran.setText(izlaz.substring(0,izlaz.length()-1));
-                    }else{
-                        ekran.setText(izlaz);
-                    }
+                    if(izlaz.length()>1)
+                        if(izlaz.charAt(izlaz.length()-1)=='+' || izlaz.charAt(izlaz.length()-1)=='-'){
+                            ekran.setText(izlaz.substring(0,izlaz.length()-1));
+                        }else{
+                            ekran.setText(izlaz);
+                        }
             }
             return "";
         }
@@ -406,35 +405,47 @@ public class PolynomialGUI extends JPanel{
             * Ako je eksponent negativan ili je zapisan u obliku kvocjenta onda mora sadrzavati zagrade
             * Ako je eksponent negativan, onda se mora nalaziti unutar zagrada
             **/
+            //slucaj kad imamo zagrade
             if(parenthesis==1){
                 int start=expr.indexOf("(");
                 int finish=expr.indexOf(")");
                 
+                String izmeduZagrada = expr.substring(start+1, finish);
+                System.out.println("izmedu zagrada je "+izmeduZagrada);
                 int q=-1;
                 if(expr.substring(start+1, finish).contains(("/"))){
                     q=expr.substring(start+1, finish).indexOf("/");
+                    System.out.println("Prepoznao sam da je u eksponentu razlomak");
+                    System.out.println("znak / nalazi se na indeksu "+q);
                 }
                 
                 int negative=0;//provjera je li eksponent negativan
                 if(expr.substring(start+1, finish).contains(("-")))
                     negative=1;
                 
+                //slucaj kad je eksponent razlomak:
                 if(q!=-1){
-                    double brojnik=Double.parseDouble(expr.substring(start+1,q));
-                    double nazivnik=Double.parseDouble(expr.substring(q+1,finish));
+                    System.out.println("Određujem brojnik i nazivnik");
+                    //double brojnik=Double.parseDouble(expr.substring(start+1,q));
+                    //double nazivnik=Double.parseDouble(expr.substring(q+1,finish));
+                    double brojnik=Double.parseDouble(izmeduZagrada.split("/")[0]);
+                    double nazivnik=Double.parseDouble(izmeduZagrada.split("/")[1]);
+                    System.out.println("brojnik="+brojnik);
+                    System.out.println("nazivnik="+nazivnik);
                     if(negative==1){
                         exp=-(brojnik/nazivnik);
                     }else if(negative==0){
                         exp=brojnik/nazivnik;
                     }
-                }else{
+                }else{//slucaj kad eksponent nije razlomak:
                     if(negative==1){
+                        System.out.println("Prepoznao sam da je eksponent negativan pa mu sad dodajem minus i sad exp= "+exp);
                         exp=-(Double.parseDouble(expr.substring(start+1, finish)));
                     }else{
                         exp=Double.parseDouble(expr.substring(start+1, finish));
                     }
                 }
-            }else{
+            }else{//slucaj kad nemamo zagrade u eskponentu
                 if(expr.contains("^")){//x^nesto
                     int p=expr.indexOf("^");
                     exp=Double.parseDouble(expr.substring(p+1,expr.length()));
@@ -449,7 +460,10 @@ public class PolynomialGUI extends JPanel{
                 return res;
             }else{
                 double novi=exp-1;
-                res+="*x^"+Double.toString(novi);
+                if(novi<0)
+                    res+="*x^("+Double.toString(novi)+")";
+                else
+                    res+="*x^"+Double.toString(novi);
             }
 
             return res;
