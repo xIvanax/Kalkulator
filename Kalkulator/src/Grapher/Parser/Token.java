@@ -5,25 +5,25 @@
 package Grapher.Parser;
 
 /**
- * Tokeni napravljeni na temelju TokenTypes zasnovanih na mogućnostima koje nude gumbi
+ * Tokeni napravljeni na temelju TokenTypes zasnovanih na mogućnostima koje nude gumbi.
  * deklarirani od strane @Dorotea u GraphingGUI
  * @author ivana
  */
-public class Token {
+public class Token{
 	public final TokenType type;
 	public final String data;
 	
-	public Token(TokenType type, String data) {
-		this.type = type;
-		this.data = data;
+	public Token(TokenType type, String data){
+		this.type=type;
+		this.data=data;
 	}
 	
-	public Token(TokenType type) {
-		this(type, "");
+	public Token(TokenType type){
+		this(type,"");
 	}
 	
 	@Override
-	public String toString() {
+	public String toString(){
 		return type.toString();
 	}
 }

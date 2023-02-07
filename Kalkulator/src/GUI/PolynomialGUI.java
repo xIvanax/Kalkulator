@@ -4,6 +4,8 @@
  */
 package GUI;
 
+import Grapher.Expressions.Function;
+import Grapher.Parser.ExpressionParser;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -25,19 +27,16 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
-import Grapher.Expressions.Function;
-import Grapher.Parser.ExpressionParser;
-import javax.swing.JOptionPane;
-
 /**
  *
- * @author Dorotea
+ * @author Ivana
  */
-public class GraphingGUI extends JPanel{ 
+public class PolynomialGUI extends JPanel{
     private JPanel spremnik;
     private JPanel unos;
     private JPanel prikaz;
@@ -53,16 +52,11 @@ public class GraphingGUI extends JPanel{
     private String zadnjaBinarnaOperacija="=";
     private String zadnjaUnarnaOperacija="";
     private String screen="";
-    //ovdje cu spremat rezultate evaluacije pa cemo smislit gdje cemo prikazat evaluaciju
-    //sama evaluacija odvija se pritiskom na gumb "eval" koji se tretira kao binarna operacija, ali skroz je svejedno kak se tretira
-    /**
-     * napisala ovaj gore komentar i ove dole dvije varijable
-     * @Ivana
-     */
+    
     private double evaluatedFunction;
     private String evaluateAt="";
     
-    public GraphingGUI(){
+    public PolynomialGUI(){
         nacrtaj=new IntegratedDrawFunctionScreen();
         unos=new JPanel();
         prikaz=new JPanel();
@@ -87,57 +81,56 @@ public class GraphingGUI extends JPanel{
          * ja sam dodala tu gumbe za spremanje polinoma, deriviranje i potenciranje sam da od nekud krenem,
          * vidim da imamo zaseban 
          */
-        spremnik.setLayout(new GridLayout(6,7));
+        spremnik.setLayout(new GridLayout(4,7));
         
-        ActionListener pisanje = new GraphingGUI.AkcijaPisanja();
-        ActionListener brisanje = new GraphingGUI.AkcijaBrisanja();
-        ActionListener bin_naredba = new GraphingGUI.AkcijaBinarneOperacije();
-        ActionListener unar_naredba = new GraphingGUI.AkcijaUnarneOperacije();
+        ActionListener pisanje = new PolynomialGUI.AkcijaPisanja();
+        ActionListener brisanje = new PolynomialGUI.AkcijaBrisanja();
+        ActionListener bin_naredba = new PolynomialGUI.AkcijaBinarneOperacije();
         
-        dodajGumb("⌈x⌉",unar_naredba); dodajGumb("⌊x⌋",unar_naredba);
-        dodajGumb("√x",unar_naredba); dodajGumb("x^(1/y)",bin_naredba);
-        dodajGumb("π",pisanje); dodajGumb("e",pisanje); 
+        dodajGumb("7",pisanje);
+        dodajGumb("8",pisanje); 
+        dodajGumb("9",pisanje);
+        dodajGumb("/",bin_naredba);
+        dodajGumb("(",pisanje);
+        dodajGumb(")",pisanje);
+        dodajGumb("D",brisanje);
+        
+        
+        dodajGumb("4",pisanje);
+        dodajGumb("5",pisanje); 
+        dodajGumb("6",pisanje);
+        dodajGumb("*",bin_naredba);
+        dodajGumb("π",pisanje); 
+        dodajGumb("e",pisanje); 
         dodajGumb("C",brisanje);
         
-        dodajGumb("x",pisanje); dodajGumb("1/x",unar_naredba);
-        dodajGumb("|x|",unar_naredba); dodajGumb("(",pisanje);
-        dodajGumb(")",pisanje); dodajGumb("D",brisanje); 
+        dodajGumb("1",pisanje);
+        dodajGumb("2",pisanje); 
+        dodajGumb("3",pisanje);
+        dodajGumb("-",bin_naredba); 
+        dodajGumb("x",pisanje);
+        dodajGumb("x^y",bin_naredba);
+        dodajGumb("x^(1/y)",bin_naredba);
+       
         //obrisan gumb CE jer nema smisla u ovom kontekstu/dizajnu kalkulatora (ja mislim, ak ti mislis da ima
         //lako ga vratim - sad sam ga zamijenila s gumbom eval pomocu kojeg cemo napravit evaluation funckije
         //zapravo ce funkcionirat isto kao "=" u obicnom kalkulatoru
-        
         /**
          * ovaj komentar iznad napisala
          * @Ivana
          */
+        
+        dodajGumb("0",pisanje);
+        dodajGumb(".",pisanje);
         dodajGumb("eval",bin_naredba);
-        
-        dodajGumb("x^y",bin_naredba); dodajGumb("7",pisanje);
-        dodajGumb("8",pisanje); dodajGumb("9",pisanje);
-        dodajGumb("/",bin_naredba); dodajGumb("sin",unar_naredba); 
-        dodajGumb("arcsin",unar_naredba);
-        
-        dodajGumb("10^x",unar_naredba); dodajGumb("4",pisanje);
-        dodajGumb("5",pisanje); dodajGumb("6",pisanje);
-        dodajGumb("*",bin_naredba); dodajGumb("cos",unar_naredba); 
-        dodajGumb("arccos",unar_naredba);
-        
-        dodajGumb("logx",unar_naredba); dodajGumb("1",pisanje);
-        dodajGumb("2",pisanje); dodajGumb("3",pisanje);
-        dodajGumb("-",bin_naredba); dodajGumb("tg",unar_naredba); 
-        dodajGumb("arctg",unar_naredba);
-        //preimenovala sam gumb "=" u "draw"
-        /**
-         * ovaj komentar iznad napisala
-         * @Ivana
-         */
-        dodajGumb("lnx",unar_naredba); dodajGumb("0",pisanje);
-        dodajGumb(".",pisanje); dodajGumb("draw",bin_naredba);
-        dodajGumb("+",bin_naredba); dodajGumb("ctg",unar_naredba); 
-        dodajGumb("arcctg",unar_naredba);
+        dodajGumb("+",bin_naredba);
+        dodajGumb("derivative",bin_naredba); 
+        dodajGumb("?",bin_naredba);
+        dodajGumb("draw",bin_naredba);   
         
         unos.add(spremnik, BorderLayout.CENTER);
         prikaz.add(nacrtaj, BorderLayout.CENTER);
+        
         tab=new JTabbedPane();
         tab.add("Unos",unos);
         tab.add("Graf",prikaz);
@@ -171,22 +164,11 @@ public class GraphingGUI extends JPanel{
         public void actionPerformed(ActionEvent event){
             String unos=event.getActionCommand();
             if(start){
-                //ovo nam vise ne treba jer je dizajn drukciji nego kod standardnog kalkulatora,
-                //ne vidi se u svakom trenu samo jedna znamenka nego cijeli niz znakova
-                //ekran.setText("");
-                /**
-                * ovaj komentar iznad napisala
-                * @Ivana
-                */
                 textBox=ekran.getText();
-                //System.out.println("sad je start true i textbox= "+textBox);
                 start=false;
             }
             
-            //System.out.println("*unos="+unos+" ekran="+ekran.getText());
-            //updateanje ekrana kao prije:
             ekran.setText(ekran.getText()+unos);
-            //System.out.println("**unos="+unos+" ekran="+ekran.getText());
             
             if(unos.equals("π")){
                 String pi=Double.toString(Math.PI);
@@ -210,21 +192,6 @@ public class GraphingGUI extends JPanel{
                 
                 textBox=screen;
             }
-            
-            /*if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
-			if (textBox.length() > 0) {
-				textBox = textBox.substring(0, textBox.length() - 1);
-			}
-		} else if (Character.isLetterOrDigit(e.getKeyChar()) || e.getKeyChar() == '^' || e.getKeyChar() == '-' ||
-				e.getKeyChar() == '+' || e.getKeyChar() == '*' || e.getKeyChar() == '/' || e.getKeyChar() == '(' ||
-				e.getKeyChar() == ')' || e.getKeyChar() == '%' || e.getKeyChar() == ',' || e.getKeyChar() == '.') {
-			textBox += e.getKeyChar();
-		} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-			function = parser.parse(textBox);
-			if (function == null) {
-				textBox = "";
-			}
-		}*/
         }
     }
     private class AkcijaBrisanja implements ActionListener{
@@ -340,73 +307,157 @@ public class GraphingGUI extends JPanel{
                     String output = fja + "\n" + "f("+evaluateAt+")="+evaluatedFunction;
                     System.out.println("f("+evaluateAt+")="+evaluatedFunction);
                     JOptionPane.showMessageDialog(spremnik, output, "Rezultat evaluacije", JOptionPane.INFORMATION_MESSAGE);
-                    /**
-                     * rekao je da "omogućimo korištenje vrijednosti funkcije u nekim zadanim izrazima, ali
-                     * ne kužim baš kak to misli, u svakom slučaju, evaluirana vrijednost je tu spremljena u evaluatedFunction
-                     * pa ak ti kužiš šta misli javi
-                     * @Ivana
-                     */
+                case "derivative":
+                    String ulaz=ekran.getText();
+                    String izlaz=deriviraj(ulaz);
+                    ekran.setText(izlaz);
+                    if(izlaz.charAt(izlaz.length()-1)=='+' || izlaz.charAt(izlaz.length()-1)=='-'){
+                        ekran.setText(izlaz.substring(0,izlaz.length()-1));
+                    }else{
+                        ekran.setText(izlaz);
+                    }
             }
             return "";
         }
-    }
-    
-    private class AkcijaUnarneOperacije implements ActionListener{
-        //double unaryResult=rezultat;
-        @Override
-        public void actionPerformed(ActionEvent event) {
-            String op=event.getActionCommand();
-            String operacija=operation(op);
-            zadnjaUnarnaOperacija=operacija;
-            screen+=zadnjaUnarnaOperacija;
-            ekran.setText(screen);
+        
+        /**
+        *@author Dorotea
+        * Sljedeća funkcija će po konstrukciji biti slična funkciji doOrderOfOperations iz EXPressionParser-a
+        * Vraćat će String koji će sadržavati derivaciju unesenog polinoma
+        **/
+        public String deriviraj(String ulaz){
+            String rezultat="";
+            
+            int location=scanFromRight(ulaz,'+');
+            if(location!=-1){
+                String left=ulaz.substring(0,location);
+                String right=ulaz.substring(location+1,ulaz.length());
+                rezultat+=deriviraj(left)+"+"+Der(right);
+            }else{
+                location=scanFromRight(ulaz,'-');
+                if(location!=-1){
+                    if(location==0){
+                        String right=ulaz.substring(location+1,ulaz.length());
+                        rezultat+="-"+Der(right);
+                    }else{
+                        String left=ulaz.substring(0,location);
+                        String right=ulaz.substring(location+1,ulaz.length());
+                        if(left.isEmpty()){
+                            rezultat+=Der(right);
+                        }
+                        else{
+                            rezultat+=deriviraj(left)+"-"+Der(right);
+                        }
+                    } 
+                }else{
+                    rezultat+=Der(ulaz);
+                }
+            }
+            return rezultat;
         }
         
-        public String operation(String operacija){
-            switch(operacija){
-                case "sin":
-                    return "sin(";
-                case "arcsin":
-                    return "asin(";
-                case "cos":
-                    return "cos(";
-                case "arccos":
-                    return "acos(";
-                case "tg":
-                    return "tan(";
-                case "arctg":
-                    return "atan(";
-                case "ctg":
-                    return "cot(";
-                case "arcctg":
-                    return "arcctan(";
-                case "1/x":
-                    return "1/(";
-                case "lnx":
-                    return "ln(";
-                case "logx":
-                    return "log(";
-                case "10^x":
-                    return "10^(";
-                case "e^x":
-                    return "e^(";
-                case "|x|":
-                    return "abs(";
-                case "⌈x⌉":
-                    return "ceil(";
-                case "⌊x⌋":
-                    return "floor(";
-                case "√x":
-                    return "sqrt(";  
-                default:
-                    return "";
+        public int scanFromRight(String ulaz,char token){
+            int openParentheses=0;
+            for(int i=ulaz.length()-1; i>=0; i--){
+                if(ulaz.charAt(i)==')'){
+                       openParentheses++;
+                }else if(ulaz.charAt(i)=='('){
+                    openParentheses--;
+                }else if(ulaz.charAt(i)==token && openParentheses==0){
+                    return i;
+                }
             }
+            return -1;
         }
+        
+        public String Der(String expr){
+            String res="";
+            double coef=0, exp=0;
+            //prvo odredujem koliko iznosi koeficijent
+            int location=0;
+            if(expr.contains("*")){//dakle sadrzi i *x
+                location=expr.indexOf("*");
+                coef=Double.parseDouble(expr.substring(0, location));
+            }else if(expr.contains("x") && !(expr.contains("*"))){//ako je koeficijent jednak 1
+                coef=1;
+            }else if(!(expr.contains("x") && !(expr.contains("*")))){//ako je jednak konstanti
+                coef=Double.parseDouble(expr);
+                return res; //derivacija konstante je 0, pa ostavljam da string ostaje prazan
+            }
+
+            int parenthesis=0, jednako=0;//provjeravam ima li jednak broj otvorenih i zatvorenih zagrada
+            if(expr.contains("(") || expr.contains(")"))
+                parenthesis=1;
+
+            for(int i=0; i<expr.length(); i++){
+                if(i==')'){
+                    jednako++;
+                }else if(i=='('){
+                    jednako--;
+                }     
+            }
+
+            if(jednako!=0){
+                System.out.println("Niste zatvorili sve zagrade!");
+            }
+
+            /**
+            *@author Dorotea
+            * Ako je eksponent negativan ili je zapisan u obliku kvocjenta onda mora sadrzavati zagrade
+            * Ako je eksponent negativan, onda se mora nalaziti unutar zagrada
+            **/
+            if(parenthesis==1){
+                int start=expr.indexOf("(");
+                int finish=expr.indexOf(")");
+                
+                int q=-1;
+                if(expr.substring(start+1, finish).contains(("/"))){
+                    q=expr.substring(start+1, finish).indexOf("/");
+                }
+                
+                int negative=0;//provjera je li eksponent negativan
+                if(expr.substring(start+1, finish).contains(("-")))
+                    negative=1;
+                
+                if(q!=-1){
+                    double brojnik=Double.parseDouble(expr.substring(start+1,q));
+                    double nazivnik=Double.parseDouble(expr.substring(q+1,finish));
+                    if(negative==1){
+                        exp=-(brojnik/nazivnik);
+                    }else if(negative==0){
+                        exp=brojnik/nazivnik;
+                    }
+                }else{
+                    if(negative==1){
+                        exp=-(Double.parseDouble(expr.substring(start+1, finish)));
+                    }else{
+                        exp=Double.parseDouble(expr.substring(start+1, finish));
+                    }
+                }
+            }else{
+                if(expr.contains("^")){//x^nesto
+                    int p=expr.indexOf("^");
+                    exp=Double.parseDouble(expr.substring(p+1,expr.length()));
+                }else{//samo je napisann x, dakle nema potenciju, pa stavljamo da je eksponent jednak 1
+                    exp=1;
+                }
+            }
+
+            //sada kada su odredeni koficijent i eksponent mozemo 'derivirati'
+            res+=Double.toString(coef*exp);
+            if(exp==1){
+                return res;
+            }else{
+                double novi=exp-1;
+                res+="*x^"+Double.toString(novi);
+            }
+
+            return res;
+        }
+
+        
     }
-    /**
-     * pokušaj integracije grafa i unosa
-     * @Ivana
-     */
+    
     public class IntegratedDrawFunctionScreen extends JPanel implements MouseWheelListener, /*KeyListener,*/ Runnable{
         public static final int WIDTH = 800;
 	public static final int HEIGHT = 400;
@@ -554,35 +605,7 @@ public class GraphingGUI extends JPanel{
 			}
 		}
 	}
-/*
-	@Override
-	public void keyTyped(KeyEvent e) {
-		
-	}
 
-	@Override
-	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
-			if (textBox.length() > 0) {
-				textBox = textBox.substring(0, textBox.length() - 1);
-			}
-		} else if (Character.isLetterOrDigit(e.getKeyChar()) || e.getKeyChar() == '^' || e.getKeyChar() == '-' ||
-				e.getKeyChar() == '+' || e.getKeyChar() == '*' || e.getKeyChar() == '/' || e.getKeyChar() == '(' ||
-				e.getKeyChar() == ')' || e.getKeyChar() == '%' || e.getKeyChar() == ',' || e.getKeyChar() == '.') {
-			textBox += e.getKeyChar();
-		} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-			function = parser.parse(textBox);
-			if (function == null) {
-				textBox = "";
-			}
-		}
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		
-	}
-	*/
 	private double bottom() {
 		return windowY - halfWindowHeight();
 	}
