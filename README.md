@@ -11,6 +11,11 @@ Budući da sam dosta toga izmijenila, napravi si novi folder negdje i u njega iz
 
 # Nove novosti :)
 
+# Što još treba napraviti?
+-testovi/Jenkins
+-korištenje vrijednosti funkcije u nekim zadanim izrazima
+-množenje, zbrajanje i oduzimanje polinoma i njihovo spremanje u memoriju kalkulatora
+
 # Outdated novosti (tu sam iskopirala ovo što nam više nije bitno t.d. i ti i ja lakše vidimo prave novosti)
 Progress:
 - Standardni kalkulator sad radi sve operacije vidljive na tipkama. 
