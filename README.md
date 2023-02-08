@@ -10,11 +10,18 @@ NAPOMENA:
 Budući da sam dosta toga izmijenila, napravi si novi folder negdje i u njega iznova kloniraj repozitorij kao što sam ti pokazala neki dan - mislim da će ti se na taj način možda biti lakše snaći.
 
 # Nove novosti :)
+- implementirano množenje, zbrajanje i oduzimanje polinoma 
+- pri deriviranju se uvijek derivira prvi polinom
 
 # Što još treba napraviti?
 -testovi/Jenkins
 -korištenje vrijednosti funkcije u nekim zadanim izrazima
--množenje, zbrajanje i oduzimanje polinoma i njihovo spremanje u memoriju kalkulatora
+-spremanje polinoma u memoriju kalkulatora i njihovo dohvaćanje iz memorije
+-treba maknuti gumbe iz polinomnog kalkulatora 
+-treba srediti kod (napraviti sučelja, napraviti funkcije za dijelove koda koji se ponavljaju, anotirati sve da bi mogli imati javadoc)
+-pohvatat skroz kod za grapher
+-na kraju proći detaljno sve zahtjeve za proejkt koje je prof stavio na web i provjeriti jesmo li ispunile obavezne zahtjeve i ako jesmo možemo li nešto bolje napraviti t.d. dobijemo dodatne bodove
+*optional: stvari za dizajn
 
 # Outdated novosti (tu sam iskopirala ovo što nam više nije bitno t.d. i ti i ja lakše vidimo prave novosti)
 Progress:
