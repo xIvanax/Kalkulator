@@ -31,7 +31,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import static javax.swing.JSplitPane.LEFT;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
@@ -55,8 +54,11 @@ public class PolynomialGUI extends JPanel{
     public JLabel jLabel1;
     public JLabel jLabel2;
     public JLabel jLabel3;
-    //vrijednost 0 je zbrajanje, 1 oduzimanje, 2 množenje
+    //polyOp vrijednost 0 je zbrajanje, 1 oduzimanje, 2 množenje
     private int polyOp;
+    //tu cu spremati clanove polinoma
+    private ArrayList<String> clanovi = new ArrayList<>();
+    
     
     private Function function;
     private ExpressionParser parser;
@@ -283,15 +285,70 @@ public class PolynomialGUI extends JPanel{
              * nisam htjela dirat ovo sa startom jer nisam više sigurna jel nam to uopće treba ovdje 
              * (to je naslijeđeno iz standardnog kalkulatora)
              * ovaj kod što slijedi odnosi se na obradu odabrane operacije zbrajanja, oduzimanja ili množenej polinoma
-             * @Ivana
+             * @author Ivana
              */
             if("poly op".equals(operacija)){
+                ArrayList<String> clanovi1 = new ArrayList<>();
+                ArrayList<String> clanovi2 = new ArrayList<>();
+                    
+                clanovi.clear();
+                clanovi1 = dohvati(ekran1.getText());
+                //sam kopiram u pomocnu listu jer se inače prebrišu
+                ArrayList<String> clanoviCopy = new ArrayList<>();
+                for(String i:clanovi1)
+                    clanoviCopy.add(i);
+                    
+                clanovi.clear();
+                clanovi2 = dohvati(ekran2.getText());
+                
                 if(polyOp==0){
-                    //zbrajanje
+                    ArrayList<String> clanoviRes = polyAdd(clanoviCopy, clanovi2);
+                    String res="";
+                    if(clanoviRes.isEmpty()==false)
+                        res+=clanoviRes.get(0);
+                    clanoviRes.remove(0);
+                    for(String clan:clanoviRes)
+                        if(clan.charAt(0)!='-')
+                            res+="+"+clan;
+                        else
+                            res+=clan;
+                    System.out.println(res);
+                    display.setText(res);
                 }else if(polyOp==1){
-                    //oduzimanje
-                }else {
-                    //množenje
+                    ArrayList<String> reverse = new ArrayList<>();
+                    for(String i:clanovi2){
+                        if(i.length()>0)
+                            if(i.charAt(0)=='-')
+                                reverse.add(i.substring(1));
+                            else
+                                reverse.add("-"+i);
+                    }
+                    
+                    ArrayList<String> clanoviRes = polyAdd(clanoviCopy, reverse);
+                    String res="";
+                    if(clanoviRes.isEmpty()==false)
+                        res+=clanoviRes.get(0);
+                    clanoviRes.remove(0);
+                    for(String clan:clanoviRes)
+                        if(clan.charAt(0)!='-')
+                            res+="+"+clan;
+                        else
+                            res+=clan;
+                    System.out.println(res);
+                    display.setText(res);
+                }else{
+                    ArrayList<String> clanoviRes = polyMulti(clanoviCopy, clanovi2);
+                    String res="";
+                    if(clanoviRes.isEmpty()==false)
+                        res+=clanoviRes.get(0);
+                    clanoviRes.remove(0);
+                    for(String clan:clanoviRes)
+                        if(clan.charAt(0)!='-')
+                            res+="+"+clan;
+                        else
+                            res+=clan;
+                    System.out.println(res);
+                    display.setText(res);
                 }
             }else
             if(start){
@@ -381,50 +438,270 @@ public class PolynomialGUI extends JPanel{
                     polyOp = JOptionPane.showOptionDialog(null, "Odaberite operaciju koju želite izvršiti nad unesenim polinomima:",
                 "Opcije",
                 JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-                    //System.out.println(x);            
+                    //System.out.println(x);
+                    return "poly op";
             }
             return "";
         }
         
         /**
          * @Ivana
-         * @param ulaz1 prvi polinom
-         * @param ulaz2 drugi polinom
-         * @return rezultat zbrajanja dva polinoma
+         * funkcija za dohvacanje clanova u polinomu
+         * @param ulaz polinom
+         * @return lista clanova polinoma
          */
-        public String polyAdd(String ulaz1, String ulaz2){
-            String rezultat="";
-            //pojedini članovi prvog tj. drugog polinoma
-            ArrayList<String> prvi = new ArrayList<>();
-            ArrayList<String> drugi = new ArrayList<>();
-            
-            int location=scanFromRight(ulaz1,'+');
-            if(location!=-1){
-                //String left=ulaz1.substring(0,location);
-                prvi.add(ulaz1.substring(location+1,ulaz1.length()));
-                System.out.println(ulaz1.substring(location+1,ulaz1.length()));
-                //rezultat+=deriviraj(left)+"+"+Der(right);
+        public ArrayList<String> dohvati(String ulaz){
+            int locationPlus=scanFromRight(ulaz,'+');
+            int locationMinus=scanFromRight(ulaz,'-');
+            if(locationPlus>locationMinus && locationPlus!=-1){
+                String left=ulaz.substring(0,locationPlus);
+                String right=ulaz.substring(locationPlus+1,ulaz.length());
+                clanovi.add(right);
+                dohvati(left);
             }else{
-                location=scanFromRight(ulaz1,'-');
-                if(location!=-1){
-                   /* if(location==0){
-                        String right=ulaz.substring(location+1,ulaz.length());
-                        rezultat+="-"+Der(right);
+                if(locationMinus!=-1){
+                    if(locationMinus==0){
+                        String right=ulaz.substring(locationMinus+1,ulaz.length());
+                        clanovi.add("-"+right);
                     }else{
-                        String left=ulaz.substring(0,location);
-                        String right=ulaz.substring(location+1,ulaz.length());
+                        String left=ulaz.substring(0,locationMinus);
+                        String right=ulaz.substring(locationMinus+1,ulaz.length());
+                        
                         if(left.isEmpty()){
-                            rezultat+=Der(right);
+                            clanovi.add(right);
                         }
                         else{
-                            rezultat+=deriviraj(left)+"-"+Der(right);
+                            clanovi.add("-"+right);
+                            dohvati(left);
                         }
-                    } */
+                    } 
                 }else{
-                    rezultat+=Der(ulaz1);
+                    clanovi.add(ulaz);
                 }
             }
-            return rezultat;
+            return clanovi;
+        }
+        /**
+         * 
+         * funkcija vraca informacije o koeficijentu, eksponentu i je li eksponent pozitivan (1) ili je negativan/razlomak (0)
+         * @param expr1 
+         * @return polje double: na indeksu 0 je koeficijent, 1 je eksponent, 2 je li eksponent pozitivan
+         * @author Ivana
+         */
+        public double[] coefAndExp(String expr1){
+            double[] ret = new double[3];
+            double coef=0, exp=0, konstanta=0;
+            //prvo odredujem koliko iznosi koeficijent
+            if(expr1.contains("*")){//dakle sadrzi i *x
+                ret[0]=Double.parseDouble(expr1.split("\\*")[0]);
+            }else if(expr1.contains("x") && !(expr1.contains("*"))){//ako je koeficijent jednak 1
+                ret[0]=1;
+            }else if(!(expr1.contains("x") && !(expr1.contains("*")))){//ako je jednak konstanti
+                ret[0]=Double.parseDouble(expr1);
+                konstanta=1;
+            }
+            if(konstanta==0){//ako nije konstanta zanima me koji je eksponent
+                int jednako=-1;//provjeravam ima li jednak broj otvorenih i zatvorenih zagrada
+                if(expr1.contains("(") && expr1.contains(")"))
+                    jednako=1;
+                else if(!expr1.contains("(") && !expr1.contains(")"))
+                    jednako = 0;
+                if(jednako==-1){
+                    System.out.println("Niste zatvorili zagradu!");
+                }
+                //slucaj kad imamo zagrade
+                if(jednako==1){
+                    ret[2]=0;
+                    int start=expr1.indexOf("(");
+                    int finish=expr1.indexOf(")");
+
+                    String izmeduZagrada = expr1.substring(start+1, finish);
+                    
+                    int q=-1;
+                    if(expr1.substring(start+1, finish).contains(("/"))){
+                        q=expr1.substring(start+1, finish).indexOf("/");
+                    }
+
+                    int negative=0;//provjera je li eksponent negativan
+                    if(expr1.substring(start+1, finish).contains(("-")))
+                        negative=1;
+
+                        //slucaj kad je eksponent razlomak:
+                    if(q!=-1){
+                        double brojnik=Double.parseDouble(izmeduZagrada.split("/")[0]);
+                        double nazivnik=Double.parseDouble(izmeduZagrada.split("/")[1]);
+
+                        if(negative==1){
+                            exp=-(brojnik/nazivnik);
+                        }else if(negative==0){
+                            exp=brojnik/nazivnik;
+                        }
+                    }else{//slucaj kad eksponent nije razlomak:
+                        if(negative==1){
+                            exp=-(Double.parseDouble(expr1.substring(start+1, finish)));
+                        }else{
+                            exp=Double.parseDouble(expr1.substring(start+1, finish));
+                        }
+                    }
+                }else{//slucaj kad nemamo zagrade u eskponentu
+                    ret[2]=1;
+                    if(expr1.contains("^")){//x^nesto
+                        exp=Double.parseDouble(expr1.split("\\^")[1]);
+                    }else{//samo je napisan x, dakle nema potenciju, pa stavljamo da je eksponent jednak 1
+                        exp=1;
+                    }
+                }
+            }
+            ret[1]=exp;
+            return ret;
+        }
+        /**
+         * fja kao argumente uzima clanove dva polinoma i zbraja te polinome
+         * @param poly1 clanovi prvog polinoma
+         * @param poly2 clanovi drugog polinoma
+         * @return rezultat zbrajanja poly1 i poly2 u obliku liste clanova
+         * @author Ivana
+         */
+        public ArrayList<String> polyAdd(ArrayList<String> poly1, ArrayList<String> poly2){
+            String res="";//tu cemo spremiti rezultatntni polinom
+            ArrayList<String> clanoviRes = new ArrayList<String>(); //tu cemo spremat clanove reuzltantnog polinoma koje cemo onda prepisati u res
+            double coef=0, exp=0, konstanta=0;
+            double coef2=0, exp2=0, konstanta2=0;
+            int flag=0; //bit ce 1 ako nadem podudaranje nekih koeficijenata
+            int eksponentJeRazlomakIliNegativan=0;
+            
+            //System.out.println("clanovi poly1: "+poly1);
+            //System.out.println("clanovi poly2: "+poly2);
+            for(String expr1:poly1){
+                //određujem koeficijent i eksponent za clan expr1 polinoma poly1
+                double info[] = new double[3];
+                info = coefAndExp(expr1);
+                coef=info[0];
+                exp=info[1];
+                //sad istu stvar radim za drugi polinom
+                for(String expr2:poly2){
+                    double info2[] = new double[3];
+                    info2 = coefAndExp(expr2);
+                    coef2=info2[0];
+                    exp2=info2[1];
+                //sad znam koeficijente i eksponente svakog clana polinoma
+                //provjeravam imamo li podudaranje eksponenata i ako imamo onda zbrajam eksponente i dodajem u novi polinom
+                    if(exp==exp2){
+                        flag=1; //pronasla sam podudaranje eksponenta exp iz prvog polinoma s nekim iz drugog
+                        double newCoef=coef+coef2;
+                        
+                        if(eksponentJeRazlomakIliNegativan==1){
+                            clanoviRes.add(Double.toString(newCoef)+"*x^("+exp+")");
+                            eksponentJeRazlomakIliNegativan=0;
+                        }
+                        else{
+                            clanoviRes.add(Double.toString(newCoef)+"*x^"+exp+"");
+                        }
+                    }
+                }
+                    if(flag==0){//nisam nasla nijedno poklapanje pa ubacujem clan prvog polinoma u rezultat takav kakav je
+                        //na kraju jos moram provjeriti trebam li ubaciti neke clanove iz drugog polinoma u rezultat
+                        if(exp==0)
+                            clanoviRes.add(Double.toString(coef));
+                        else if(coef!=1)
+                                if(info[2]==1)
+                                    clanoviRes.add(coef+"*x^"+exp);
+                                else
+                                    clanoviRes.add(coef+"*x^("+exp+")");
+                            else
+                                if(info[2]==1)
+                                    clanoviRes.add("x^"+exp);
+                                else
+                                    clanoviRes.add("x^("+exp+")");
+                    }else
+                        flag=0;
+            }
+            //sad opet sve to isto radim sam sa clanoviRes umjesto poly1
+            flag=0; 
+            konstanta=0; konstanta2=0;
+            for(String expr1:poly2){
+                double info[] = new double[3];
+                info = coefAndExp(expr1);
+                coef=info[0];
+                exp=info[1];
+                for(String expr2:clanoviRes){
+                    double info2[] = new double[3];
+                    info2 = coefAndExp(expr2);
+                    exp2=info2[1];
+                    if(exp==exp2){
+                        flag=1; 
+                    }
+                }
+                if(flag==0){
+                if(exp==0)
+                    clanoviRes.add(Double.toString(coef));
+                    else if(coef!=1)
+                            if(info[2]==1)
+                                clanoviRes.add(coef+"*x^"+exp);
+                            else
+                                clanoviRes.add(coef+"*x^("+exp+")");
+                        else
+                            if(info[2]==1)
+                                clanoviRes.add("x^"+exp);
+                            else
+                                clanoviRes.add("x^("+exp+")");
+                }else
+                    flag=0;
+            }
+            
+            return clanoviRes;
+        }
+        /**
+         * funkcija uzima dva polinoma reprezentirana preko svoje liste clanova i vraca njihov umnozak u obliku liste clanova
+         * @param poly1 clanovi prvog polinoma
+         * @param poly2 clanovi drugog polinoma
+         * @return rezultat mnozenja u obliku liste clanova
+         * @author Ivana
+         */
+        public ArrayList<String> polyMulti(ArrayList<String> poly1, ArrayList<String> poly2){
+            ArrayList<String> resClanovi = new ArrayList<>();
+            ArrayList<ArrayList<String>> svi = new ArrayList<>();
+            double coef, exp, coef2, exp2;
+            for(String expr1:poly1){
+                double info[] = new double[3];
+                info = coefAndExp(expr1);
+                coef=info[0];
+                exp=info[1];
+                ArrayList<String> help = new ArrayList<>();
+                for(String expr2:poly2){
+                    double info2[] = new double[3];
+                    info2 = coefAndExp(expr2);
+                    coef2=info2[0];
+                    exp2=info2[1];
+                    String str;
+                    //System.out.println("mnozim "+expr1+" i "+expr2);
+                    //System.out.println("koef i exp od expr1 "+coef+" i "+exp);
+                    //System.out.println("koef i exp od expr2 "+coef2+" i "+exp2);
+                    if(exp*exp2<0)
+                        if((coef*coef2)!=1.0)
+                            str = (coef*coef2) + "*x^("+(exp+exp2)+")";
+                        else
+                            str = "x^("+(exp+exp2)+")";
+                    else
+                        if((coef*coef2)!=1.0)
+                            str = (coef*coef2) + "*x^"+(exp+exp2);
+                        else
+                            str = "x^("+(exp+exp2)+")";
+                    //System.out.println("dobivam "+str);
+                    help.add(str);
+                }
+                svi.add(help);
+            }
+            for(String i:svi.get(0))
+                resClanovi.add(i);
+            
+            //System.out.println("resClanovi="+resClanovi);
+            svi.remove(0);
+            for(ArrayList<String> i:svi){
+                resClanovi=polyAdd(i,resClanovi);
+                //System.out.println("resClanovi="+resClanovi);
+            }
+            return resClanovi;
         }
         /**
         *@author Dorotea
