@@ -1,5 +1,4 @@
-# Kalkulator
-original
+# Upute
 Upute za pocetak (ono sto sam uspjela pohvatati): 
 1) skinuti GIT SCM https://git-scm.com/downloads
 2) pratiti upute ovdje https://docs.github.com/en/get-started/using-git/about-git za "Example: Contribute to an existing repository" - tu se radi osobni branch my-branch, moze se i drukcije zvati npr. Dorote-branch jer se moj zove Ivana-branch
