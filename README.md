@@ -10,6 +10,7 @@ NAPOMENA:
 Budući da sam dosta toga izmijenila, napravi si novi folder negdje i u njega iznova kloniraj repozitorij kao što sam ti pokazala neki dan - mislim da će ti se na taj način možda biti lakše snaći.
 
 # Nove novosti :)
+- implementirano deriviranje polinoma
 - implementirano množenje, zbrajanje i oduzimanje polinoma 
 - pri deriviranju se uvijek derivira prvi polinom
 
