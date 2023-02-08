@@ -10,6 +10,7 @@ import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -27,8 +28,10 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import static javax.swing.JSplitPane.LEFT;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
@@ -42,7 +45,19 @@ public class PolynomialGUI extends JPanel{
     private JPanel prikaz;
     private String textBox;
     private IntegratedDrawFunctionScreen nacrtaj;
-    public JTextField ekran;
+    /**
+     * sad imamo tri ekrana (jedan za prvi polinom, jedan za drugi polinom i jedan za display rezultata)
+     * @Ivana
+     * */
+    public JTextField ekran1;
+    public JTextField ekran2;
+    public JTextField display;
+    public JLabel jLabel1;
+    public JLabel jLabel2;
+    public JLabel jLabel3;
+    //vrijednost 0 je zbrajanje, 1 oduzimanje, 2 množenje
+    private int polyOp;
+    
     private Function function;
     private ExpressionParser parser;
     JTabbedPane tab;
@@ -62,20 +77,46 @@ public class PolynomialGUI extends JPanel{
         
         //omogucava resize
         this.setLayout(new BorderLayout());
-        unos.setLayout(new BorderLayout());
+        unos.setLayout(new FlowLayout(FlowLayout.LEFT));
         prikaz.setLayout(new BorderLayout());
         
         //slicno kao u CalCulatorGUI implementiramo unos funkcije koju crtamo
         //napravljene su neke promjene, npr. nema vise %, te su dodane nove mogucnosti
-        ekran = new JTextField();
-        ekran.setText("");
-        ekran.setSize(800, 100);
-        ekran.setPreferredSize(new Dimension(800,100));
-        ekran.setEnabled(true);
-        ekran.setFont(ekran.getFont().deriveFont(Font.BOLD, 28f));
+        ekran1 = new JTextField();
+        ekran1.setText("");
+        ekran1.setSize(770, 50);
+        ekran1.setPreferredSize(new Dimension(770,50));
+        ekran1.setEnabled(true);
+        ekran1.setFont(ekran1.getFont().deriveFont(Font.BOLD, 28f));
         
-        unos.add(ekran, BorderLayout.NORTH);
+        ekran2 = new JTextField();
+        ekran2.setText("");
+        ekran2.setSize(770, 50);
+        ekran2.setPreferredSize(new Dimension(770,50));
+        ekran2.setEnabled(true);
+        ekran2.setFont(ekran2.getFont().deriveFont(Font.BOLD, 28f));
+        
+        display = new JTextField();
+        display.setText("");
+        display.setSize(770, 50);
+        display.setPreferredSize(new Dimension(770,50));
+        display.setEnabled(true);
+        display.setFont(display.getFont().deriveFont(Font.BOLD, 28f));
+        
+        jLabel1=new JLabel("Prvi polinom:");
+        jLabel2=new JLabel("Drugi polinom:");
+        jLabel3=new JLabel("Rezultat:");
+        
+        unos.add(jLabel1);
+        unos.add(ekran1);
+        unos.add(jLabel2);
+        unos.add(ekran2);
+        unos.add(jLabel3);
+        unos.add(display);
+        
         spremnik=new JPanel();
+        spremnik.setSize(770, 170);
+        spremnik.setPreferredSize(new Dimension(770,170));
         /**
          * ja sam dodala tu gumbe za spremanje polinoma, deriviranje i potenciranje sam da od nekud krenem,
          * vidim da imamo zaseban 
@@ -124,10 +165,14 @@ public class PolynomialGUI extends JPanel{
         dodajGumb("eval",bin_naredba);
         dodajGumb("+",bin_naredba);
         dodajGumb("derivative",bin_naredba); 
-        dodajGumb("?",bin_naredba);
+        /**
+         * pritiskom na gumb "poly op" se zbrajaju, oduzimaju ili množe polinomi
+         */
+        dodajGumb("poly op",bin_naredba);
         dodajGumb("draw",bin_naredba);   
         
-        unos.add(spremnik, BorderLayout.CENTER);
+        
+        unos.add(spremnik);
         prikaz.add(nacrtaj, BorderLayout.CENTER);
         
         tab=new JTabbedPane();
@@ -150,12 +195,12 @@ public class PolynomialGUI extends JPanel{
     }
     /**
      * @Ivana
-     * @return što je trenutno na ekranu
+     * @return što je trenutno na ekran1u
      */
     public String readScreen(){
-        if(this.ekran==null)
+        if(this.ekran1==null)
             return "";
-        return ekran.getText();
+        return ekran1.getText();
     }
     
     private class AkcijaPisanja implements ActionListener{
@@ -163,21 +208,21 @@ public class PolynomialGUI extends JPanel{
         public void actionPerformed(ActionEvent event){
             String unos=event.getActionCommand();
             if(start){
-                textBox=ekran.getText();
+                textBox=ekran1.getText();
                 start=false;
             }
             
-            ekran.setText(ekran.getText()+unos);
+            ekran1.setText(ekran1.getText()+unos);
             
             if(unos.equals("π")){
                 String pi=Double.toString(Math.PI);
                 screen+=pi;
-                ekran.setText(screen);
+                ekran1.setText(screen);
                 textBox=screen;
             }else if(unos.equals("e")){
                 String const_e=Double.toString(Math.E);
                 screen+=const_e;
-                ekran.setText(screen);
+                ekran1.setText(screen);
                 textBox=screen;
             }else if(unos.equals("=")){
                 function=parser.parse(textBox);
@@ -187,7 +232,7 @@ public class PolynomialGUI extends JPanel{
                 screen="";
             }else{
                 screen+=unos;
-                ekran.setText(screen);
+                ekran1.setText(screen);
                 
                 textBox=screen;
             }
@@ -200,16 +245,16 @@ public class PolynomialGUI extends JPanel{
             switch (unos) {
                 case "D":
                     //brise se samo zadnji znak
-                    String str = ekran.getText();
+                    String str = ekran1.getText();
                     //nema unosa pa nemamo što brisati:
                     if("".equals(str))
                         break;
-                    //na ekran stavljam sadrzaj ekrana bez zadnjeg znaka i updateam "screen":
+                    //na ekran1 stavljam sadrzaj ekran1a bez zadnjeg znaka i updateam "screen":
                     if(str.length()>1){
-                        ekran.setText(str.substring(0, str.length()-1));
-                        screen=ekran.getText();
+                        ekran1.setText(str.substring(0, str.length()-1));
+                        screen=ekran1.getText();
                     }else{
-                        ekran.setText("");
+                        ekran1.setText("");
                         screen="";
                     }
                     //System.out.println("Nakon pritiske gumba D screen="+screen);
@@ -220,7 +265,7 @@ public class PolynomialGUI extends JPanel{
                     //rezultat=0.0;
                     zadnjaBinarnaOperacija="=";
                     screen="";
-                    ekran.setText("");
+                    ekran1.setText("");
                     break;
                 default:
                     break;
@@ -233,10 +278,26 @@ public class PolynomialGUI extends JPanel{
         public void actionPerformed(ActionEvent event) {
             String op=event.getActionCommand();
             String operacija=operation(op);
+            
+            /**
+             * nisam htjela dirat ovo sa startom jer nisam više sigurna jel nam to uopće treba ovdje 
+             * (to je naslijeđeno iz standardnog kalkulatora)
+             * ovaj kod što slijedi odnosi se na obradu odabrane operacije zbrajanja, oduzimanja ili množenej polinoma
+             * @Ivana
+             */
+            if("poly op".equals(operacija)){
+                if(polyOp==0){
+                    //zbrajanje
+                }else if(polyOp==1){
+                    //oduzimanje
+                }else {
+                    //množenje
+                }
+            }else
             if(start){
                 //System.out.println("Sad je start true");
-                if(operacija.equals("-") && "".equals(ekran.getText())){
-                    ekran.setText(operacija);
+                if(operacija.equals("-") && "".equals(ekran1.getText())){
+                    ekran1.setText(operacija);
                     start=false;
                     screen="-";
                 }else{
@@ -246,7 +307,7 @@ public class PolynomialGUI extends JPanel{
                     if(zadnjaBinarnaOperacija.equals("=")){
                         //System.out.println("flag 1");
                         
-                        textBox=ekran.getText();
+                        textBox=ekran1.getText();
                         function=parser.parse(textBox);
                             if(function==null){
                                 textBox="";
@@ -254,9 +315,9 @@ public class PolynomialGUI extends JPanel{
                         
                         screen="";
                     }else{
-                        ekran.setText(ekran.getText()+zadnjaBinarnaOperacija);
-                        //System.out.println("***ekran="+ekran.getText());
-                        screen=ekran.getText();
+                        ekran1.setText(ekran1.getText()+zadnjaBinarnaOperacija);
+                        //System.out.println("***ekran1="+ekran1.getText());
+                        screen=ekran1.getText();
                     }
                 }
             }else{
@@ -267,16 +328,16 @@ public class PolynomialGUI extends JPanel{
                 
                 if(zadnjaBinarnaOperacija.equals("=")){
                     //System.out.println("screen nakon pritiska ="+screen);
-                   textBox=ekran.getText();
+                   textBox=ekran1.getText();
                    function=parser.parse(textBox);
                         if(function==null){
                             textBox="";
                         }
                    screen="";
                 }else{
-                    ekran.setText(ekran.getText()+zadnjaBinarnaOperacija);
-                    //System.out.println("** **ekran="+ekran.getText());
-                    screen=ekran.getText();
+                    ekran1.setText(ekran1.getText()+zadnjaBinarnaOperacija);
+                    //System.out.println("** **ekran1="+ekran1.getText());
+                    screen=ekran1.getText();
                 }
             }
         }
@@ -301,24 +362,70 @@ public class PolynomialGUI extends JPanel{
                     evaluateAt = JOptionPane.showInputDialog(spremnik, "Unesite x:", "Evaluacija funkcije", JOptionPane.QUESTION_MESSAGE);
                     Function f=parser.parse(textBox);
                     evaluatedFunction=f.evaluateAt(Double.parseDouble(evaluateAt), 0.0, 0.0);
-                    String fja = "f(x) = " + ekran.getText();
+                    String fja = "f(x) = " + ekran1.getText();
                     String output = fja + "\n" + "f("+evaluateAt+")="+evaluatedFunction;
                     System.out.println("f("+evaluateAt+")="+evaluatedFunction);
                     JOptionPane.showMessageDialog(spremnik, output, "Rezultat evaluacije", JOptionPane.INFORMATION_MESSAGE);
                 case "derivative":
-                    String ulaz=ekran.getText();
+                    String ulaz=ekran1.getText();
                     String izlaz=deriviraj(ulaz);
-                    ekran.setText(izlaz);
+                    ekran1.setText(izlaz);
                     if(izlaz.length()>1)
                         if(izlaz.charAt(izlaz.length()-1)=='+' || izlaz.charAt(izlaz.length()-1)=='-'){
-                            ekran.setText(izlaz.substring(0,izlaz.length()-1));
+                            ekran1.setText(izlaz.substring(0,izlaz.length()-1));
                         }else{
-                            ekran.setText(izlaz);
+                            ekran1.setText(izlaz);
                         }
+                case "poly op":
+                    String[] options = {"zbrajanje polinoma", "oduzimanje polinoma", "množenje polinoma"};
+                    polyOp = JOptionPane.showOptionDialog(null, "Odaberite operaciju koju želite izvršiti nad unesenim polinomima:",
+                "Opcije",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+                    //System.out.println(x);            
             }
             return "";
         }
         
+        /**
+         * @Ivana
+         * @param ulaz1 prvi polinom
+         * @param ulaz2 drugi polinom
+         * @return rezultat zbrajanja dva polinoma
+         */
+        public String polyAdd(String ulaz1, String ulaz2){
+            String rezultat="";
+            //pojedini članovi prvog tj. drugog polinoma
+            ArrayList<String> prvi = new ArrayList<>();
+            ArrayList<String> drugi = new ArrayList<>();
+            
+            int location=scanFromRight(ulaz1,'+');
+            if(location!=-1){
+                //String left=ulaz1.substring(0,location);
+                prvi.add(ulaz1.substring(location+1,ulaz1.length()));
+                System.out.println(ulaz1.substring(location+1,ulaz1.length()));
+                //rezultat+=deriviraj(left)+"+"+Der(right);
+            }else{
+                location=scanFromRight(ulaz1,'-');
+                if(location!=-1){
+                   /* if(location==0){
+                        String right=ulaz.substring(location+1,ulaz.length());
+                        rezultat+="-"+Der(right);
+                    }else{
+                        String left=ulaz.substring(0,location);
+                        String right=ulaz.substring(location+1,ulaz.length());
+                        if(left.isEmpty()){
+                            rezultat+=Der(right);
+                        }
+                        else{
+                            rezultat+=deriviraj(left)+"-"+Der(right);
+                        }
+                    } */
+                }else{
+                    rezultat+=Der(ulaz1);
+                }
+            }
+            return rezultat;
+        }
         /**
         *@author Dorotea
         * Sljedeća funkcija će po konstrukciji biti slična funkciji doOrderOfOperations iz EXPressionParser-a
