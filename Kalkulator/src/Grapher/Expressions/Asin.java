@@ -18,9 +18,6 @@ public class Asin extends Unary{
     public double getValue() {
         double val=realValue(q);
         double v=Math.asin(val);
-        //pokusaj rjesavanja problema koji nastaje zbog definicije funkcije arcsin
-        //funkcija je definirana na segmentu od -1 do 1, ali crta se za sve realne brojeve
-        //ne znam kako to popraviti
         if(v>-1 && v<1){
             return v;
         }else{

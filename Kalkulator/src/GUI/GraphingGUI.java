@@ -31,7 +31,13 @@ import javax.swing.JTextField;
 
 import Grapher.Expressions.Function;
 import Grapher.Parser.ExpressionParser;
+import java.util.Vector;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -41,18 +47,22 @@ public class GraphingGUI extends JPanel{
     private JPanel spremnik;
     private JPanel unos;
     private JPanel prikaz;
+    private JPanel memorija;
     private String textBox;
     private IntegratedDrawFunctionScreen nacrtaj;
     public JTextField ekran;
+    private JTable tablica;
     private Function function;
     private ExpressionParser parser;
-    JTabbedPane tab;
+    private JTabbedPane tab;
+    private JScrollPane sp;
     
     private boolean start = true;
     private ArrayList<String> funkcija;
     private String zadnjaBinarnaOperacija="=";
     private String zadnjaUnarnaOperacija="";
     private String screen="";
+    private Vector<String> vec;
     //ovdje cu spremat rezultate evaluacije pa cemo smislit gdje cemo prikazat evaluaciju
     //sama evaluacija odvija se pritiskom na gumb "eval" koji se tretira kao binarna operacija, ali skroz je svejedno kak se tretira
     /**
@@ -66,11 +76,13 @@ public class GraphingGUI extends JPanel{
         nacrtaj=new IntegratedDrawFunctionScreen();
         unos=new JPanel();
         prikaz=new JPanel();
+        memorija=new JPanel();
         
         //omogucava resize
         this.setLayout(new BorderLayout());
         unos.setLayout(new BorderLayout());
         prikaz.setLayout(new BorderLayout());
+        memorija.setLayout(new BorderLayout());
         
         //slicno kao u CalCulatorGUI implementiramo unos funkcije koju crtamo
         //napravljene su neke promjene, npr. nema vise %, te su dodane nove mogucnosti
@@ -83,6 +95,14 @@ public class GraphingGUI extends JPanel{
         
         unos.add(ekran, BorderLayout.NORTH);
         spremnik=new JPanel();
+        
+        //lista u kojoj će se prikazivati sve funkcije unesene od trenutka pokretanja kalkulatora
+        //prikazuju se samo funkcije unesene u grafičkom dijelu kalkulatora
+        String[] zaglavlje={"Funkcija"};
+        DefaultTableModel tm=new DefaultTableModel(zaglavlje,0);
+        tablica=new JTable(tm);
+        tablica.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+        sp=new JScrollPane(tablica);
         /**
          * ja sam dodala tu gumbe za spremanje polinoma, deriviranje i potenciranje sam da od nekud krenem,
          * vidim da imamo zaseban 
@@ -141,6 +161,7 @@ public class GraphingGUI extends JPanel{
         tab=new JTabbedPane();
         tab.add("Unos",unos);
         tab.add("Graf",prikaz);
+        tab.add("Memorija",sp);
         /**
          * kaze da ovo nije sigurna operacija, ali ne znam gdje drugdje staviti (moglo
          * bi bit problema s testovima, a on je to stavio u main, al ja ne znam kak to stavit u main)
@@ -149,6 +170,12 @@ public class GraphingGUI extends JPanel{
         new Thread(nacrtaj).start();
         
         this.add(tab);
+        
+        tablica.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+            public void valueChanged(ListSelectionEvent event) {
+                ekran.setText(tablica.getValueAt(tablica.getSelectedRow(), 0).toString());
+            }
+        });
     }
     
     private void dodajGumb(String oznaka, ActionListener slusac){
@@ -207,7 +234,6 @@ public class GraphingGUI extends JPanel{
             }else{
                 screen+=unos;
                 ekran.setText(screen);
-                
                 textBox=screen;
             }
             
@@ -277,16 +303,17 @@ public class GraphingGUI extends JPanel{
                 }else{
                     zadnjaBinarnaOperacija=operacija;
                     
-                    //System.out.println("flag 3");
                     if(zadnjaBinarnaOperacija.equals("=")){
-                        //System.out.println("flag 1");
-                        
                         textBox=ekran.getText();
                         function=parser.parse(textBox);
                             if(function==null){
                                 textBox="";
                             }
                         
+                        vec=new Vector<>();
+                        vec.add(textBox);
+                        DefaultTableModel tm=(DefaultTableModel) tablica.getModel();
+                        tm.addRow(vec);
                         screen="";
                     }else{
                         ekran.setText(ekran.getText()+zadnjaBinarnaOperacija);
@@ -296,8 +323,6 @@ public class GraphingGUI extends JPanel{
                 }
             }else{
                 start=true;
-                //Sad je start false i promijenit ce se u true
-                //System.out.println("start je false i screen = "+screen);
                 zadnjaBinarnaOperacija=operacija;
                 
                 if(zadnjaBinarnaOperacija.equals("=")){
@@ -307,7 +332,11 @@ public class GraphingGUI extends JPanel{
                         if(function==null){
                             textBox="";
                         }
-                   screen="";
+                    vec=new Vector<>();
+                    vec.add(textBox);
+                    DefaultTableModel tm=(DefaultTableModel) tablica.getModel();
+                    tm.addRow(vec);
+                    screen="";
                 }else{
                     ekran.setText(ekran.getText()+zadnjaBinarnaOperacija);
                     //System.out.println("** **ekran="+ekran.getText());

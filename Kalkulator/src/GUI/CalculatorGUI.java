@@ -12,28 +12,47 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 
 /**
  * GUI made by hand
  * @author Ivana
  */
 public class CalculatorGUI extends JPanel{
-    private JPanel spremnik; 
+    private JPanel spremnik;
+    private JPanel memorija;
+    private JPanel unos;
+    private JTabbedPane tab;
+    private JScrollPane sp;
     private JTextField ekran;
     private boolean start = true;
     private double rezultat=0.0;
     private String zadnjaBinarnaOperacija="=";
     private String zadnjaUnarnaOperacija="";
+    private Vector<String> vec;
+    private JTable tablica;
     JButton jednako = new JButton();
     /**
      * @Ivana
      * u konstruktoru raspoređujemo gumbe i aktiviramo ActionListeners
      */
     public CalculatorGUI(){
-        setLayout(new BorderLayout());
+        unos=new JPanel();
+        memorija=new JPanel();
+        
+        this.setLayout(new BorderLayout());
+        unos.setLayout(new BorderLayout());
+        memorija.setLayout(new BorderLayout());
+        
         ekran = new JTextField();
         ekran.setSize(800, 100);
         ekran.setPreferredSize(new Dimension(800,100));
@@ -50,6 +69,13 @@ public class CalculatorGUI extends JPanel{
         ActionListener unar_naredba = new AkcijaUnarneOperacije();
         KeyListener s_tipkovnice = new InputTipkovnice();
         ekran.addKeyListener(s_tipkovnice);
+        unos.add(ekran, BorderLayout.NORTH);
+        
+        String[] zaglavlje={"Funkcija"};
+        DefaultTableModel tm=new DefaultTableModel(zaglavlje,0);
+        tablica=new JTable(tm);
+        tablica.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+        sp=new JScrollPane(tablica);
     
         dodajGumb("7",pisanje); dodajGumb("8",pisanje);
         dodajGumb("9",pisanje); dodajGumb("/",bin_naredba);
@@ -70,7 +96,18 @@ public class CalculatorGUI extends JPanel{
         dodajGumb("=",bin_naredba); dodajGumb("+",bin_naredba);
         dodajGumb("10^x",unar_naredba); dodajGumb("e^x",unar_naredba);
         dodajGumb("CE",brisanje); dodajGumb("%",unar_naredba);
-        add(spremnik, BorderLayout.CENTER);
+        unos.add(spremnik, BorderLayout.CENTER);
+        
+        tab=new JTabbedPane();
+        tab.add("Unos",unos);
+        tab.add("Memorija",sp);
+        this.add(tab);
+        
+        tablica.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+            public void valueChanged(ListSelectionEvent event) {
+                ekran.setText(tablica.getValueAt(tablica.getSelectedRow(), 0).toString());
+            }
+        });
     }
     /**
      * @Ivana
@@ -189,12 +226,23 @@ public class CalculatorGUI extends JPanel{
                 if(operacija.equals("-")){
                     ekran.setText(operacija);
                     start=false;
+                }else if(operacija.endsWith("=")){
+                    vec=new Vector<>();
+                    vec.add(Double.toString(rezultat));
+                    DefaultTableModel tm=(DefaultTableModel) tablica.getModel();
+                    tm.addRow(vec);
                 }
                 else zadnjaBinarnaOperacija=operacija;
             }
             else{
                 //System.out.println("Sad je start false i promijenit cu ga true");
                 racunaj(Double.parseDouble(ekran.getText()));
+                if(operacija.endsWith("=")){
+                    vec=new Vector<>();
+                    vec.add(Double.toString(rezultat));
+                    DefaultTableModel tm=(DefaultTableModel) tablica.getModel();
+                    tm.addRow(vec);
+                }
                 zadnjaBinarnaOperacija=operacija;
                 start=true;
             }

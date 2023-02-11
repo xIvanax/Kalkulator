@@ -17,6 +17,11 @@ public class Acos extends Unary{
     @Override
     public double getValue() {
         double val=realValue(q);
-        return Math.acos(val); 
+        double v=Math.acos(val);
+        if(v>0 && v<Math.PI){
+            return v;
+        }else{
+            return Double.POSITIVE_INFINITY;
+        }
     }  
 }

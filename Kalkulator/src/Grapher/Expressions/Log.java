@@ -8,15 +8,14 @@ package Grapher.Expressions;
  *
  * @author Ivana
  */
-public class Log extends Binary {
-	public Log(Quantity x, Quantity base) {
-		super(x, base);
+public class Log extends Unary {
+	public Log(Quantity x) {
+		super(x);
 	}
 
 	@Override
 	public double getValue() {
-		double val1 = realValue(q1);
-		double val2 = realValue(q2);
-		return Math.log(val1) / Math.log(val2);
+		double val = realValue(q);
+		return Math.log(val);
 	}
 }

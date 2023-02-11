@@ -35,6 +35,7 @@ import Grapher.Expressions.Sine;
 import Grapher.Expressions.SquareRoot;
 import Grapher.Expressions.Sum;
 import Grapher.Expressions.Tangent;
+import static Grapher.Parser.TokenType.LOG;
 /**
  *
  * @author ivana
@@ -366,6 +367,8 @@ public class ExpressionParser {
                     return new Natural_log(param1);
                 case POWER10:
                     return new Power10(param1);
+                case LOG:
+                    return new Log(param1);
 		default:
                     return null;
             }
@@ -375,8 +378,6 @@ public class ExpressionParser {
             switch (type) {
                 case NTHROOT:
                     return new NthRoot(param1,param2);
-		case LOG:
-                    return new Log(param1,param2);
                 case POWER:
                     return new Power(param1,param2);
 		default:
