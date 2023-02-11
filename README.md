@@ -8,16 +8,29 @@ Upute za pocetak (ono sto sam uspjela pohvatati):
 NAPOMENA:
 Budući da sam dosta toga izmijenila, napravi si novi folder negdje i u njega iznova kloniraj repozitorij kao što sam ti pokazala neki dan - mislim da će ti se na taj način možda biti lakše snaći.
 
+linkovi za baze podataka:
+- https://communities.actian.com/s/article/java-sql-SQLException-Query-or-procedure-does-not-return-a-result-set ->jedan error
+- https://stackoverflow.com/questions/16725377/unable-to-connect-to-database-no-suitable-driver-found ->jos jedan error
+- https://www.tutorialspoint.com/sqlite/sqlite_delete_query.htm#:~:text=SQLite%20DELETE%20Query%20is%20used,the%20records%20would%20be%20deleted. ->brisanje 
+- https://javadoc.scijava.org/Java14/java.sql/java/sql/package-summary.html ->stvari koje ukljucuje java.sql paket jer iz nekog razloga ant nema automatski import za ove stvari pa treba rucno importat sta fali
+- https://www.tutorialspoint.com/sqlite/sqlite_select_query.htm -> select
+- https://stackoverflow.com/questions/947215/how-to-get-a-list-of-column-names-on-sqlite3-database
+- https://www.guru99.com/sqlite-query-insert-update.html -> insert
+- https://www.tutorialspoint.com/sqlite/sqlite_commands.htm -> lijepi ispis u cmd
+- https://www.guru99.com/sqlite-database.html#:~:text=SQLite%20CREATE%20Database,-Unlike%20other%20database&text=In%20this%20SQLite%20tutorial%2C%20here,%E2%80%9Ccmd%E2%80%9D%20and%20open%20it.&text=From%20the%20Installation%20and%20packages,the%20sqlite3.exe%20on%20it. ->stvaranje tablice u sqlite u cmd
+- http://www.java2s.com/Code/JarDownload/sqlite/sqlite-jdbc-3.7.2.jar.zip ->ovo ces trebat skinut i ubacit u library folder
+
 # Nove novosti :)
 - implementirano deriviranje polinoma
 - implementirano množenje, zbrajanje i oduzimanje polinoma 
 - pri deriviranju se uvijek derivira prvi polinom
+- maknula sam gumbe iz polinomnog kalkulatora
+- uspjela sam napraviti da radi spremanje u bazu podataka i dohvacanje iz baze podataka, skuzila sam da ju ipak moramo imati i da nije dovoljna memorija kakva je bila do sad jer smo i na satu radili s bazama podataka (zadnje predavanje) - ovo sam uspjela nakon neka 4 sata rada pa sam odustala - trebalo bi počistiti bazu podataka od gluposti koje sam do sad ubacila u nju, premienovati prvi stupac u "ime" kako bi korisnik pri spremanju mogao dodijeliti ime funkciji/polinomu i kasnije dohvatiti funkciju/polinom iz baze na temelju imena - za ovo bi trebalo napraviti da ime ima distinct atribut kako korisnik ne bi mogao dvaput unesti u bazu nesto s istim imenom (ili varati i unutar jave pamtiti ubačena i obrisana imena - cini se puno lakse da ne moramo petljati sa sql naredbama); mislim da bi trebalo dodati i gumb za brisanje stvari iz memorije; gore u uputama ostavljam linkove koji su mi bili korisni; takoder, rad s citanjem baze bi trebalo ubaciti u worker dretvu (zadnje predavanje); fun fact - sa sqlite se radi unutar cmd-a :)))))))))))))
 
 # Što još treba napraviti?
 - testovi/Jenkins
-- korištenje vrijednosti funkcije u nekim zadanim izrazima
-- spremanje polinoma u memoriju kalkulatora i njihovo dohvaćanje iz memorije
-- treba maknuti gumbe iz polinomnog kalkulatora 
+- vizualno popraviti graficki kalkulator
+- zavrsiti baze podataka i maknuti dosadasnje stvari s memorijom
 - treba srediti kod (napraviti sučelja, napraviti funkcije za dijelove koda koji se ponavljaju, anotirati sve da bi mogli imati javadoc)
 - pohvatat skroz kod za grapher
 - na kraju proći detaljno sve zahtjeve za proejkt koje je prof stavio na web i provjeriti jesmo li ispunile obavezne zahtjeve i ako jesmo možemo li nešto bolje napraviti t.d. dobijemo dodatne bodove
