@@ -9,6 +9,7 @@ import Grapher.Parser.ExpressionParser;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -25,26 +26,45 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import java.sql.SQLException;
+import java.sql.DriverManager;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Ivana
  */
 public class PolynomialGUI extends JPanel{
+    //pokusaj integracije baza podataka
+    private JFileChooser jchooser1 = new JFileChooser();
+    private ArrayList<String> popis;
+    private String imeDatoteke;
+    private final String url="jdbc:sqlite:C:\\Users\\Ivana\\Desktop\\Java_projekt\\Kalkulator_11_veljace\\Kalkulator\\Kalkulator\\baza\\baza.db";
+    
     private JPanel spremnik;
     private JPanel unos;
     private JPanel prikaz;
@@ -60,9 +80,8 @@ public class PolynomialGUI extends JPanel{
     public JTextField ekran1;
     public JTextField ekran2;
     public JTextField display;
-    public JLabel jLabel1;
-    public JLabel jLabel2;
-    public JLabel jLabel3;
+    //jTextField1 je za unos vrijednosti za evaluaciju
+    public JTextField jTextField1;
     //polyOp vrijednost 0 je zbrajanje, 1 oduzimanje, 2 množenje
     private int polyOp;
     //tu cu spremati clanove polinoma
@@ -86,6 +105,11 @@ public class PolynomialGUI extends JPanel{
     private int kojiEkran=1;
     
     public PolynomialGUI(){
+        //za baze podataka
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("SQLITE BAZE", "accdb", "database");
+        jchooser1.setFileFilter(filter);
+        popis = new ArrayList<>();
+        
         nacrtaj=new IntegratedDrawFunctionScreen();
         unos=new JPanel();
         prikaz=new JPanel();
@@ -118,9 +142,9 @@ public class PolynomialGUI extends JPanel{
         display.setEnabled(true);
         display.setFont(display.getFont().deriveFont(Font.BOLD, 28f));
         
-        jLabel1=new JLabel("Prvi polinom:");
-        jLabel2=new JLabel("Drugi polinom:");
-        jLabel3=new JLabel("Rezultat:");
+        JLabel jLabel1 = new JLabel("Prvi polinom:");
+        JLabel jLabel2 = new JLabel("Drugi polinom:");
+        JLabel jLabel3 = new JLabel("Rezultat:");
         
         unos.add(jLabel1);
         unos.add(ekran1);
@@ -138,57 +162,152 @@ public class PolynomialGUI extends JPanel{
         sp=new JScrollPane(tablica);
         
         spremnik=new JPanel();
-        spremnik.setSize(770, 170);
-        spremnik.setPreferredSize(new Dimension(770,170));
-        spremnik.setLayout(new GridLayout(4,7));
+        spremnik.setSize(770, 400);
+        spremnik.setPreferredSize(new Dimension(770,400));
+        spremnik.setLayout(new BorderLayout());
         
         ActionListener pisanje = new PolynomialGUI.AkcijaPisanja();
-        ActionListener brisanje = new PolynomialGUI.AkcijaBrisanja();
-        ActionListener bin_naredba = new PolynomialGUI.AkcijaBinarneOperacije();
+        ActionListener der_naredba = new PolynomialGUI.AkcijaDerivacije();
+        ActionListener poli_naredba = new PolynomialGUI.AkcijaPolinomneOperacije();
+        ActionListener eval_naredba = new PolynomialGUI.AkcijaEvaluacije();
+        ActionListener graf_naredba = new PolynomialGUI.AkcijaCrtanja();
+        ActionListener spremi_naredba = new PolynomialGUI.AkcijaSpremanja();
+        ActionListener doh_naredba = new PolynomialGUI.AkcijaUzimanja();
         
-        dodajGumb("7",pisanje);
-        dodajGumb("8",pisanje); 
-        dodajGumb("9",pisanje);
-        dodajGumb("/",bin_naredba);
-        dodajGumb("(",pisanje);
-        dodajGumb(")",pisanje);
-        dodajGumb("D",brisanje);
+        ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
+        ButtonGroup buttonGroup2 = new javax.swing.ButtonGroup();
+        JRadioButton jRadioButton1 = new javax.swing.JRadioButton();
+        JRadioButton jRadioButton2 = new javax.swing.JRadioButton();
+        JLabel jLabel4 = new javax.swing.JLabel();
+        JLabel jLabel5 = new javax.swing.JLabel();
+        JRadioButton jRadioButton3 = new javax.swing.JRadioButton();
+        JRadioButton jRadioButton4 = new javax.swing.JRadioButton();
+        JRadioButton jRadioButton5 = new javax.swing.JRadioButton();
+        JButton jButton3 = new javax.swing.JButton();
+        JButton jButton4 = new javax.swing.JButton();
+        JButton jButton1 = new javax.swing.JButton();
+        JButton jButton2 = new javax.swing.JButton();
+        JButton jButton5 = new javax.swing.JButton();
+        JLabel jLabel6 = new javax.swing.JLabel();
+        JLabel jLabel7 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jTextField1.setText("");
+        jTextField1.setEnabled(true);
+        //jTextField1.setFont(jTextField1.getFont().deriveFont(Font.BOLD, 28f));
         
+        buttonGroup1.add(jRadioButton1);
+        jRadioButton1.setText("π");
+        jRadioButton1.addActionListener(pisanje);
+        buttonGroup1.add(jRadioButton2);
+        jRadioButton2.setText("e");
+        jRadioButton2.addActionListener(pisanje);
+
+        jLabel4.setText("Posebne vrijednosti:");
+
+        jLabel5.setText("Polinomne operacije:");
         
-        dodajGumb("4",pisanje);
-        dodajGumb("5",pisanje); 
-        dodajGumb("6",pisanje);
-        dodajGumb("*",bin_naredba);
-        dodajGumb("π",pisanje); 
-        dodajGumb("e",pisanje); 
-        dodajGumb("C",brisanje);
+        jLabel6.setText("Unesite vrijednost u kojoj");
+
+        jLabel7.setText("želite evaluirati funkciju:");
         
-        dodajGumb("1",pisanje);
-        dodajGumb("2",pisanje); 
-        dodajGumb("3",pisanje);
-        dodajGumb("-",bin_naredba); 
-        dodajGumb("x",pisanje);
-        dodajGumb("x^y",bin_naredba);
-        dodajGumb("x^(1/y)",bin_naredba);
-       
-        //obrisan gumb CE jer nema smisla u ovom kontekstu/dizajnu kalkulatora (ja mislim, ak ti mislis da ima
-        //lako ga vratim - sad sam ga zamijenila s gumbom eval pomocu kojeg cemo napravit evaluation funckije
-        //zapravo ce funkcionirat isto kao "=" u obicnom kalkulatoru
-        /**
-         * ovaj komentar iznad napisala
-         * @Ivana
-         */
+        buttonGroup2.add(jRadioButton3);
+        jRadioButton3.setText("zbrajanje");
+        jRadioButton3.addActionListener(poli_naredba);
+        buttonGroup2.add(jRadioButton4);
+        jRadioButton4.setText("oduzimanje");
+        jRadioButton4.addActionListener(poli_naredba);
+        buttonGroup2.add(jRadioButton5);
+        jRadioButton5.setText("množenje");
+        jRadioButton5.addActionListener(poli_naredba);
         
-        dodajGumb("0",pisanje);
-        dodajGumb(".",pisanje);
-        dodajGumb("eval",bin_naredba);
-        dodajGumb("+",bin_naredba);
-        dodajGumb("derivative",bin_naredba); 
-        /**
-         * pritiskom na gumb "poly op" se zbrajaju, oduzimaju ili množe polinomi
-         */
-        dodajGumb("poly op",bin_naredba);
-        dodajGumb("draw",bin_naredba);   
+        jButton1.setText("spremi");
+        jButton1.setToolTipText("spremanje prvog polinoma");
+        jButton1.addActionListener(spremi_naredba);
+        jButton2.setText("evaluiraj");
+        jButton2.setToolTipText("evaluacija prvog polinoma");
+        jButton2.addActionListener(eval_naredba);
+        jButton3.setText("graf");
+        jButton3.setToolTipText("graf prvog polinoma");
+        jButton3.addActionListener(graf_naredba);
+        jButton4.setText("derivacija");
+        jButton4.setToolTipText("derivacija prvog polinoma");
+        jButton4.addActionListener(der_naredba);
+        jButton5.setText("dohvati");
+        jButton5.addActionListener(doh_naredba);
+        
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(spremnik);
+        spremnik.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jRadioButton1)
+                    .addComponent(jLabel4)
+                    .addComponent(jRadioButton2)
+                    .addComponent(jLabel5)
+                    .addComponent(jRadioButton4)
+                    .addComponent(jRadioButton5)
+                    .addComponent(jRadioButton3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 180, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jButton5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jButton1))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel7)
+                                    .addComponent(jLabel6))
+                                .addGap(10, 10, 10)))
+                        .addComponent(jButton2))
+                    .addComponent(jButton3, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addGap(2, 2, 2)
+                        .addComponent(jRadioButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jRadioButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jRadioButton3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jRadioButton4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jRadioButton5))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton1)
+                            .addComponent(jButton5))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel6))
+                        )
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    //.addComponent(jRadioButton5)
+                    .addComponent(jLabel7))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton2)
+                .addContainerGap(68, Short.MAX_VALUE))
+        );
         
         unos.add(spremnik);
         prikaz.add(nacrtaj, BorderLayout.CENTER);
@@ -216,7 +335,6 @@ public class PolynomialGUI extends JPanel{
                     
             }
         });
-
         
         ekran1.addMouseListener(new MouseAdapter(){
             public void mousePressed(MouseEvent e){
@@ -231,21 +349,6 @@ public class PolynomialGUI extends JPanel{
         });
     }
     
-    private void dodajGumb(String oznaka, ActionListener slusac){
-        JButton gumb = new JButton(oznaka);
-        gumb.addActionListener(slusac);
-        spremnik.add(gumb);
-    }
-    /**
-     * @Ivana
-     * @return što je trenutno na ekran1u
-     */
-    public String readScreen(){
-        if(this.ekran1==null)
-            return "";
-        return ekran1.getText();
-    }
-    
     private class AkcijaPisanja implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent event){
@@ -254,239 +357,111 @@ public class PolynomialGUI extends JPanel{
                 textBox=ekran1.getText();
                 start=false;
             }
-            ekran1.setText(ekran1.getText()+unos);
+            if(!unos.equals("π") && !unos.equals("e"))
+                ekran1.setText(ekran1.getText()+unos);
             
             if(unos.equals("π")){
                 String pi=Double.toString(Math.PI);
                 screen+=pi;
-                ekran1.setText(screen);
+                ekran1.setText(ekran1.getText()+pi);
                 textBox=screen;
             }else if(unos.equals("e")){
                 String const_e=Double.toString(Math.E);
                 screen+=const_e;
-                ekran1.setText(screen);
+                ekran1.setText(ekran1.getText()+const_e);
                 textBox=screen;
-            }else if(unos.equals("=")){
-                function=parser.parse(textBox);
-                    if(function==null){
-			textBox="";
-                    }
-                screen="";
             }else{
                 screen+=unos;
                 ekran1.setText(screen);
-                
                 textBox=screen;
-            }
-        }
-    }
-    private class AkcijaBrisanja implements ActionListener{
-        @Override
-        public void actionPerformed(ActionEvent event) {
-            String unos = event.getActionCommand();
-            switch (unos) {
-                case "D":
-                    //brise se samo zadnji znak
-                    String str = ekran1.getText();
-                    //nema unosa pa nemamo što brisati:
-                    if("".equals(str))
-                        break;
-                    //na ekran1 stavljam sadrzaj ekran1a bez zadnjeg znaka i updateam "screen":
-                    if(str.length()>1){
-                        ekran1.setText(str.substring(0, str.length()-1));
-                        screen=ekran1.getText();
-                    }else{
-                        ekran1.setText("");
-                        screen="";
-                    }
-                    //System.out.println("Nakon pritiske gumba D screen="+screen);
-                    break;
-                case "C":
-                    //brišem cijeli input kalkulatora (back to square one)
-                    start = true;
-                    zadnjaBinarnaOperacija="=";
-                    screen="";
-                    ekran1.setText("");
-                    break;
-                default:
-                    break;
             }
         }
     }
     
-    private class AkcijaBinarneOperacije implements ActionListener{  
+    private class AkcijaPolinomneOperacije implements ActionListener{  
         @Override
         public void actionPerformed(ActionEvent event) {
             String op=event.getActionCommand();
-            String operacija=operation(op);
+            int polyOp=operation(op);
             
-            /**
-             * nisam htjela dirat ovo sa startom jer nisam više sigurna jel nam to uopće treba ovdje 
-             * (to je naslijeđeno iz standardnog kalkulatora)
-             * ovaj kod što slijedi odnosi se na obradu odabrane operacije zbrajanja, oduzimanja ili množenej polinoma
-             * @author Ivana
-             */
-            if("poly op".equals(operacija)){
-                ArrayList<String> clanovi1 = new ArrayList<>();
-                ArrayList<String> clanovi2 = new ArrayList<>();
+            ArrayList<String> clanovi1 = new ArrayList<>();
+            ArrayList<String> clanovi2 = new ArrayList<>();
                 
-                clanovi.clear();
-                clanovi1 = dohvati(ekran1.getText());
-                //sam kopiram u pomocnu listu jer se inače prebrišu
-                ArrayList<String> clanoviCopy = new ArrayList<>();
-                for(String i:clanovi1)
-                    clanoviCopy.add(i);
+            clanovi.clear();
+            clanovi1 = dohvati(ekran1.getText());
+            //sam kopiram u pomocnu listu jer se inače prebrišu
+            ArrayList<String> clanoviCopy = new ArrayList<>();
+            for(String i:clanovi1)
+                clanoviCopy.add(i);
                     
-                clanovi.clear();
-                clanovi2 = dohvati(ekran2.getText());
+            clanovi.clear();
+            clanovi2 = dohvati(ekran2.getText());
                 
-                if(polyOp==0){
-                    ArrayList<String> clanoviRes = polyAdd(clanoviCopy, clanovi2);
-                    String res="";
-                    if(clanoviRes.isEmpty()==false)
-                        res+=clanoviRes.get(0);
-                    clanoviRes.remove(0);
-                    for(String clan:clanoviRes)
-                        if(clan.charAt(0)!='-')
-                            res+="+"+clan;
+            if(polyOp==0){
+                ArrayList<String> clanoviRes = polyAdd(clanoviCopy, clanovi2);
+                String res="";
+                if(clanoviRes.isEmpty()==false)
+                    res+=clanoviRes.get(0);
+                clanoviRes.remove(0);
+                for(String clan:clanoviRes)
+                    if(clan.charAt(0)!='-')
+                        res+="+"+clan;
+                    else
+                        res+=clan;
+                System.out.println(res);
+                display.setText(res);
+            }else if(polyOp==1){
+                ArrayList<String> reverse = new ArrayList<>();
+                for(String i:clanovi2){
+                    if(i.length()>0)
+                        if(i.charAt(0)=='-')
+                            reverse.add(i.substring(1));
                         else
-                            res+=clan;
-                    System.out.println(res);
-                    display.setText(res);
-                }else if(polyOp==1){
-                    ArrayList<String> reverse = new ArrayList<>();
-                    for(String i:clanovi2){
-                        if(i.length()>0)
-                            if(i.charAt(0)=='-')
-                                reverse.add(i.substring(1));
-                            else
-                                reverse.add("-"+i);
-                    }
-                    
-                    ArrayList<String> clanoviRes = polyAdd(clanoviCopy, reverse);
-                    String res="";
-                    if(clanoviRes.isEmpty()==false)
-                        res+=clanoviRes.get(0);
-                    clanoviRes.remove(0);
-                    for(String clan:clanoviRes)
-                        if(clan.charAt(0)!='-')
-                            res+="+"+clan;
-                        else
-                            res+=clan;
-                    System.out.println(res);
-                    display.setText(res);
-                }else{
-                    ArrayList<String> clanoviRes = polyMulti(clanoviCopy, clanovi2);
-                    String res="";
-                    if(clanoviRes.isEmpty()==false)
-                        res+=clanoviRes.get(0);
-                    clanoviRes.remove(0);
-                    for(String clan:clanoviRes)
-                        if(clan.charAt(0)!='-')
-                            res+="+"+clan;
-                        else
-                            res+=clan;
-                    System.out.println(res);
-                    display.setText(res);
+                            reverse.add("-"+i);
                 }
-            }else
-            if(start){
-                if(operacija.equals("-") && "".equals(ekran1.getText())){
-                    ekran1.setText(operacija);
-                    start=false;
-                    screen="-";
-                }else{
-                    zadnjaBinarnaOperacija=operacija;
-                    
-                    //System.out.println("flag 3");
-                    if(zadnjaBinarnaOperacija.equals("=")){
-                        //System.out.println("flag 1");
-                        
-                        textBox=ekran1.getText();
-                        function=parser.parse(textBox);
-                            if(function==null){
-                                textBox="";
-                            }
-                        vec=new Vector<>();
-                        vec.add(textBox);
-                        DefaultTableModel tm=(DefaultTableModel) tablica.getModel();
-                        tm.addRow(vec);
-                        screen="";
-                    }else{
-                        ekran1.setText(ekran1.getText()+zadnjaBinarnaOperacija);
-                        //System.out.println("***ekran1="+ekran1.getText());
-                        screen=ekran1.getText();
-                    }
-                }
+                    //System.out.println("clanovi2= "+clanovi2);
+                    //System.out.println("reverse= "+reverse);
+                ArrayList<String> clanoviRes = polyAdd(clanoviCopy, reverse);
+                    //System.out.println("clanoviRes= "+clanoviRes);
+                String res="";
+                if(clanoviRes.isEmpty()==false)
+                    res+=clanoviRes.get(0);
+                clanoviRes.remove(0);
+                for(String clan:clanoviRes)
+                    if(clan.charAt(0)!='-')
+                        res+="+"+clan;
+                    else
+                        res+=clan;
+                    System.out.println(res);
+                display.setText(res);
             }else{
-                start=true;
-                zadnjaBinarnaOperacija=operacija;
-                
-                if(zadnjaBinarnaOperacija.equals("=")){
-                    //System.out.println("screen nakon pritiska ="+screen);
-                    textBox=ekran1.getText();
-                    function=parser.parse(textBox);
-                        if(function==null){
-                            textBox="";
-                        }
-                    vec=new Vector<>();
-                    vec.add(textBox);
-                    DefaultTableModel tm=(DefaultTableModel) tablica.getModel();
-                    tm.addRow(vec);
-                    screen="";
-                }else{
-                    ekran1.setText(ekran1.getText()+zadnjaBinarnaOperacija);
-                    //System.out.println("** **ekran1="+ekran1.getText());
-                    screen=ekran1.getText();
-                }
+                ArrayList<String> clanoviRes = polyMulti(clanoviCopy, clanovi2);
+                String res="";
+                if(clanoviRes.isEmpty()==false)
+                    res+=clanoviRes.get(0);
+                clanoviRes.remove(0);
+                for(String clan:clanoviRes)
+                    if(clan.charAt(0)!='-')
+                        res+="+"+clan;
+                    else
+                        res+=clan;
+                    System.out.println(res);
+                display.setText(res);
             }
         }
         
-        public String operation(String operacija){
+        public int operation(String operacija){
             switch(operacija) {
-                case "+":
-                    return "+";
-                case "-":
-                    return "-";
-                case "*":
-                    return "*";
-                case "/":
-                    return "/";
-                case "draw":
-                    return "=";
-                case "x^y":
-                    return "^";
-                case "x^(1/y)":
-                    return "^(1/";
-                case "eval":
-                    evaluateAt = JOptionPane.showInputDialog(spremnik, "Unesite x:", "Evaluacija funkcije", JOptionPane.QUESTION_MESSAGE);
-                    Function f=parser.parse(textBox);
-                    evaluatedFunction=f.evaluateAt(Double.parseDouble(evaluateAt), 0.0, 0.0);
-                    String fja = "f(x) = " + ekran1.getText();
-                    String output = fja + "\n" + "f("+evaluateAt+")="+evaluatedFunction;
-                    System.out.println("f("+evaluateAt+")="+evaluatedFunction);
-                    JOptionPane.showMessageDialog(spremnik, output, "Rezultat evaluacije", JOptionPane.INFORMATION_MESSAGE);
-                case "derivative":
-                    String ulaz=ekran1.getText();
-                    String izlaz=deriviraj(ulaz);
-                    ekran1.setText("");
-                    if(izlaz.length()>1)
-                        if(izlaz.charAt(izlaz.length()-1)=='+' || izlaz.charAt(izlaz.length()-1)=='-'){
-                            display.setText(izlaz.substring(0,izlaz.length()-1));
-                        }else{
-                            display.setText(izlaz);
-                        }
-                    return ulaz;
-                case "poly op":
-                    String[] options = {"zbrajanje polinoma", "oduzimanje polinoma", "množenje polinoma"};
-                    polyOp = JOptionPane.showOptionDialog(null, "Odaberite operaciju koju želite izvršiti nad unesenim polinomima:",
-                "Opcije",JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-                    return "poly op";
+                case "zbrajanje":
+                    return 0;
+                case "oduzimanje":
+                    return 1;
+                case "množenje":
+                    return 2;
             }
-            return "";
+            return -1;
         }
-        
-        /**
+/**
          * @Ivana
          * funkcija za dohvacanje clanova u polinomu
          * @param ulaz polinom
@@ -537,11 +512,16 @@ public class PolynomialGUI extends JPanel{
             if(expr1.contains("*")){//dakle sadrzi i *x
                 ret[0]=Double.parseDouble(expr1.split("\\*")[0]);
             }else if(expr1.contains("x") && !(expr1.contains("*"))){//ako je koeficijent jednak 1
-                ret[0]=1;
+                if(expr1.contains("-"))
+                    ret[0]=-1;
+                else
+                    ret[0]=1;
             }else if(!(expr1.contains("x") && !(expr1.contains("*")))){//ako je jednak konstanti
                 ret[0]=Double.parseDouble(expr1);
                 konstanta=1;
             }
+            //System.out.println("expr1= "+expr1);
+            //System.out.println("koef= "+ret[0]);
             if(konstanta==0){//ako nije konstanta zanima me koji je eksponent
                 int jednako=-1;//provjeravam ima li jednak broj otvorenih i zatvorenih zagrada
                 if(expr1.contains("(") && expr1.contains(")"))
@@ -631,14 +611,13 @@ public class PolynomialGUI extends JPanel{
                     if(exp==exp2){
                         flag=1; //pronasla sam podudaranje eksponenta exp iz prvog polinoma s nekim iz drugog
                         double newCoef=coef+coef2;
-                        
-                        if(eksponentJeRazlomakIliNegativan==1){
-                            clanoviRes.add(Double.toString(newCoef)+"*x^("+exp+")");
-                            eksponentJeRazlomakIliNegativan=0;
-                        }
-                        else{
-                            clanoviRes.add(Double.toString(newCoef)+"*x^"+exp+"");
-                        }
+                            if(eksponentJeRazlomakIliNegativan==1){
+                                clanoviRes.add(Double.toString(newCoef)+"*x^("+exp+")");
+                                eksponentJeRazlomakIliNegativan=0;
+                            }
+                            else{
+                                clanoviRes.add(Double.toString(newCoef)+"*x^"+exp+"");
+                            }
                     }
                 }
                     if(flag==0){//nisam nasla nijedno poklapanje pa ubacujem clan prvog polinoma u rezultat takav kakav je
@@ -690,6 +669,11 @@ public class PolynomialGUI extends JPanel{
                 }else
                     flag=0;
             }
+            
+            for(int i=0; i<clanoviRes.size(); i++)
+                //ako je koeficijent 0 ne zelim ga
+                if(coefAndExp(clanoviRes.get(i))[0]==0)
+                    clanoviRes.remove(i);
             
             return clanoviRes;
         }
@@ -745,7 +729,45 @@ public class PolynomialGUI extends JPanel{
             }
             return resClanovi;
         }
-        
+    }
+    
+    public int scanFromRight(String ulaz,char token){
+            int openParentheses=0;
+            for(int i=ulaz.length()-1; i>=0; i--){
+                if(ulaz.charAt(i)==')'){
+                       openParentheses++;
+                }else if(ulaz.charAt(i)=='('){
+                    openParentheses--;
+                }else if(ulaz.charAt(i)==token && openParentheses==0){
+                    return i;
+                }
+            }
+            return -1;
+        }
+    
+    private class AkcijaEvaluacije implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent event){
+            evaluateAt = jTextField1.getText();
+            Function f=parser.parse(ekran1.getText());
+            evaluatedFunction=f.evaluateAt(Double.parseDouble(evaluateAt), 0.0, 0.0);
+            display.setText(Double.toString(evaluatedFunction));
+        }
+    }
+    
+    private class AkcijaDerivacije implements ActionListener{  
+        @Override
+        public void actionPerformed(ActionEvent event) {
+            String ulaz=ekran1.getText();
+            String izlaz=deriviraj(ulaz);
+            if(izlaz.length()>1)
+                if(izlaz.charAt(izlaz.length()-1)=='+' || izlaz.charAt(izlaz.length()-1)=='-'){
+                    display.setText(izlaz.substring(0,izlaz.length()-1));
+                }else{
+                    display.setText(izlaz);
+                }
+            String operacija=ulaz;
+        }
         /**
         *@author Dorotea
         * Sljedeća funkcija će po konstrukciji biti slična funkciji doOrderOfOperations iz EXPressionParser-a
@@ -780,20 +802,6 @@ public class PolynomialGUI extends JPanel{
                 }
             }
             return rezultat;
-        }
-        
-        public int scanFromRight(String ulaz,char token){
-            int openParentheses=0;
-            for(int i=ulaz.length()-1; i>=0; i--){
-                if(ulaz.charAt(i)==')'){
-                       openParentheses++;
-                }else if(ulaz.charAt(i)=='('){
-                    openParentheses--;
-                }else if(ulaz.charAt(i)==token && openParentheses==0){
-                    return i;
-                }
-            }
-            return -1;
         }
         
         public String Der(String expr){
@@ -892,11 +900,138 @@ public class PolynomialGUI extends JPanel{
                 else
                     res+="*x^"+Double.toString(novi);
             }
-
             return res;
         }
-
+    }
+    
+    private class AkcijaCrtanja implements ActionListener{
+    @Override
+        public void actionPerformed(ActionEvent event) {
+            String op=event.getActionCommand();
+            String operacija=operation(op);
+            
+            if(start){
+                if(operacija.equals("-") && "".equals(ekran1.getText())){
+                    ekran1.setText(operacija);
+                    start=false;
+                    screen="-";
+                }else{
+                    zadnjaBinarnaOperacija=operacija;
+                    
+                    if(zadnjaBinarnaOperacija.equals("=")){
+                        textBox=ekran1.getText();
+                        function=parser.parse(textBox);
+                            if(function==null){
+                                textBox="";
+                            }
+                        screen="";
+                    }else{
+                        ekran1.setText(ekran1.getText()+zadnjaBinarnaOperacija);
+                        screen=ekran1.getText();
+                    }
+                }
+            }else{
+                start=true;
+                zadnjaBinarnaOperacija=operacija;
+                
+                if(zadnjaBinarnaOperacija.equals("=")){
+                   textBox=ekran1.getText();
+                   function=parser.parse(textBox);
+                        if(function==null){
+                            textBox="";
+                        }
+                   screen="";
+                }else{
+                    ekran1.setText(ekran1.getText()+zadnjaBinarnaOperacija);
+                    screen=ekran1.getText();
+                }
+            }
+        }
         
+        public String operation(String operacija){
+            switch(operacija) {
+                case "+":
+                    return "+";
+                case "-":
+                    return "-";
+                case "*":
+                    return "*";
+                case "/":
+                    return "/";
+                case "graf":
+                    return "=";
+                case "x^y":
+                    return "^";
+                case "x^(1/y)":
+                    return "^(1/";
+            }
+            return "";
+        }
+    }
+    
+    private class AkcijaUzimanja implements ActionListener{
+            @Override
+        public void actionPerformed(ActionEvent event) {
+                try {
+                    Class.forName("org.sqlite.JDBC");
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(PolynomialGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            String sql ="SELECT Polinomi, Funkcije FROM Memorija";
+           Connection conn=null;
+           ResultSet result = null; 
+           try{
+               conn = DriverManager.getConnection(url);
+               Statement stmt = conn.createStatement();
+               result = stmt.executeQuery(sql);
+           }catch(SQLException e){
+               System.out.println(e.getMessage());
+           }
+                try {
+                    while(result.next()){
+                        String polinom=result.getString("Polinomi");
+                        String funkcija=result.getString("Funkcije");
+                        System.out.println("p= "+polinom);
+                        System.out.println("f= "+funkcija);
+                    }    } catch (SQLException ex) {
+                    Logger.getLogger(PolynomialGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+           vec=new Vector<>();
+           vec.add(ekran1.getText());
+           System.out.println("hello?");
+           System.out.println(ekran1.getText());
+           System.out.println(vec);
+           DefaultTableModel tm=(DefaultTableModel) tablica.getModel();
+           tm.addRow(vec);
+        }
+    }
+    
+    private class AkcijaSpremanja implements ActionListener{
+            @Override
+        public void actionPerformed(ActionEvent event) {
+                try {
+                    Class.forName("org.sqlite.JDBC");
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(PolynomialGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            String sql ="INSERT INTO Memorija (Polinomi, Funkcije)"+" VALUES ('x','x');";
+           Connection conn=null;
+           ResultSet result = null; 
+           try{
+               conn = DriverManager.getConnection(url);
+               Statement stmt = conn.createStatement();
+               stmt.execute(sql);
+           }catch(SQLException e){
+               System.out.println(e.getMessage());
+           }
+           vec=new Vector<>();
+           vec.add(ekran1.getText());
+           System.out.println("hello?");
+           System.out.println(ekran1.getText());
+           System.out.println(vec);
+           DefaultTableModel tm=(DefaultTableModel) tablica.getModel();
+           tm.addRow(vec);
+        }
     }
     
     public class IntegratedDrawFunctionScreen extends JPanel implements MouseWheelListener, /*KeyListener,*/ Runnable{

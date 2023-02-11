@@ -13,7 +13,7 @@ import javax.swing.JFrame;
 public class App {
     public static void main(String args[]){
         CalculatorFrame okvir=new CalculatorFrame();
-        okvir.setSize(800, 500);
+        okvir.setSize(800, 600);
         okvir.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         okvir.setVisible(true);
     }

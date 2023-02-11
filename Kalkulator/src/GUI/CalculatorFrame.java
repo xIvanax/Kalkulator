@@ -43,8 +43,8 @@ public class CalculatorFrame extends JFrame implements ActionListener{
         grafovi.setPreferredSize(new Dimension(800,800));
         
         pol=new PolynomialGUI();
-        pol.setSize(800,800);
-        pol.setPreferredSize(new Dimension(800,800));
+        pol.setSize(800,1000);
+        pol.setPreferredSize(new Dimension(800,1000));
         
         //prazan spremnik, ciji cemo layout postaviti na CardLayout
         glavni=new JPanel();
