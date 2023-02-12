@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import GUIinterfaces.GraphingInterface;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -31,19 +32,24 @@ import javax.swing.JTextField;
 
 import Grapher.Expressions.Function;
 import Grapher.Parser.ExpressionParser;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.JTextArea;
 
 /**
  *
  * @author Dorotea
  */
-public class GraphingGUI extends JPanel{ 
+public class GraphingGUI extends JPanel implements GraphingInterface{ 
+    private final String url="jdbc:sqlite:C:\\Users\\Ivana\\Desktop\\Java_projekt\\Kalkulator_12_veljace\\Kalkulator\\Kalkulator\\baza\\baza.db";
+    private ArrayList<String> iskoristenaImena = new ArrayList<>();
+    
     private JPanel spremnik;
     private JPanel unos;
     private JPanel prikaz;
@@ -51,7 +57,6 @@ public class GraphingGUI extends JPanel{
     private String textBox;
     private IntegratedDrawFunctionScreen nacrtaj;
     public JTextField ekran;
-    private JTable tablica;
     private Function function;
     private ExpressionParser parser;
     private JTabbedPane tab;
@@ -63,16 +68,14 @@ public class GraphingGUI extends JPanel{
     private String zadnjaUnarnaOperacija="";
     private String screen="";
     private Vector<String> vec;
-    //ovdje cu spremat rezultate evaluacije pa cemo smislit gdje cemo prikazat evaluaciju
-    //sama evaluacija odvija se pritiskom na gumb "eval" koji se tretira kao binarna operacija, ali skroz je svejedno kak se tretira
-    /**
-     * napisala ovaj gore komentar i ove dole dvije varijable
-     * @Ivana
-     */
+    
     private double evaluatedFunction;
     private String evaluateAt="";
     
     public GraphingGUI(){
+        //nema se sta testirat:
+        setUpDatabase(url);
+        
         nacrtaj=new IntegratedDrawFunctionScreen();
         unos=new JPanel();
         prikaz=new JPanel();
@@ -96,13 +99,6 @@ public class GraphingGUI extends JPanel{
         unos.add(ekran, BorderLayout.NORTH);
         spremnik=new JPanel();
         
-        //lista u kojoj će se prikazivati sve funkcije unesene od trenutka pokretanja kalkulatora
-        //prikazuju se samo funkcije unesene u grafičkom dijelu kalkulatora
-        String[] zaglavlje={"Funkcija"};
-        DefaultTableModel tm=new DefaultTableModel(zaglavlje,0);
-        tablica=new JTable(tm);
-        tablica.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-        sp=new JScrollPane(tablica);
         /**
          * ja sam dodala tu gumbe za spremanje polinoma, deriviranje i potenciranje sam da od nekud krenem,
          * vidim da imamo zaseban 
@@ -113,6 +109,9 @@ public class GraphingGUI extends JPanel{
         ActionListener brisanje = new GraphingGUI.AkcijaBrisanja();
         ActionListener bin_naredba = new GraphingGUI.AkcijaBinarneOperacije();
         ActionListener unar_naredba = new GraphingGUI.AkcijaUnarneOperacije();
+        ActionListener spremi_naredba = new GraphingGUI.AkcijaSpremanja();
+        ActionListener doh_naredba = new GraphingGUI.AkcijaUzimanja();
+        ActionListener mem = new GraphingGUI.AkcijaPregledaMemorije();
         
         dodajGumb("⌈x⌉",unar_naredba); dodajGumb("⌊x⌋",unar_naredba);
         dodajGumb("√x",unar_naredba); dodajGumb("x^(1/y)",bin_naredba);
@@ -171,11 +170,7 @@ public class GraphingGUI extends JPanel{
         
         this.add(tab);
         
-        tablica.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
-            public void valueChanged(ListSelectionEvent event) {
-                ekran.setText(tablica.getValueAt(tablica.getSelectedRow(), 0).toString());
-            }
-        });
+        
     }
     
     private void dodajGumb(String oznaka, ActionListener slusac){
@@ -310,10 +305,6 @@ public class GraphingGUI extends JPanel{
                                 textBox="";
                             }
                         
-                        vec=new Vector<>();
-                        vec.add(textBox);
-                        DefaultTableModel tm=(DefaultTableModel) tablica.getModel();
-                        tm.addRow(vec);
                         screen="";
                     }else{
                         ekran.setText(ekran.getText()+zadnjaBinarnaOperacija);
@@ -332,10 +323,7 @@ public class GraphingGUI extends JPanel{
                         if(function==null){
                             textBox="";
                         }
-                    vec=new Vector<>();
-                    vec.add(textBox);
-                    DefaultTableModel tm=(DefaultTableModel) tablica.getModel();
-                    tm.addRow(vec);
+                    
                     screen="";
                 }else{
                     ekran.setText(ekran.getText()+zadnjaBinarnaOperacija);
@@ -369,12 +357,6 @@ public class GraphingGUI extends JPanel{
                     String output = fja + "\n" + "f("+evaluateAt+")="+evaluatedFunction;
                     System.out.println("f("+evaluateAt+")="+evaluatedFunction);
                     JOptionPane.showMessageDialog(spremnik, output, "Rezultat evaluacije", JOptionPane.INFORMATION_MESSAGE);
-                    /**
-                     * rekao je da "omogućimo korištenje vrijednosti funkcije u nekim zadanim izrazima, ali
-                     * ne kužim baš kak to misli, u svakom slučaju, evaluirana vrijednost je tu spremljena u evaluatedFunction
-                     * pa ak ti kužiš šta misli javi
-                     * @Ivana
-                     */
             }
             return "";
         }
@@ -431,6 +413,107 @@ public class GraphingGUI extends JPanel{
                     return "";
             }
         }
+    }
+    
+        private class AkcijaUzimanja implements ActionListener{
+            @Override
+        public void actionPerformed(ActionEvent event) {
+            String trazeni = JOptionPane.showInputDialog(spremnik, "Koju evaluiranu vriejdnost želite dohvatiti?", "Dohvaćanje evaluirane vrijednosti", JOptionPane.QUESTION_MESSAGE);
+            try{
+                Class.forName("org.sqlite.JDBC");
+            } catch (ClassNotFoundException ex){
+            }
+            String sql ="SELECT Ime, Funkcija, Tocka_evaluacije, Rezultat FROM Funkcije";
+            Connection conn=null;
+            ResultSet result = null; 
+            try{
+               conn = DriverManager.getConnection(url);
+               Statement stmt = conn.createStatement();
+               result = stmt.executeQuery(sql);
+            }catch(SQLException e){
+               System.out.println(e.getMessage());
+            }
+            try {
+                while(result.next()){
+                    String ime=result.getString("Ime");
+                    if(ime.equals(trazeni)){
+                        String funkcija=result.getString("Funkcija");
+                        String tocka_eval =result.getString("Tocka_evaluacije");
+                        String res = result.getString("Rezultat");
+                        ekran.setText(ekran.getText()+tocka_eval);
+                    }
+                }    
+            }catch (SQLException ex){}
+        }
+    }
+        
+    private class AkcijaSpremanja implements ActionListener{
+            @Override
+        public void actionPerformed(ActionEvent event) {
+            try {
+                Class.forName("org.sqlite.JDBC");
+            } catch (ClassNotFoundException ex) {}
+            String name = "";
+            while(true){
+                name = JOptionPane.showInputDialog(spremnik, "Pod kojim imenom želite spremiti Evaluiranu vrijednost funkcije?", "Spremanje evaluirane vrijednosti", JOptionPane.QUESTION_MESSAGE);
+                if(name==null)
+                    return;
+                if(!iskoristenaImena.contains(name)){
+                    iskoristenaImena.add(name);
+                    break;
+                }
+                else{
+                    JOptionPane.showMessageDialog(spremnik, "Već ste spremili nešto pod tim imenom. Odaberite drugo ime.", "Greška", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+            //kod polinoma cu zasad omoguciti sam spremanje polinoma, ne i njegove evaluirane vrijednosti 
+            String sql ="INSERT INTO Funkcije (Ime, Funkcija, Tocka_evaluacije, Rezultat) VALUES ('"+name+"','"+ekran.getText()+"','"+evaluateAt+"','"+evaluatedFunction+"');";
+            Connection conn=null;
+            ResultSet result = null; 
+            try{
+                conn = DriverManager.getConnection(url);
+                System.out.println("Connection established");
+                Statement stmt = conn.createStatement();
+                stmt.execute(sql);
+            }catch(SQLException e){
+               System.out.println(e.getMessage());
+            }
+        }
+    }
+    //nema se sta testirat?
+    class AkcijaPregledaMemorije implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String output ="Ime"+"\t"+"Funkcija"+"\t"+"Tocka_evaluacije"+"\t"+"Rezultat"+"\n";
+        System.out.println(output);
+            try{
+                Class.forName("org.sqlite.JDBC");
+            } catch (ClassNotFoundException ex){
+            }
+            String sql ="SELECT Ime, Funkcija, Tocka_evaluacije, Rezultat FROM Funkcije";
+            Connection conn=null;
+            ResultSet result = null; 
+            try{
+               conn = DriverManager.getConnection(url);
+               Statement stmt = conn.createStatement();
+               result = stmt.executeQuery(sql);
+            }catch(SQLException ev){
+               System.out.println(ev.getMessage());
+            }
+            try {
+                while(result.next()){
+                    String ime=result.getString("Ime");
+                    String funkcija=result.getString("Funkcija");
+                    String tocka_eval =result.getString("Tocka_evaluacije");
+                    String res = result.getString("Rezultat");
+                    if(ime!=null)
+                        output+=ime+"\t"+funkcija+"\t"+tocka_eval+"\t"+res+"\n";
+                }
+            }    
+            catch (SQLException ex){}
+            JOptionPane.showMessageDialog(spremnik, new JTextArea(output));
+    }
     }
     /**
      * pokušaj integracije grafa i unosa
@@ -583,35 +666,7 @@ public class GraphingGUI extends JPanel{
 			}
 		}
 	}
-/*
-	@Override
-	public void keyTyped(KeyEvent e) {
-		
-	}
 
-	@Override
-	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
-			if (textBox.length() > 0) {
-				textBox = textBox.substring(0, textBox.length() - 1);
-			}
-		} else if (Character.isLetterOrDigit(e.getKeyChar()) || e.getKeyChar() == '^' || e.getKeyChar() == '-' ||
-				e.getKeyChar() == '+' || e.getKeyChar() == '*' || e.getKeyChar() == '/' || e.getKeyChar() == '(' ||
-				e.getKeyChar() == ')' || e.getKeyChar() == '%' || e.getKeyChar() == ',' || e.getKeyChar() == '.') {
-			textBox += e.getKeyChar();
-		} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-			function = parser.parse(textBox);
-			if (function == null) {
-				textBox = "";
-			}
-		}
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		
-	}
-	*/
 	private double bottom() {
 		return windowY - halfWindowHeight();
 	}
