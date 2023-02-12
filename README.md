@@ -21,16 +21,19 @@ linkovi za baze podataka:
 - http://www.java2s.com/Code/JarDownload/sqlite/sqlite-jdbc-3.7.2.jar.zip ->ovo ces trebat skinut i ubacit u library folder
 
 # Nove novosti :)
-- implementirano deriviranje polinoma
-- implementirano množenje, zbrajanje i oduzimanje polinoma 
-- pri deriviranju se uvijek derivira prvi polinom
-- maknula sam gumbe iz polinomnog kalkulatora
-- uspjela sam napraviti da radi spremanje u bazu podataka i dohvacanje iz baze podataka, skuzila sam da ju ipak moramo imati i da nije dovoljna memorija kakva je bila do sad jer smo i na satu radili s bazama podataka (zadnje predavanje) - ovo sam uspjela nakon neka 4 sata rada pa sam odustala - trebalo bi počistiti bazu podataka od gluposti koje sam do sad ubacila u nju, premienovati prvi stupac u "ime" kako bi korisnik pri spremanju mogao dodijeliti ime funkciji/polinomu i kasnije dohvatiti funkciju/polinom iz baze na temelju imena - za ovo bi trebalo napraviti da ime ima distinct atribut kako korisnik ne bi mogao dvaput unesti u bazu nesto s istim imenom (ili varati i unutar jave pamtiti ubačena i obrisana imena - cini se puno lakse da ne moramo petljati sa sql naredbama); mislim da bi trebalo dodati i gumb za brisanje stvari iz memorije; gore u uputama ostavljam linkove koji su mi bili korisni; takoder, rad s citanjem baze bi trebalo ubaciti u worker dretvu (zadnje predavanje); fun fact - sa sqlite se radi unutar cmd-a :)))))))))))))
+- očišćen i raščlanjen kod za polinomni kalkulator - javi jel sad bolje za testiranje
+- osposobljena interakcija s bazom podataka u polinomnom kalkulatoru - _problem_: treba skuzit kak napravit url da vuce bazu lokalno iz Files od projekta, a ne s c diska itd.
+- započeto osposobljavanje interakcije s bazom podataka u graphing kalkulatoru - _problem_: u polinomnom sam imala tri gumba, a ovdje imam mjesta samo za jedan pa ne znam kak ću to izvest
+
+# Mogući problemi
+- polinomni kalkulator npr pri deriviranju polinoma x+x vrati 1+1 umjesto 2
+- polinomni kalkulator ne zna sta bi sa polinomom tipa x+((x-3)+2*x^(3/2))
+- u polinomnom kalkulatoru imaju dijelovi koda gdje provjeravamo broj zagrada ali nikako ne handleamo grešku u slučaju krivog broja zagrada pa treba to na neki način obraditi
 
 # Što još treba napraviti?
 - testovi/Jenkins
 - vizualno popraviti graficki kalkulator
-- zavrsiti baze podataka i maknuti dosadasnje stvari s memorijom
+- baze podataka za graphing calc (fali mjesta za gumbe)
 - treba srediti kod (napraviti sučelja, napraviti funkcije za dijelove koda koji se ponavljaju, anotirati sve da bi mogli imati javadoc)
 - pohvatat skroz kod za grapher
 - na kraju proći detaljno sve zahtjeve za proejkt koje je prof stavio na web i provjeriti jesmo li ispunile obavezne zahtjeve i ako jesmo možemo li nešto bolje napraviti t.d. dobijemo dodatne bodove
@@ -63,3 +66,9 @@ Updates:
 
 Updates 2.0:
 1) teoretski je graphing GUI zavrsen, trebalo bi dodatno za svaki gumb provjeriti radi li kako treba (za svaku funkciju)
+
+- implementirano deriviranje polinoma
+- implementirano množenje, zbrajanje i oduzimanje polinoma 
+- pri deriviranju se uvijek derivira prvi polinom
+- maknula sam gumbe iz polinomnog kalkulatora
+- uspjela sam napraviti da radi spremanje u bazu podataka i dohvacanje iz baze podataka, skuzila sam da ju ipak moramo imati i da nije dovoljna memorija kakva je bila do sad jer smo i na satu radili s bazama podataka (zadnje predavanje) - ovo sam uspjela nakon neka 4 sata rada pa sam odustala - trebalo bi počistiti bazu podataka od gluposti koje sam do sad ubacila u nju, premienovati prvi stupac u "ime" kako bi korisnik pri spremanju mogao dodijeliti ime funkciji/polinomu i kasnije dohvatiti funkciju/polinom iz baze na temelju imena - za ovo bi trebalo napraviti da ime ima distinct atribut kako korisnik ne bi mogao dvaput unesti u bazu nesto s istim imenom (ili varati i unutar jave pamtiti ubačena i obrisana imena - cini se puno lakse da ne moramo petljati sa sql naredbama); mislim da bi trebalo dodati i gumb za brisanje stvari iz memorije; gore u uputama ostavljam linkove koji su mi bili korisni; takoder, rad s citanjem baze bi trebalo ubaciti u worker dretvu (zadnje predavanje); fun fact - sa sqlite se radi unutar cmd-a :)))))))))))))
