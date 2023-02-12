@@ -53,6 +53,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JCheckBox;
 
 /**
  *
@@ -60,10 +61,9 @@ import java.util.logging.Logger;
  */
 public class PolynomialGUI extends JPanel{
     //pokusaj integracije baza podataka
-    private JFileChooser jchooser1 = new JFileChooser();
-    private ArrayList<String> popis;
-    private String imeDatoteke;
-    private final String url="jdbc:sqlite:C:\\Users\\Ivana\\Desktop\\Java_projekt\\Kalkulator_11_veljace\\Kalkulator\\Kalkulator\\baza\\baza.db";
+    private final String url="jdbc:sqlite:C:\\Users\\Ivana\\Desktop\\Java_projekt\\Kalkulator_12_veljace\\Kalkulator\\Kalkulator\\baza\\baza.db";
+    //ovdje spremam/izbacujem dodana/obrisana imena polinoma iz baze podataka 
+    private ArrayList<String> iskoristenaImena = new ArrayList<>();
     
     private JPanel spremnik;
     private JPanel unos;
@@ -106,9 +106,23 @@ public class PolynomialGUI extends JPanel{
     
     public PolynomialGUI(){
         //za baze podataka
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("SQLITE BAZE", "accdb", "database");
-        jchooser1.setFileFilter(filter);
-        popis = new ArrayList<>();
+        //čišćenje baze podataka
+        String sql1 ="DELETE FROM Polinomi;";
+        String sql2 ="VACUUM;";
+        try {
+                Class.forName("org.sqlite.JDBC");
+            } catch (ClassNotFoundException ex) {}
+            Connection conn=null;
+            ResultSet result = null; 
+            try{
+                conn = DriverManager.getConnection(url);
+                System.out.println("Connection established");
+                Statement stmt = conn.createStatement();
+                stmt.execute(sql1);
+                stmt.execute(sql2);
+            }catch(SQLException e){
+               System.out.println(e.getMessage());
+            }
         
         nacrtaj=new IntegratedDrawFunctionScreen();
         unos=new JPanel();
@@ -190,6 +204,8 @@ public class PolynomialGUI extends JPanel{
         JButton jButton5 = new javax.swing.JButton();
         JLabel jLabel6 = new javax.swing.JLabel();
         JLabel jLabel7 = new javax.swing.JLabel();
+        JCheckBox jCheckBox1 = new javax.swing.JCheckBox();
+        JCheckBox jCheckBox2 = new javax.swing.JCheckBox();
         jTextField1 = new javax.swing.JTextField();
         jTextField1.setText("");
         jTextField1.setEnabled(true);
@@ -234,6 +250,9 @@ public class PolynomialGUI extends JPanel{
         jButton4.addActionListener(der_naredba);
         jButton5.setText("dohvati");
         jButton5.addActionListener(doh_naredba);
+        
+        jCheckBox1.setText("eval. vr.");
+        jCheckBox2.setText("fja");
         
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(spremnik);
         spremnik.setLayout(layout);
@@ -972,65 +991,68 @@ public class PolynomialGUI extends JPanel{
     private class AkcijaUzimanja implements ActionListener{
             @Override
         public void actionPerformed(ActionEvent event) {
-                try {
-                    Class.forName("org.sqlite.JDBC");
-                } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(PolynomialGUI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            String sql ="SELECT Polinomi, Funkcije FROM Memorija";
-           Connection conn=null;
-           ResultSet result = null; 
-           try{
+            String trazeni = JOptionPane.showInputDialog(spremnik, "Koji polinom želite dohvatiti?", "Dohvaćanje polinoma", JOptionPane.QUESTION_MESSAGE);
+            try{
+                Class.forName("org.sqlite.JDBC");
+            } catch (ClassNotFoundException ex){
+            }
+            String sql ="SELECT Ime, Polinom FROM Polinomi";
+            Connection conn=null;
+            ResultSet result = null; 
+            try{
                conn = DriverManager.getConnection(url);
                Statement stmt = conn.createStatement();
                result = stmt.executeQuery(sql);
-           }catch(SQLException e){
+            }catch(SQLException e){
                System.out.println(e.getMessage());
-           }
-                try {
-                    while(result.next()){
-                        String polinom=result.getString("Polinomi");
-                        String funkcija=result.getString("Funkcije");
-                        System.out.println("p= "+polinom);
-                        System.out.println("f= "+funkcija);
-                    }    } catch (SQLException ex) {
-                    Logger.getLogger(PolynomialGUI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-           vec=new Vector<>();
-           vec.add(ekran1.getText());
-           System.out.println("hello?");
-           System.out.println(ekran1.getText());
-           System.out.println(vec);
-           DefaultTableModel tm=(DefaultTableModel) tablica.getModel();
-           tm.addRow(vec);
+            }
+            try {
+                while(result.next()){
+                    String ime=result.getString("Ime");
+                    if(ime.equals(trazeni)){
+                        String polinom=result.getString("Polinom");
+                        if(kojiEkran==1){
+                            ekran1.setText(polinom);
+                        }else if(kojiEkran==2){
+                            ekran2.setText(polinom);
+                        }
+                        System.out.println("ime= "+ime);
+                        System.out.println("f= "+polinom);
+                    }
+                }    
+            }catch (SQLException ex){}
         }
     }
     
     private class AkcijaSpremanja implements ActionListener{
             @Override
         public void actionPerformed(ActionEvent event) {
-                try {
-                    Class.forName("org.sqlite.JDBC");
-                } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(PolynomialGUI.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                Class.forName("org.sqlite.JDBC");
+            } catch (ClassNotFoundException ex) {}
+            String name = "";
+            while(true){
+                name = JOptionPane.showInputDialog(spremnik, "Pod kojim imenom želite spremiti polinom?", "Spremanje polinoma", JOptionPane.QUESTION_MESSAGE);
+                if(!iskoristenaImena.contains(name)){
+                    iskoristenaImena.add(name);
+                    break;
                 }
-            String sql ="INSERT INTO Memorija (Polinomi, Funkcije)"+" VALUES ('x','x');";
-           Connection conn=null;
-           ResultSet result = null; 
-           try{
-               conn = DriverManager.getConnection(url);
-               Statement stmt = conn.createStatement();
-               stmt.execute(sql);
-           }catch(SQLException e){
+                else{
+                    JOptionPane.showMessageDialog(spremnik, "Već ste spremili nešto pod tim imenom. Odaberite drugo ime.", "Greška", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+            //kod polinoma cu zasad omoguciti sam spremanje polinoma, ne i njegove evaluirane vrijednosti 
+            String sql ="INSERT INTO Polinomi (Ime, Polinom) VALUES ('"+name+"','"+ekran1.getText()+"');";
+            Connection conn=null;
+            ResultSet result = null; 
+            try{
+                conn = DriverManager.getConnection(url);
+                System.out.println("Connection established");
+                Statement stmt = conn.createStatement();
+                stmt.execute(sql);
+            }catch(SQLException e){
                System.out.println(e.getMessage());
-           }
-           vec=new Vector<>();
-           vec.add(ekran1.getText());
-           System.out.println("hello?");
-           System.out.println(ekran1.getText());
-           System.out.println(vec);
-           DefaultTableModel tm=(DefaultTableModel) tablica.getModel();
-           tm.addRow(vec);
+            }
         }
     }
     
