@@ -46,7 +46,7 @@ import HelperClasses.PolyOps;
  * @author Ivana
  */
 public class PolynomialGUI extends JPanel implements PolynomialInterface{
-    private final String url="jdbc:sqlite:C:\\Users\\Ivana\\Desktop\\Java_projekt\\Kalkulator_12_veljace\\Kalkulator\\Kalkulator\\baza\\baza.db";
+    private final String url="jdbc:sqlite:baza.db";
     private ArrayList<String> iskoristenaImena = new ArrayList<>();
     
     private final JPanel spremnik = new JPanel();
