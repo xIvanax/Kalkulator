@@ -17,6 +17,7 @@ Upute za pocetak (ono sto sam uspjela pohvatati):
 
 # Što još treba napraviti?
 - testovi/Jenkins
+- smjestiti rad s bzaom podataka unutar swing worker dretve
 - obraditi razne greške (npr krivi broj zagrada, korisnik unosi tekst umjesto broja itd.) - treba dodati i poruku u obliku JOptionPane
 - vizualno popraviti graficki kalkulator
 - treba srediti kod (napraviti sučelja, napraviti funkcije za dijelove koda koji se ponavljaju, anotirati sve da bi mogli imati javadoc)
