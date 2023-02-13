@@ -297,9 +297,20 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
         @Override
         public void actionPerformed(ActionEvent event){
             evaluateAt = jTextField1.getText();
-            Function f=parser.parse(ekran1.getText());
-            evaluatedFunction=f.evaluateAt(Double.parseDouble(evaluateAt), 0.0, 0.0);
-            display.setText(Double.toString(evaluatedFunction));
+            if((!"".equals(evaluateAt)) && (evaluateAt!=null)){
+                double value;
+                try{
+                    value = Double.parseDouble(evaluateAt);
+                }catch(NumberFormatException ex){
+                    JOptionPane.showMessageDialog(spremnik, "Unos mora biti broj!", "Pogrešan unos", JOptionPane.OK_CANCEL_OPTION);
+                    return;
+                }
+                Function f=parser.parse(textBox);
+                evaluatedFunction=f.evaluateAt(value, 0.0, 0.0);
+                String fja = "f(x) = " + ekran1.getText();
+                String output = fja + "\n" + "f("+evaluateAt+")="+evaluatedFunction;
+                JOptionPane.showMessageDialog(spremnik, output, "Rezultat evaluacije", JOptionPane.INFORMATION_MESSAGE);        
+            }
         }
     }
     
