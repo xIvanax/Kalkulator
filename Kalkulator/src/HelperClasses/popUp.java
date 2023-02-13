@@ -146,10 +146,11 @@ public class popUp extends JFrame implements ActionListener{
                         String funkcija=result.getString("Funkcija");
                         String tocka_eval =result.getString("Tocka_evaluacije");
                         povratnaVrijednost += result.getString("Rezultat");
-                        System.out.println("pv1 = "+povratnaVrijednost);
                         ekran.setText(ekran.getText()+povratnaVrijednost);
+                        return;
                     }
-                }    
+                }
+                JOptionPane.showMessageDialog(f, "Ne postoji spremljena vrijednost s imenom "+trazeni+".", "Greška", JOptionPane.ERROR_MESSAGE);
             }catch (SQLException ex){}
             po.hide();
             

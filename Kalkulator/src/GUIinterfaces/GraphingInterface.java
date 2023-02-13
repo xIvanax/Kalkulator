@@ -56,9 +56,10 @@ public interface GraphingInterface {
      * @param bin_naredba ActionListener za obradu akcije pozia binarne naredbe
      * @param unar_naredba ActionListener za obradu akcije poziva unarne naredbe
      * @param mem ActionListener za obradu akcije poziva pop-up prozora za rad s memorijom kalkualtora
+     * @param eval_naredba ActionListener za obradu evaluacije funkcije u zadanoj točki
      * @author Ivana
      */
-    public default void setUpButtons(JTextField ekran, JPanel unos, JPanel spremnik, JTabbedPane tab, ActionListener pisanje,ActionListener brisanje,ActionListener bin_naredba,ActionListener unar_naredba,ActionListener mem){
+    public default void setUpButtons(JTextField ekran, JPanel unos, JPanel spremnik, JTabbedPane tab, ActionListener pisanje,ActionListener brisanje,ActionListener bin_naredba,ActionListener unar_naredba,ActionListener mem, ActionListener eval_naredba){
         ekran.setText("");
         ekran.setSize(800, 100);
         ekran.setPreferredSize(new Dimension(800,100));
@@ -76,7 +77,7 @@ public interface GraphingInterface {
         dodajGumb("|x|",unar_naredba, spremnik); dodajGumb("(",pisanje, spremnik);
         dodajGumb(")",pisanje, spremnik); dodajGumb("D",brisanje, spremnik); 
         
-        dodajGumb("eval",bin_naredba, spremnik);
+        dodajGumb("eval",eval_naredba, spremnik);
         
         dodajGumb("x^y",bin_naredba, spremnik); dodajGumb("7",pisanje, spremnik);
         dodajGumb("8",pisanje, spremnik); dodajGumb("9",pisanje, spremnik);
