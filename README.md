@@ -22,7 +22,7 @@ linkovi za baze podataka:
 
 # Nove novosti :)
 - očišćen i raščlanjen kod za polinomni kalkulator - javi jel sad bolje za testiranje
-- osposobljena interakcija s bazom podataka u polinomnom kalkulatoru - _problem_: treba skuzit kak napravit url da vuce bazu lokalno iz Files od projekta, a ne s c diska itd.
+- osposobljena interakcija s bazom podataka u polinomnom kalkulatoru
 - započeto osposobljavanje interakcije s bazom podataka u graphing kalkulatoru - _problem_: u polinomnom sam imala tri gumba, a ovdje imam mjesta samo za jedan pa ne znam kak ću to izvest
 
 # Mogući problemi
