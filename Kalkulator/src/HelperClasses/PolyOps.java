@@ -6,6 +6,7 @@ package HelperClasses;
 
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 /**
  * Polinomne operacije na jednom mjestu
@@ -27,12 +28,13 @@ public class PolyOps {
             this.clanovi=clanovi;
         }
         /**
-         * ovo bi trebalo mozda negdje drugdje prebaciti, bas i ne spada tu
-         * @param ulaz
-         * @param token
-         * @return 
+         * Provjerava jesu li sve zagrade zatvorene i vraća lokaciju char-a token.
+         * @param ulaz String u kojem provjeravamo broj zagrada
+         * @param token char za koji provjeravamo nalazi li se u Stringu ulaz
+         * @return lokacija char-a token
+         * @author Ivana
          */
-        public int scanFromRight(String ulaz,char token){
+        public int scanFromRight(String ulaz, char token){
             int openParentheses=0;
             for(int i=ulaz.length()-1; i>=0; i--){
                 if(ulaz.charAt(i)==')'){
@@ -88,16 +90,16 @@ public class PolyOps {
          * funkcija uzima dva polinoma reprezentirana preko svoje liste clanova i vraca njihov umnozak u obliku liste clanova
          * @param poly1 clanovi prvog polinoma
          * @param poly2 clanovi drugog polinoma
-         * @return rezultat mnozenja u obliku liste clanova
+         * @param parent JPanel na koji će se "zakačiti" poruka upozorenja ako korisnik nešto pogrešno unese         * @return rezultat mnozenja u obliku liste clanova
          * @author Ivana
          */
-        public ArrayList<String> polyMulti(ArrayList<String> poly1, ArrayList<String> poly2){
+        public ArrayList<String> polyMulti(ArrayList<String> poly1, ArrayList<String> poly2, JPanel parent){
             ArrayList<String> resClanovi = new ArrayList<>();
             ArrayList<ArrayList<String>> svi = new ArrayList<>();
             double coef, exp, coef2, exp2;
             for(String expr1:poly1){
                 double info[] = new double[3];
-                info = coefAndExp(expr1);
+                info = coefAndExp(expr1, parent);
                 if(info==null){
                     return null;
                 }
@@ -106,7 +108,7 @@ public class PolyOps {
                 ArrayList<String> help = new ArrayList<>();
                 for(String expr2:poly2){
                     double info2[] = new double[3];
-                    info2 = coefAndExp(expr2);
+                    info2 = coefAndExp(expr2, parent);
                     if(info2==null){
                         return null;
                     }
@@ -133,7 +135,7 @@ public class PolyOps {
 
             svi.remove(0);
             for(ArrayList<String> i:svi){
-                resClanovi=polyAdd(i,resClanovi);
+                resClanovi=polyAdd(i,resClanovi, parent);
             }
             return resClanovi;
         }
@@ -141,10 +143,11 @@ public class PolyOps {
          * fja kao argumente uzima clanove dva polinoma i zbraja te polinome
          * @param poly1 clanovi prvog polinoma
          * @param poly2 clanovi drugog polinoma
+         * @param parent JPanel na koji će se "zakačiti" poruka upozorenja ako korisnik nešto pogrešno unese
          * @return rezultat zbrajanja poly1 i poly2 u obliku liste clanova
          * @author Ivana
          */
-        public ArrayList<String> polyAdd(ArrayList<String> poly1, ArrayList<String> poly2){
+        public ArrayList<String> polyAdd(ArrayList<String> poly1, ArrayList<String> poly2, JPanel parent){
             String res="";
             ArrayList<String> clanoviRes = new ArrayList<String>(); 
             double coef=0, exp=0, konstanta=0;
@@ -154,7 +157,7 @@ public class PolyOps {
             
             for(String expr1:poly1){
                 double info[] = new double[3];
-                info = coefAndExp(expr1);
+                info = coefAndExp(expr1, parent);
                 if(info==null){
                     return null;
                 }
@@ -162,7 +165,7 @@ public class PolyOps {
                 exp=info[1];
                 for(String expr2:poly2){
                     double info2[] = new double[3];
-                    info2 = coefAndExp(expr2);
+                    info2 = coefAndExp(expr2, parent);
                     if(info2==null){
                         return null;
                     }
@@ -202,7 +205,7 @@ public class PolyOps {
             konstanta=0; konstanta2=0;
             for(String expr1:poly2){
                 double info[] = new double[3];
-                info = coefAndExp(expr1);
+                info = coefAndExp(expr1, parent);
                 if(info==null){
                     return null;
                 }
@@ -210,7 +213,7 @@ public class PolyOps {
                 exp=info[1];
                 for(String expr2:clanoviRes){
                     double info2[] = new double[3];
-                    info2 = coefAndExp(expr2);
+                    info2 = coefAndExp(expr2, parent);
                     if(info2==null){
                         return null;
                     }
@@ -251,32 +254,32 @@ public class PolyOps {
          * @return polje double: na indeksu 0 je koeficijent, 1 je eksponent, 2 je li eksponent pozitivan
          * @author Ivana
          */    
-        public double[] coefAndExp(String expr1){
+        public double[] coefAndExp(String expr1, JPanel parent){
             double[] ret = new double[3];
             double coef=0, exp=0, konstanta=0;
             
-            if(expr1.contains("*")){//dakle sadrzi i *x
+            if(expr1.contains("*")){
                 ret[0]=Double.parseDouble(expr1.split("\\*")[0]);
-            }else if(expr1.contains("x") && !(expr1.contains("*"))){//ako je koeficijent jednak 1
+            }else if(expr1.contains("x") && !(expr1.contains("*"))){
                 if(expr1.contains("-"))
                     ret[0]=-1;
                 else
                     ret[0]=1;
-            }else if(!(expr1.contains("x") && !(expr1.contains("*")))){//ako je jednak konstanti
+            }else if(!(expr1.contains("x") && !(expr1.contains("*")))){
                 ret[0]=Double.parseDouble(expr1);
                 konstanta=1;
             }
             
-            if(konstanta==0){//ako nije konstanta zanima me koji je eksponent
-                int jednako=-1;//provjeravam ima li jednak broj otvorenih i zatvorenih zagrada
+            if(konstanta==0){
+                int jednako=-1;
                 if(expr1.contains("(") && expr1.contains(")"))
                     jednako=1;
                 else if(!expr1.contains("(") && !expr1.contains(")"))
                     jednako = 0;
                 if(jednako==-1){
+                    JOptionPane.showMessageDialog(parent, "Niste zatvorili sve zagrade!", "Greška", JOptionPane.ERROR_MESSAGE);
                     return null;
                 }
-                //slucaj kad imamo zagrade
                 if(jednako==1){
                     ret[2]=0;
                     int start=expr1.indexOf("(");
@@ -289,11 +292,10 @@ public class PolyOps {
                         q=expr1.substring(start+1, finish).indexOf("/");
                     }
 
-                    int negative=0;//provjera je li eksponent negativan
+                    int negative=0;
                     if(expr1.substring(start+1, finish).contains(("-")))
                         negative=1;
 
-                        //slucaj kad je eksponent razlomak:
                     if(q!=-1){
                         double brojnik=Double.parseDouble(izmeduZagrada.split("/")[0]);
                         double nazivnik=Double.parseDouble(izmeduZagrada.split("/")[1]);
@@ -303,18 +305,18 @@ public class PolyOps {
                         }else if(negative==0){
                             exp=brojnik/nazivnik;
                         }
-                    }else{//slucaj kad eksponent nije razlomak:
+                    }else{
                         if(negative==1){
                             exp=-(Double.parseDouble(expr1.substring(start+1, finish)));
                         }else{
                             exp=Double.parseDouble(expr1.substring(start+1, finish));
                         }
                     }
-                }else{//slucaj kad nemamo zagrade u eskponentu
+                }else{
                     ret[2]=1;
-                    if(expr1.contains("^")){//x^nesto
+                    if(expr1.contains("^")){
                         exp=Double.parseDouble(expr1.split("\\^")[1]);
-                    }else{//samo je napisan x, dakle nema potenciju, pa stavljamo da je eksponent jednak 1
+                    }else{
                         exp=1;
                     }
                 }
