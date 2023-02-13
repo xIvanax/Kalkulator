@@ -25,41 +25,34 @@ import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
 import Grapher.Expressions.Function;
 import Grapher.Parser.ExpressionParser;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import HelperClasses.popUp;
 
 /**
  *
  * @author Dorotea
  */
 public class GraphingGUI extends JPanel implements GraphingInterface{ 
-    private final String url="jdbc:sqlite:C:\\Users\\Ivana\\Desktop\\Java_projekt\\Kalkulator_12_veljace\\Kalkulator\\Kalkulator\\baza\\baza.db";
+    private final String url="jdbc:sqlite:baza.db";
     private ArrayList<String> iskoristenaImena = new ArrayList<>();
     
-    private JPanel spremnik;
-    private JPanel unos;
-    private JPanel prikaz;
-    private JPanel memorija;
+    private JPanel spremnik = new JPanel();
+    private JPanel unos = new JPanel();
+    private JPanel prikaz = new JPanel();
     private String textBox;
-    private IntegratedDrawFunctionScreen nacrtaj;
-    public JTextField ekran;
+    private IntegratedDrawFunctionScreen nacrtaj = new IntegratedDrawFunctionScreen();
+    public JTextField ekran = new JTextField();
     private Function function;
     private ExpressionParser parser;
-    private JTabbedPane tab;
+    private JTabbedPane tab = new JTabbedPane();
     private JScrollPane sp;
     
     private boolean start = true;
@@ -76,88 +69,21 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
         //nema se sta testirat:
         setUpDatabase(url);
         
-        nacrtaj=new IntegratedDrawFunctionScreen();
-        unos=new JPanel();
-        prikaz=new JPanel();
-        memorija=new JPanel();
-        
-        //omogucava resize
         this.setLayout(new BorderLayout());
         unos.setLayout(new BorderLayout());
         prikaz.setLayout(new BorderLayout());
-        memorija.setLayout(new BorderLayout());
-        
-        //slicno kao u CalCulatorGUI implementiramo unos funkcije koju crtamo
-        //napravljene su neke promjene, npr. nema vise %, te su dodane nove mogucnosti
-        ekran = new JTextField();
-        ekran.setText("");
-        ekran.setSize(800, 100);
-        ekran.setPreferredSize(new Dimension(800,100));
-        ekran.setEnabled(true);
-        ekran.setFont(ekran.getFont().deriveFont(Font.BOLD, 28f));
-        
-        unos.add(ekran, BorderLayout.NORTH);
-        spremnik=new JPanel();
-        
-        /**
-         * ja sam dodala tu gumbe za spremanje polinoma, deriviranje i potenciranje sam da od nekud krenem,
-         * vidim da imamo zaseban 
-         */
         spremnik.setLayout(new GridLayout(6,7));
         
         ActionListener pisanje = new GraphingGUI.AkcijaPisanja();
         ActionListener brisanje = new GraphingGUI.AkcijaBrisanja();
         ActionListener bin_naredba = new GraphingGUI.AkcijaBinarneOperacije();
         ActionListener unar_naredba = new GraphingGUI.AkcijaUnarneOperacije();
-        ActionListener spremi_naredba = new GraphingGUI.AkcijaSpremanja();
-        ActionListener doh_naredba = new GraphingGUI.AkcijaUzimanja();
-        ActionListener mem = new GraphingGUI.AkcijaPregledaMemorije();
+        ActionListener mem = new GraphingGUI.AkcijaMemorije();
         
-        dodajGumb("⌈x⌉",unar_naredba); dodajGumb("⌊x⌋",unar_naredba);
-        dodajGumb("√x",unar_naredba); dodajGumb("x^(1/y)",bin_naredba);
-        dodajGumb("π",pisanje); dodajGumb("e",pisanje); 
-        dodajGumb("C",brisanje);
-        
-        dodajGumb("x",pisanje); dodajGumb("1/x",unar_naredba);
-        dodajGumb("|x|",unar_naredba); dodajGumb("(",pisanje);
-        dodajGumb(")",pisanje); dodajGumb("D",brisanje); 
-        //obrisan gumb CE jer nema smisla u ovom kontekstu/dizajnu kalkulatora (ja mislim, ak ti mislis da ima
-        //lako ga vratim - sad sam ga zamijenila s gumbom eval pomocu kojeg cemo napravit evaluation funckije
-        //zapravo ce funkcionirat isto kao "=" u obicnom kalkulatoru
-        
-        /**
-         * ovaj komentar iznad napisala
-         * @Ivana
-         */
-        dodajGumb("eval",bin_naredba);
-        
-        dodajGumb("x^y",bin_naredba); dodajGumb("7",pisanje);
-        dodajGumb("8",pisanje); dodajGumb("9",pisanje);
-        dodajGumb("/",bin_naredba); dodajGumb("sin",unar_naredba); 
-        dodajGumb("arcsin",unar_naredba);
-        
-        dodajGumb("10^x",unar_naredba); dodajGumb("4",pisanje);
-        dodajGumb("5",pisanje); dodajGumb("6",pisanje);
-        dodajGumb("*",bin_naredba); dodajGumb("cos",unar_naredba); 
-        dodajGumb("arccos",unar_naredba);
-        
-        dodajGumb("logx",unar_naredba); dodajGumb("1",pisanje);
-        dodajGumb("2",pisanje); dodajGumb("3",pisanje);
-        dodajGumb("-",bin_naredba); dodajGumb("tg",unar_naredba); 
-        dodajGumb("arctg",unar_naredba);
-        //preimenovala sam gumb "=" u "draw"
-        /**
-         * ovaj komentar iznad napisala
-         * @Ivana
-         */
-        dodajGumb("lnx",unar_naredba); dodajGumb("0",pisanje);
-        dodajGumb(".",pisanje); dodajGumb("draw",bin_naredba);
-        dodajGumb("+",bin_naredba); dodajGumb("ctg",unar_naredba); 
-        dodajGumb("arcctg",unar_naredba);
+        setUpButtons(ekran, unos, spremnik, tab, pisanje, brisanje, bin_naredba, unar_naredba, mem);
         
         unos.add(spremnik, BorderLayout.CENTER);
         prikaz.add(nacrtaj, BorderLayout.CENTER);
-        tab=new JTabbedPane();
         tab.add("Unos",unos);
         tab.add("Graf",prikaz);
         tab.add("Memorija",sp);
@@ -169,23 +95,17 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
         new Thread(nacrtaj).start();
         
         this.add(tab);
-        
-        
     }
     
-    private void dodajGumb(String oznaka, ActionListener slusac){
-        JButton gumb = new JButton(oznaka);
-        gumb.addActionListener(slusac);
-        spremnik.add(gumb);
-    }
     /**
-     * @Ivana
-     * @return što je trenutno na ekranu
+     * ActionListener odgovoran za poziv skočnog prozora.
+     * @author Ivana
      */
-    public String readScreen(){
-        if(this.ekran==null)
-            return "";
-        return ekran.getText();
+    private class AkcijaMemorije implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            popUp p = new popUp(unos, url, iskoristenaImena, ekran, evaluateAt, evaluatedFunction);
+        }
     }
     
     private class AkcijaPisanja implements ActionListener{
@@ -193,22 +113,10 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
         public void actionPerformed(ActionEvent event){
             String unos=event.getActionCommand();
             if(start){
-                //ovo nam vise ne treba jer je dizajn drukciji nego kod standardnog kalkulatora,
-                //ne vidi se u svakom trenu samo jedna znamenka nego cijeli niz znakova
-                //ekran.setText("");
-                /**
-                * ovaj komentar iznad napisala
-                * @Ivana
-                */
                 textBox=ekran.getText();
-                //System.out.println("sad je start true i textbox= "+textBox);
                 start=false;
             }
-            
-            //System.out.println("*unos="+unos+" ekran="+ekran.getText());
-            //updateanje ekrana kao prije:
             ekran.setText(ekran.getText()+unos);
-            //System.out.println("**unos="+unos+" ekran="+ekran.getText());
             
             if(unos.equals("π")){
                 String pi=Double.toString(Math.PI);
@@ -231,35 +139,18 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
                 ekran.setText(screen);
                 textBox=screen;
             }
-            
-            /*if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
-			if (textBox.length() > 0) {
-				textBox = textBox.substring(0, textBox.length() - 1);
-			}
-		} else if (Character.isLetterOrDigit(e.getKeyChar()) || e.getKeyChar() == '^' || e.getKeyChar() == '-' ||
-				e.getKeyChar() == '+' || e.getKeyChar() == '*' || e.getKeyChar() == '/' || e.getKeyChar() == '(' ||
-				e.getKeyChar() == ')' || e.getKeyChar() == '%' || e.getKeyChar() == ',' || e.getKeyChar() == '.') {
-			textBox += e.getKeyChar();
-		} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-			function = parser.parse(textBox);
-			if (function == null) {
-				textBox = "";
-			}
-		}*/
         }
     }
+    
     private class AkcijaBrisanja implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent event) {
             String unos = event.getActionCommand();
             switch (unos) {
                 case "D":
-                    //brise se samo zadnji znak
                     String str = ekran.getText();
-                    //nema unosa pa nemamo što brisati:
                     if("".equals(str))
                         break;
-                    //na ekran stavljam sadrzaj ekrana bez zadnjeg znaka i updateam "screen":
                     if(str.length()>1){
                         ekran.setText(str.substring(0, str.length()-1));
                         screen=ekran.getText();
@@ -267,12 +158,9 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
                         ekran.setText("");
                         screen="";
                     }
-                    //System.out.println("Nakon pritiske gumba D screen="+screen);
                     break;
                 case "C":
-                    //brišem cijeli input kalkulatora (back to square one)
                     start = true;
-                    //rezultat=0.0;
                     zadnjaBinarnaOperacija="=";
                     zadnjaUnarnaOperacija="";
                     screen="";
@@ -290,7 +178,6 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
             String op=event.getActionCommand();
             String operacija=operation(op);
             if(start){
-                //System.out.println("Sad je start true");
                 if(operacija.equals("-") && "".equals(ekran.getText())){
                     ekran.setText(operacija);
                     start=false;
@@ -308,7 +195,6 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
                         screen="";
                     }else{
                         ekran.setText(ekran.getText()+zadnjaBinarnaOperacija);
-                        //System.out.println("***ekran="+ekran.getText());
                         screen=ekran.getText();
                     }
                 }
@@ -317,17 +203,14 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
                 zadnjaBinarnaOperacija=operacija;
                 
                 if(zadnjaBinarnaOperacija.equals("=")){
-                    //System.out.println("screen nakon pritiska ="+screen);
                    textBox=ekran.getText();
                    function=parser.parse(textBox);
                         if(function==null){
                             textBox="";
                         }
-                    
                     screen="";
                 }else{
                     ekran.setText(ekran.getText()+zadnjaBinarnaOperacija);
-                    //System.out.println("** **ekran="+ekran.getText());
                     screen=ekran.getText();
                 }
             }
@@ -363,7 +246,6 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
     }
     
     private class AkcijaUnarneOperacije implements ActionListener{
-        //double unaryResult=rezultat;
         @Override
         public void actionPerformed(ActionEvent event) {
             String op=event.getActionCommand();
@@ -415,106 +297,6 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
         }
     }
     
-        private class AkcijaUzimanja implements ActionListener{
-            @Override
-        public void actionPerformed(ActionEvent event) {
-            String trazeni = JOptionPane.showInputDialog(spremnik, "Koju evaluiranu vriejdnost želite dohvatiti?", "Dohvaćanje evaluirane vrijednosti", JOptionPane.QUESTION_MESSAGE);
-            try{
-                Class.forName("org.sqlite.JDBC");
-            } catch (ClassNotFoundException ex){
-            }
-            String sql ="SELECT Ime, Funkcija, Tocka_evaluacije, Rezultat FROM Funkcije";
-            Connection conn=null;
-            ResultSet result = null; 
-            try{
-               conn = DriverManager.getConnection(url);
-               Statement stmt = conn.createStatement();
-               result = stmt.executeQuery(sql);
-            }catch(SQLException e){
-               System.out.println(e.getMessage());
-            }
-            try {
-                while(result.next()){
-                    String ime=result.getString("Ime");
-                    if(ime.equals(trazeni)){
-                        String funkcija=result.getString("Funkcija");
-                        String tocka_eval =result.getString("Tocka_evaluacije");
-                        String res = result.getString("Rezultat");
-                        ekran.setText(ekran.getText()+tocka_eval);
-                    }
-                }    
-            }catch (SQLException ex){}
-        }
-    }
-        
-    private class AkcijaSpremanja implements ActionListener{
-            @Override
-        public void actionPerformed(ActionEvent event) {
-            try {
-                Class.forName("org.sqlite.JDBC");
-            } catch (ClassNotFoundException ex) {}
-            String name = "";
-            while(true){
-                name = JOptionPane.showInputDialog(spremnik, "Pod kojim imenom želite spremiti Evaluiranu vrijednost funkcije?", "Spremanje evaluirane vrijednosti", JOptionPane.QUESTION_MESSAGE);
-                if(name==null)
-                    return;
-                if(!iskoristenaImena.contains(name)){
-                    iskoristenaImena.add(name);
-                    break;
-                }
-                else{
-                    JOptionPane.showMessageDialog(spremnik, "Već ste spremili nešto pod tim imenom. Odaberite drugo ime.", "Greška", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-            //kod polinoma cu zasad omoguciti sam spremanje polinoma, ne i njegove evaluirane vrijednosti 
-            String sql ="INSERT INTO Funkcije (Ime, Funkcija, Tocka_evaluacije, Rezultat) VALUES ('"+name+"','"+ekran.getText()+"','"+evaluateAt+"','"+evaluatedFunction+"');";
-            Connection conn=null;
-            ResultSet result = null; 
-            try{
-                conn = DriverManager.getConnection(url);
-                System.out.println("Connection established");
-                Statement stmt = conn.createStatement();
-                stmt.execute(sql);
-            }catch(SQLException e){
-               System.out.println(e.getMessage());
-            }
-        }
-    }
-    //nema se sta testirat?
-    class AkcijaPregledaMemorije implements ActionListener{
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String output ="Ime"+"\t"+"Funkcija"+"\t"+"Tocka_evaluacije"+"\t"+"Rezultat"+"\n";
-        System.out.println(output);
-            try{
-                Class.forName("org.sqlite.JDBC");
-            } catch (ClassNotFoundException ex){
-            }
-            String sql ="SELECT Ime, Funkcija, Tocka_evaluacije, Rezultat FROM Funkcije";
-            Connection conn=null;
-            ResultSet result = null; 
-            try{
-               conn = DriverManager.getConnection(url);
-               Statement stmt = conn.createStatement();
-               result = stmt.executeQuery(sql);
-            }catch(SQLException ev){
-               System.out.println(ev.getMessage());
-            }
-            try {
-                while(result.next()){
-                    String ime=result.getString("Ime");
-                    String funkcija=result.getString("Funkcija");
-                    String tocka_eval =result.getString("Tocka_evaluacije");
-                    String res = result.getString("Rezultat");
-                    if(ime!=null)
-                        output+=ime+"\t"+funkcija+"\t"+tocka_eval+"\t"+res+"\n";
-                }
-            }    
-            catch (SQLException ex){}
-            JOptionPane.showMessageDialog(spremnik, new JTextArea(output));
-    }
-    }
     /**
      * pokušaj integracije grafa i unosa
      * @Ivana
@@ -525,18 +307,12 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
 
 	private BufferedImage buff;
 	private Graphics2D g2d;
-	
-	//private ExpressionParser parser;
-	//private Function function;
-	
+        
 	private double windowX, windowY, windowWidth, windowHeight;
 	private Point mousePt;
 	
-	//private String textBox;
-	
 	public IntegratedDrawFunctionScreen() {
             addMouseWheelListener(this);
-            //addKeyListener(this);
             this.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
@@ -575,9 +351,8 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
 		windowWidth = windowHeight * WIDTH / HEIGHT;
             }
 	
-	// Time variables
-	private double yVar=0.0;	// Constantly increasing
-	private double zVar=0.0;	// Cycles smoothly from -1 to 1
+	private double yVar=0.0;	
+	private double zVar=0.0;	
 	private synchronized void updateDT(double dt) {
 		yVar += dt;
 		zVar = Math.sin(yVar);
@@ -603,8 +378,7 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
 				double scaledX = x;
 				double scaledY = toScreenY(yy);
 				scaledY = Math.min(Math.max(scaledY, -5), HEIGHT + 5);
-                                //
-				//funkcija evaluirana u x je yy
+                                
                                 if(!"Infinity".equals(check)){
                                     xs.add(scaledX);
                                     ys.add(scaledY);
