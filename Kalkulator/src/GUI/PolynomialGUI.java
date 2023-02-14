@@ -286,7 +286,7 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
             //mislim da se ovdje nema sta testirat
             evaluateAt = jTextField1.getText();
             Function f=parser.parse(ekran1.getText());
-            evaluatedFunction=f.evaluateAt(Double.parseDouble(evaluateAt), 0.0, 0.0);
+            evaluatedFunction=f.evaluateAt(Double.parseDouble(evaluateAt));
             display.setText(Double.toString(evaluatedFunction));
         }
     }
@@ -547,7 +547,7 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
 				double xx = toRealX(x);
 				
 				double yy = 0.0;
-				if (function != null) yy = function.evaluateAt(xx, yVar, zVar);
+				if (function != null) yy = function.evaluateAt(xx);
                                 String check = Double.toString(yy);
 				double scaledX = x;
 				double scaledY = toScreenY(yy);

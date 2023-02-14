@@ -8,7 +8,6 @@ import Grapher.Expressions.AbsoluteValue;
 import Grapher.Expressions.Acos;
 import Grapher.Expressions.Arcctan;
 import Grapher.Expressions.Ceiling;
-import Grapher.Expressions.Cosecant;
 import Grapher.Expressions.Cosine;
 import Grapher.Expressions.Cotangent;
 import Grapher.Expressions.Difference;
@@ -16,7 +15,6 @@ import Grapher.Expressions.Floor;
 import Grapher.Parser.Error;
 import Grapher.Expressions.Function;
 import Grapher.Expressions.Log;
-import Grapher.Expressions.Modulo;
 import Grapher.Expressions.NthRoot;
 import Grapher.Expressions.Quantity;
 import Grapher.Expressions.Variable;
@@ -30,7 +28,6 @@ import Grapher.Expressions.Power;
 import Grapher.Expressions.Power10;
 import Grapher.Expressions.Product;
 import Grapher.Expressions.Quotient;
-import Grapher.Expressions.Secant;
 import Grapher.Expressions.Sine;
 import Grapher.Expressions.SquareRoot;
 import Grapher.Expressions.Sum;
@@ -44,15 +41,10 @@ public class ExpressionParser {
     
 	private Error error;
 	private Variable x;
-        //mislim da nam sljedece dvije varijable nisu potrebne
-	private Variable y;
-	private Variable z;
 	
 	public ExpressionParser(){
 		error=new Error();
 		x=new Variable();
-		y=new Variable();
-		z=new Variable();
         }
 	
         /**
@@ -77,10 +69,6 @@ public class ExpressionParser {
 			if(Character.isAlphabetic(currentChar)) {
 				if(currentChar=='x'){
                                     tkString.addToken(new Token(TokenType.X));
-				}else if(currentChar=='y'){
-                                    tkString.addToken(new Token(TokenType.Y));
-				}else if(currentChar=='z'){
-                                    tkString.addToken(new Token(TokenType.Z));
 				}else{
                                     name+=currentChar;
 				}
@@ -128,8 +116,6 @@ public class ExpressionParser {
                                     tkString.addToken(new Token(TokenType.DIVIDED_BY));
 				else if(currentChar=='^')
                                     tkString.addToken(new Token(TokenType.RAISED_TO));
-				else if(currentChar=='%')
-                                    tkString.addToken(new Token(TokenType.MODULO));
 				else{
                                     error.makeError("The character '"+currentChar+"' is not allowed!");
                                     return null;
@@ -172,7 +158,9 @@ public class ExpressionParser {
                             error.makeError("Parsing of the function \"" + expr + "\" failed.");
                             return null;
 			}
-			return new Function(root, x, y, z);
+                        System.out.println("root:" +root);
+                        System.out.println("x:" +x);
+			return new Function(root, x);
 		}
 		error.makeError("Parsing of the function \""+expr+"\" failed.");
 		return null;
@@ -221,7 +209,7 @@ public class ExpressionParser {
             return -1;
 	}
         
-        private TokenType getTokenTypeByName(String name) {
+        public TokenType getTokenTypeByName(String name) {
             TokenType[] values=TokenType.FUNCTIONS;
             for(TokenType v:values){
                 if(v.name.equals(name))
@@ -230,7 +218,7 @@ public class ExpressionParser {
             return null;
 	}
 	
-	private Quantity doOrderOfOperations(TokenString tokens){
+	public Quantity doOrderOfOperations(TokenString tokens){
 		/**
                 * @author Dorotea
 		* Redosljed računskih operacija promatramo u smjeru obrnutom od uobičajnog
@@ -264,12 +252,6 @@ public class ExpressionParser {
 				TokenString right=tokens.split(location+1,tokens.getLength());
 				ret=new Product(doOrderOfOperations(left),doOrderOfOperations(right));
                             }else{
-                                location=scanFromRight(tokens,TokenType.MODULO);
-                                if(location!=-1) {
-				TokenString left=tokens.split(0,location);
-				TokenString right=tokens.split(location+1,tokens.getLength());
-				ret=new Modulo(doOrderOfOperations(left),doOrderOfOperations(right));
-                                }else{
                                     location=scanFromRight(tokens,TokenType.RAISED_TO);
                                     if(location!=-1) {
 					TokenString left=tokens.split(0,location);
@@ -292,29 +274,17 @@ public class ExpressionParser {
                                             if(location!=-1){
 						ret=x;
                                             }else{
-						location=scanFromRight(tokens, TokenType.Y);
-						if(location!=-1){
-                                                    ret = y;
-						}else{
-                                                    location=scanFromRight(tokens,TokenType.Z);
-                                                    if(location!=-1){
-							ret=z;
-                                                    }else{
-                                                        location=scanFromRight(tokens,TokenType.NUMBER);
-							if(location!=-1) {
-                                                            ret=new Number(Double.parseDouble(tokens.tokenAt(location).data));
-							}
-                                                    }
+						location=scanFromRight(tokens,TokenType.NUMBER);
+						if(location!=-1) {
+                                                    ret=new Number(Double.parseDouble(tokens.tokenAt(location).data));
 						}
                                             }
 					}
                                     }
-				}
                             }
 			}
                     }
 		}
-		
             return ret;
 	}
 
@@ -349,10 +319,6 @@ public class ExpressionParser {
                     return new Tangent(param1);
 		case COTANGENT:
                     return new Cotangent(param1);
-		case SECANT:
-                    return new Secant(param1);
-                case COSECANT:
-                    return new Cosecant(param1);
 		case SQUARE_ROOT:
                     return new SquareRoot(param1);
                 case ARCSINE:

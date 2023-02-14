@@ -456,6 +456,10 @@ public class PolyOps {
                     rezultat+=Der(ulaz);
                 }
             }
+            
+            if(rezultat.charAt(rezultat.length()-1)=='+' || rezultat.charAt(rezultat.length()-1)=='-'){
+                rezultat=rezultat.substring(0,rezultat.length()-1);
+            }
             return rezultat;
         }        
 }

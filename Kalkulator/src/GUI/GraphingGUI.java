@@ -235,7 +235,7 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
                 case "eval":
                     evaluateAt = JOptionPane.showInputDialog(spremnik, "Unesite x:", "Evaluacija funkcije", JOptionPane.QUESTION_MESSAGE);
                     Function f=parser.parse(textBox);
-                    evaluatedFunction=f.evaluateAt(Double.parseDouble(evaluateAt), 0.0, 0.0);
+                    evaluatedFunction=f.evaluateAt(Double.parseDouble(evaluateAt));
                     String fja = "f(x) = " + ekran.getText();
                     String output = fja + "\n" + "f("+evaluateAt+")="+evaluatedFunction;
                     System.out.println("f("+evaluateAt+")="+evaluatedFunction);
@@ -373,7 +373,7 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
 				double xx = toRealX(x);
 				
 				double yy = 0.0;
-				if (function != null) yy = function.evaluateAt(xx, yVar, zVar);
+				if (function != null) yy = function.evaluateAt(xx);
                                 String check = Double.toString(yy);
 				double scaledX = x;
 				double scaledY = toScreenY(yy);
