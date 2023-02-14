@@ -10,6 +10,7 @@ Upute za pocetak (ono sto sam uspjela pohvatati):
 - osposobljena interakcija s bazom podataka u polinomnom kalkulatoru
 - osposobljena interakcija s bazom podataka u grafičkom kalkulatoru
 - obrađene su sve greške (ja mislim)
+- riješen je problem krivo formatiranog inputa i outputa u polinomnom kalkulatoru - sad sve radi "prirodno" i output je sortiran po potencijama 
 
 # Mogući problemi
 - polinomni kalkulator npr pri deriviranju polinoma x+x vrati 1+1 umjesto 2
