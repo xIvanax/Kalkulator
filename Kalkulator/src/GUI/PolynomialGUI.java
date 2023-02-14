@@ -319,8 +319,25 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
         @Override
         public void actionPerformed(ActionEvent event) {
             PolyOps p = new PolyOps();
+            
             String ulaz=ekran1.getText();
-            String izlaz=p.deriviraj(ulaz);
+            
+            ulaz = p.pozivUredi(ulaz, spremnik);
+            ArrayList<String> pom = p.combineLikeTerms(p.dohvati(ulaz), spremnik);
+            System.out.println("pom= "+pom);
+            String res="";
+                if(pom.isEmpty()==false){
+                    res+=pom.get(0);
+                pom.remove(0);
+                for(String clan:pom)
+                    if(clan.charAt(0)!='-')
+                        res+="+"+clan;
+                    else
+                        res+=clan;
+                }
+            ulaz=res;
+            System.out.println("res= "+res);
+            String izlaz=p.deriviraj(ulaz, prikaz);
             if(izlaz.length()>1)
                 if(izlaz.charAt(izlaz.length()-1)=='+' || izlaz.charAt(izlaz.length()-1)=='-'){
                     display.setText(izlaz.substring(0,izlaz.length()-1));

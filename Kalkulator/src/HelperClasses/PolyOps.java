@@ -14,6 +14,7 @@ import javax.swing.JPanel;
  */
 public class PolyOps {
         ArrayList<String> clanovi;
+        ArrayList<String> list=new ArrayList<>();
         /**
          * prazan konstruktor
          */
@@ -403,20 +404,12 @@ public class PolyOps {
         }
         /**
          * 
-<<<<<<< HEAD
          * @param expr koji je zapravo jedan clan u polinomu
          * @return vraca derivaciju unesenog clana
          * @param parent  prozor na koji će se "zakačiti" poruka o grešci
          * @author Dorotea
          */
         public String Der(String expr,JPanel parent){
-=======
-         * @param expr
-         * @return
-         * @author Dorotea
-         */
-        public String Der(String expr){
->>>>>>> 9d3c59fc29178d3194babda68fb76d2617197075
             String res="";
             double coef=0, exp=0;
             //prvo odredujem koliko iznosi koeficijent
@@ -436,31 +429,18 @@ public class PolyOps {
                 parenthesis=1;
 
             for(int i=0; i<expr.length(); i++){
-<<<<<<< HEAD
                 if(expr.charAt(i)=='('){
                     jednako--;
                 }else if(expr.charAt(i)=='('){
                     jednako++;
-=======
-                if(i==')'){
-                    jednako++;
-                }else if(i=='('){
-                    jednako--;
->>>>>>> 9d3c59fc29178d3194babda68fb76d2617197075
+
                 }     
             }
 
             if(jednako!=0){
-<<<<<<< HEAD
                 JOptionPane.showMessageDialog(parent, "Niste zatvorili sve zagrade!", "Greška", JOptionPane.ERROR_MESSAGE);
                 return null;
-=======
-                /**
-                 * mislim da bi se ovo trebalo nekak handleat jer ovak i ak ne valja broj zagrada se nis ne dogodi neg kod sam nastavi ko da sve valja
-                 * @Ivana
-                 */
-                System.out.println("Niste zatvorili sve zagrade!");
->>>>>>> 9d3c59fc29178d3194babda68fb76d2617197075
+
             }
 
             /**
@@ -473,11 +453,8 @@ public class PolyOps {
                 int start=expr.indexOf("(");
                 int finish=expr.indexOf(")");
                 
-<<<<<<< HEAD
                 String izmeduZagrada=expr.substring(start+1, finish);
-=======
-                String izmeduZagrada = expr.substring(start+1, finish);
->>>>>>> 9d3c59fc29178d3194babda68fb76d2617197075
+
                 int q=-1;
                 if(expr.substring(start+1, finish).contains(("/"))){
                     q=expr.substring(start+1, finish).indexOf("/");
@@ -529,45 +506,29 @@ public class PolyOps {
         
         /**
          * Sljedeća funkcija je po konstrukciji slična funkciji doOrderOfOperations iz EXPressionParser-a
-<<<<<<< HEAD
          * @param ulaz je polinom koji zelimo derivirati
          * @param parent  prozor na koji će se "zakačiti" poruka o grešci
          * @return String koji sadrži derivaciju unesenog polinoma
          * @author Dorotea
          */
         public String deriviraj(String ulaz,JPanel parent){
-=======
-         * @param ulaz
-         * @return String koji sadrži derivaciju unesenog polinoma
-         * @author Dorotea
-         */
-        public String deriviraj(String ulaz){
->>>>>>> 9d3c59fc29178d3194babda68fb76d2617197075
             String rezultat="";
             int location=scanFromRight(ulaz,'+');
             if(location!=-1){
                 String left=ulaz.substring(0,location);
                 String right=ulaz.substring(location+1,ulaz.length());
-<<<<<<< HEAD
                 rezultat+=deriviraj(left,parent)+"+"+Der(right,parent);
-=======
-                rezultat+=deriviraj(left)+"+"+Der(right);
->>>>>>> 9d3c59fc29178d3194babda68fb76d2617197075
+
             }else{
                 location=scanFromRight(ulaz,'-');
                 if(location!=-1){
                     if(location==0){
                         String right=ulaz.substring(location+1,ulaz.length());
-<<<<<<< HEAD
                         rezultat+="-"+Der(right,parent);
-=======
-                        rezultat+="-"+Der(right);
->>>>>>> 9d3c59fc29178d3194babda68fb76d2617197075
                     }else{
                         String left=ulaz.substring(0,location);
                         String right=ulaz.substring(location+1,ulaz.length());
                         if(left.isEmpty()){
-<<<<<<< HEAD
                             rezultat+=Der(right,parent);
                         }
                         else{
@@ -576,23 +537,11 @@ public class PolyOps {
                     } 
                 }else{
                     rezultat+=Der(ulaz,parent);
-=======
-                            rezultat+=Der(right);
-                        }
-                        else{
-                            rezultat+=deriviraj(left)+"-"+Der(right);
-                        }
-                    } 
-                }else{
-                    rezultat+=Der(ulaz);
->>>>>>> 9d3c59fc29178d3194babda68fb76d2617197075
                 }
             }
-            
             if(rezultat.charAt(rezultat.length()-1)=='+' || rezultat.charAt(rezultat.length()-1)=='-'){
                 rezultat=rezultat.substring(0,rezultat.length()-1);
             }
-<<<<<<< HEAD
             return rezultat;
         }        
 
@@ -656,7 +605,7 @@ public class PolyOps {
          * @author Dorotea
          */
         public String uredi(String ulaz, JPanel parent){
-            ArrayList<String> list=new ArrayList<>();
+            //ArrayList<String> list=new ArrayList<>();
             int location;
             int z=zagrade(ulaz);
         
@@ -667,22 +616,6 @@ public class PolyOps {
                         uredi(left,parent);
                         uredi(right,parent);
                     }else{
-//                        location=scanFromRight(ulaz,'-');
-//                        if(location!=-1){
-//                            if(location==0){
-//                                String right=ulaz.substring(location,ulaz.length());
-//                                uredi(right,parent);
-//                            }else{
-//                                String left=ulaz.substring(0,location);
-//                                String right=ulaz.substring(location+1,ulaz.length());
-//                                if(left.isEmpty()){
-//                                    uredi(right,parent);
-//                                }else{
-//                                    uredi(right,parent);
-//                                    uredi(left,parent);
-//                                }
-//                            } 
-//                        }else{
                             if(z>1){
                             int[] zag=par(ulaz);
                             if(zag[1]==ulaz.length()-1){
@@ -702,21 +635,42 @@ public class PolyOps {
                                     list.add(ulaz);
                                 }
                             }
-                        //}
                     }
-            
+            //System.out.println("list= "+list);
             String rezultat="";
             StringBuilder sb = new StringBuilder();
-            for(String str:list)
+            for(String str:list){
+                //System.out.println("prije sb="+sb);
                 sb.append(str).append(" ");
+                //System.out.println("str="+str);
+                //System.out.println("kasnije sb="+sb);
+            }
             rezultat=sb.substring(0, sb.length() - 1);
-            System.out.println(rezultat);
+            //System.out.println("rezultat=" +rezultat);
             return rezultat;
         }
-=======
-           
         
-            return rezultat;
-        }        
->>>>>>> 9d3c59fc29178d3194babda68fb76d2617197075
+        public String pozivUredi(String ulaz, JPanel parent){
+            list.clear();
+            uredi(ulaz, parent);
+            System.out.println("list= "+list);
+            String prettyPrint="";
+            int prvi=1;
+            for(String i:list){
+                if(i.charAt(0)!='-'){
+                    if(prvi!=1)
+                        prettyPrint+="+"+i;
+                    else{
+                        prettyPrint+=i;
+                        prvi=0;
+                    }
+                }else{
+                    prettyPrint+=i;
+                    if(prvi==1)
+                        prvi=0;
+                }
+            }
+            System.out.println("pretty= "+prettyPrint);
+            return prettyPrint;
+        }
 }
