@@ -6,11 +6,9 @@ Upute za pocetak (ono sto sam uspjela pohvatati):
 4) svaki put kad se nesto promijeni, unutar GitBash sucelja se radi nesto sto se zove "push request" sto salje promjene GitHubu, a onda se valjda na GitHubu radi "pull request" kako bi se te promjene prekontrolirale i prihvatile
 
 # Nove novosti :)
-- očišćen i raščlanjen kod za polinomni kalkulator - javi jel sad bolje za testiranje
-- osposobljena interakcija s bazom podataka u polinomnom kalkulatoru
-- osposobljena interakcija s bazom podataka u grafičkom kalkulatoru
 - obrađene su sve greške (ja mislim)
-- riješen je problem krivo formatiranog inputa i outputa u polinomnom kalkulatoru - sad sve radi "prirodno" i output je sortiran po potencijama 
+- riješen je problem krivo formatiranog inputa i outputa u polinomnom kalkulatoru (za polyAdd, polyMulti) - sad sve radi "prirodno" i output je sortiran po potencijama 
+- smješten rad s bazom podataka unutar swing worker dretve
 
 # Mogući problemi
 - polinomni kalkulator npr pri deriviranju polinoma x+x vrati 1+1 umjesto 2
@@ -19,10 +17,9 @@ Upute za pocetak (ono sto sam uspjela pohvatati):
 
 # Što još treba napraviti?
 - testovi/Jenkins
-- smjestiti rad s bzaom podataka unutar swing worker dretve
 - treba srediti kod (napraviti sučelja, napraviti funkcije za dijelove koda koji se ponavljaju, anotirati sve da bi mogli imati javadoc)
 - pohvatat skroz kod za grapher
-- na kraju proći detaljno sve zahtjeve za proejkt koje je prof stavio na web i provjeriti jesmo li ispunile obavezne zahtjeve i ako jesmo možemo li nešto bolje napraviti t.d. dobijemo dodatne bodove
+- na kraju proći detaljno sve zahtjeve za proejkt koje je prof stavio na web i provjeriti jesmo li ispunile obavezne zahtjeve
 
 # Outdated novosti (tu sam iskopirala ovo što nam više nije bitno t.d. i ti i ja lakše vidimo prave novosti)
 Progress:
@@ -57,6 +54,9 @@ Updates 2.0:
 - pri deriviranju se uvijek derivira prvi polinom
 - maknula sam gumbe iz polinomnog kalkulatora
 - uspjela sam napraviti da radi spremanje u bazu podataka i dohvacanje iz baze podataka, skuzila sam da ju ipak moramo imati i da nije dovoljna memorija kakva je bila do sad jer smo i na satu radili s bazama podataka (zadnje predavanje) - ovo sam uspjela nakon neka 4 sata rada pa sam odustala - trebalo bi počistiti bazu podataka od gluposti koje sam do sad ubacila u nju, premienovati prvi stupac u "ime" kako bi korisnik pri spremanju mogao dodijeliti ime funkciji/polinomu i kasnije dohvatiti funkciju/polinom iz baze na temelju imena - za ovo bi trebalo napraviti da ime ima distinct atribut kako korisnik ne bi mogao dvaput unesti u bazu nesto s istim imenom (ili varati i unutar jave pamtiti ubačena i obrisana imena - cini se puno lakse da ne moramo petljati sa sql naredbama); mislim da bi trebalo dodati i gumb za brisanje stvari iz memorije; gore u uputama ostavljam linkove koji su mi bili korisni; takoder, rad s citanjem baze bi trebalo ubaciti u worker dretvu (zadnje predavanje); fun fact - sa sqlite se radi unutar cmd-a :)))))))))))))
+- očišćen i raščlanjen kod za polinomni kalkulator - javi jel sad bolje za testiranje
+- osposobljena interakcija s bazom podataka u polinomnom kalkulatoru
+- osposobljena interakcija s bazom podataka u grafičkom kalkulatoru
 
 # Linkovi za baze podataka
 - https://communities.actian.com/s/article/java-sql-SQLException-Query-or-procedure-does-not-return-a-result-set ->jedan error
