@@ -102,14 +102,9 @@ public class PolyOpsTest {
     @Test
     public void testDer(){
         PolyOps po=new PolyOps();
-<<<<<<< HEAD
         JPanel parent=new JPanel();
         String s="3*x^4";
         String result=po.Der(s,parent);
-=======
-        String s="3*x^4";
-        String result=po.Der(s);
->>>>>>> 9d3c59fc29178d3194babda68fb76d2617197075
         String expected="12.0*x^3.0";
         assertEquals(expected,result);
     }
@@ -120,14 +115,10 @@ public class PolyOpsTest {
     @Test
     public void testDeriviraj(){
         PolyOps po=new PolyOps();
-<<<<<<< HEAD
         JPanel parent=new JPanel();
         String s="3*x^4+2*x^3+x+1";
         String result=po.deriviraj(s,parent);
-=======
-        String s="3*x^4+2*x^3+x+1";
-        String result=po.deriviraj(s);
->>>>>>> 9d3c59fc29178d3194babda68fb76d2617197075
+
         String expected="12.0*x^3.0+6.0*x^2.0+1.0";
         assertEquals(expected,result);
     }
@@ -162,9 +153,6 @@ public class PolyOpsTest {
         double expected=4.0;
         assertEquals(expected,result,0.000001); 
     }
-<<<<<<< HEAD
-
-
     /**
      * Test of uredi method, of class PolyOps.
      */
@@ -178,6 +166,4 @@ public class PolyOpsTest {
         String expected="x+x";
         assertEquals(expected,result);
     }
-=======
->>>>>>> 9d3c59fc29178d3194babda68fb76d2617197075
 }
