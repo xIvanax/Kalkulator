@@ -228,33 +228,6 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
         }
         
         public String operation(String operacija){
-<<<<<<< HEAD
-            switch(operacija) {
-                case "+":
-                    return "+";
-                case "-":
-                    return "-";
-                case "*":
-                    return "*";
-                case "/":
-                    return "/";
-                case "draw":
-                    return "=";
-                case "x^y":
-                    return "^";
-                case "x^(1/y)":
-                    return "^(1/";
-                case "eval":
-                    evaluateAt = JOptionPane.showInputDialog(spremnik, "Unesite x:", "Evaluacija funkcije", JOptionPane.QUESTION_MESSAGE);
-                    Function f=parser.parse(textBox);
-                    evaluatedFunction=f.evaluateAt(Double.parseDouble(evaluateAt));
-                    String fja = "f(x) = " + ekran.getText();
-                    String output = fja + "\n" + "f("+evaluateAt+")="+evaluatedFunction;
-                    System.out.println("f("+evaluateAt+")="+evaluatedFunction);
-                    JOptionPane.showMessageDialog(spremnik, output, "Rezultat evaluacije", JOptionPane.INFORMATION_MESSAGE);
-            }
-            return "";
-=======
             return switch (operacija) {
                 case "+" -> "+";
                 case "-" -> "-";
@@ -265,7 +238,6 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
                 case "x^(1/y)" -> "^(1/";
                 default -> "";
             };
->>>>>>> 775008046cafd593683dea042ea241069a778477
         }
     }
     /**
@@ -286,7 +258,7 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
                     return;
                 }
                 Function f=parser.parse(textBox);
-                evaluatedFunction=f.evaluateAt(value, 0.0, 0.0);
+                evaluatedFunction=f.evaluateAt(value);
                 String fja = "f(x) = " + ekran.getText();
                 String output = fja + "\n" + "f("+evaluateAt+")="+evaluatedFunction;
                 JOptionPane.showMessageDialog(spremnik, output, "Rezultat evaluacije", JOptionPane.INFORMATION_MESSAGE);        

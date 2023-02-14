@@ -297,11 +297,9 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
         @Override
         public void actionPerformed(ActionEvent event){
             evaluateAt = jTextField1.getText();
-<<<<<<< HEAD
             Function f=parser.parse(ekran1.getText());
             evaluatedFunction=f.evaluateAt(Double.parseDouble(evaluateAt));
             display.setText(Double.toString(evaluatedFunction));
-=======
             if((!"".equals(evaluateAt)) && (evaluateAt!=null)){
                 double value;
                 try{
@@ -310,11 +308,10 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
                     JOptionPane.showMessageDialog(spremnik, "Unos mora biti broj!", "Pogrešan unos", JOptionPane.OK_CANCEL_OPTION);
                     return;
                 }
-                Function f=parser.parse(ekran1.getText());
-                evaluatedFunction=f.evaluateAt(value, 0.0, 0.0);
+                f=parser.parse(ekran1.getText());
+                evaluatedFunction=f.evaluateAt(value);
                 display.setText(Double.toString(evaluatedFunction));
             }
->>>>>>> 775008046cafd593683dea042ea241069a778477
         }
     }
     
