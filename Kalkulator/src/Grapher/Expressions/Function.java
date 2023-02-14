@@ -5,19 +5,28 @@
 package Grapher.Expressions;
 
 /**
- *
- * @author ivana
+ * Klasa koja reprezentira funkciju (u smislu f(x)).
+ * @author Ivana
  */
 public class Function {
 	private Quantity root;
 	private Variable x;
-	
+	/**
+         * Konstruktor koji inicijalizira varijable root i x.
+         * @param root
+         * @param x 
+         */
 	public Function(Quantity root, Variable x) {
 		this.root=root;
 		this.x=x;
 	}
-	
+	/**
+         * 
+         * @param x
+         * @return 
+         */
 	public double evaluateAt(double x){
+            System.out.println("evaluiram u x = "+x+", rezultat je "+root.getValue());
 		this.x.set(x);
 		return root.getValue();
 	}

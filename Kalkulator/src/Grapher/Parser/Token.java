@@ -6,22 +6,34 @@ package Grapher.Parser;
 
 /**
  * Tokeni napravljeni na temelju TokenTypes zasnovanih na mogućnostima koje nude gumbi.
- * deklarirani od strane @Dorotea u GraphingGUI
- * @author ivana
+ * @author Ivana
  */
 public class Token{
 	public final TokenType type;
 	public final String data;
-	
+	/**
+         * Konstruktor koji inicijalizira varijable type i data.
+         * @param type TokenType
+         * @param data String
+         * @author Ivana
+         */
 	public Token(TokenType type, String data){
 		this.type=type;
 		this.data=data;
 	}
-	
+	/**
+         * Konstruktor koji inicijalizira varijable type i data.
+         * @param type TokenType
+         * @author Ivana
+         */
 	public Token(TokenType type){
 		this(type,"");
 	}
-	
+	/**
+         * Overridea metodu toString.
+         * @return string reprezentacija varijable type
+         * @author Ivana
+         */
 	@Override
 	public String toString(){
 		return type.toString();

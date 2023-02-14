@@ -69,7 +69,7 @@ public interface GraphingInterface {
         unos.add(ekran, BorderLayout.NORTH);
         
         dodajGumb("⌈x⌉",unar_naredba, spremnik); dodajGumb("⌊x⌋",unar_naredba, spremnik);
-        dodajGumb("√x",unar_naredba, spremnik); dodajGumb("memory",mem, spremnik);
+        dodajGumb("memory",mem, spremnik); dodajGumb("x^(1/y)",bin_naredba, spremnik);
         dodajGumb("π",pisanje, spremnik); dodajGumb("e",pisanje, spremnik); 
         dodajGumb("C",brisanje, spremnik);
         
