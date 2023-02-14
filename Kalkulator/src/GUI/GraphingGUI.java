@@ -65,7 +65,7 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
     
     public GraphingGUI(){
         //nema se sta testirat:
-        setUpDatabase(url);
+        setUpDatabase(url, unos);
         
         this.setLayout(new BorderLayout());
         unos.setLayout(new BorderLayout());
