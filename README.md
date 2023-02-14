@@ -7,15 +7,15 @@ Upute za pocetak (ono sto sam uspjela pohvatati):
 
 # Nove novosti :)
 - obrađene su sve greške (ja mislim)
-- riješen je problem krivo formatiranog inputa i outputa u polinomnom kalkulatoru (za polyAdd, polyMulti) - sad sve radi "prirodno" i output je sortiran po potencijama 
+- riješen je problem krivo formatiranog inputa i outputa u polinomnom kalkulatoru (za polyAdd, polyMulti) - sad sve radi "prirodno" i output je sortiran po potencijama (funkcija combineLikeTerms i klasa PolySorter)
 - smješten rad s bazom podataka unutar swing worker dretve
+- napravljeno je prepoznavanje polinoma i bez unosa zvjezdica
 
 # Mogući problemi
-- polinomni kalkulator npr pri deriviranju polinoma x+x vrati 1+1 umjesto 2
 - polinomni kalkulator ne zna sta bi sa polinomom tipa x+((x-3)+2*x^(3/2))
-- u polinomnom kalkulatoru imaju dijelovi koda gdje provjeravamo broj zagrada ali nikako ne handleamo grešku u slučaju krivog broja zagrada pa treba to na neki način obraditi
 
 # Što još treba napraviti?
+- treba obraditi slučajeve na polinomnom kalkulatoru kad korisnik npr nista ne upise u jedan ekran, a pozove npr zbrajanje ili npr pozove bilo sta nad praznim ekranom
 - testovi/Jenkins
 - treba srediti kod (napraviti sučelja, napraviti funkcije za dijelove koda koji se ponavljaju, anotirati sve da bi mogli imati javadoc)
 - pohvatat skroz kod za grapher
