@@ -9,6 +9,8 @@ Upute za pocetak (ono sto sam uspjela pohvatati):
 - očišćen i raščlanjen kod za polinomni kalkulator - javi jel sad bolje za testiranje
 - osposobljena interakcija s bazom podataka u polinomnom kalkulatoru
 - osposobljena interakcija s bazom podataka u grafičkom kalkulatoru
+- obrađene su sve greške (ja mislim)
+- riješen je problem krivo formatiranog inputa i outputa u polinomnom kalkulatoru - sad sve radi "prirodno" i output je sortiran po potencijama 
 
 # Mogući problemi
 - polinomni kalkulator npr pri deriviranju polinoma x+x vrati 1+1 umjesto 2
@@ -18,8 +20,6 @@ Upute za pocetak (ono sto sam uspjela pohvatati):
 # Što još treba napraviti?
 - testovi/Jenkins
 - smjestiti rad s bzaom podataka unutar swing worker dretve
-- obraditi razne greške (npr krivi broj zagrada, korisnik unosi tekst umjesto broja itd.) - treba dodati i poruku u obliku JOptionPane
-- vizualno popraviti graficki kalkulator
 - treba srediti kod (napraviti sučelja, napraviti funkcije za dijelove koda koji se ponavljaju, anotirati sve da bi mogli imati javadoc)
 - pohvatat skroz kod za grapher
 - na kraju proći detaljno sve zahtjeve za proejkt koje je prof stavio na web i provjeriti jesmo li ispunile obavezne zahtjeve i ako jesmo možemo li nešto bolje napraviti t.d. dobijemo dodatne bodove

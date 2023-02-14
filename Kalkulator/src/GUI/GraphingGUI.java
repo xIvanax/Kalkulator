@@ -33,11 +33,10 @@ import Grapher.Expressions.Function;
 import Grapher.Parser.ExpressionParser;
 import java.util.Vector;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
 import HelperClasses.popUp;
 
 /**
- *
+ * Grafički kalkulator
  * @author Dorotea
  */
 public class GraphingGUI extends JPanel implements GraphingInterface{ 
@@ -53,7 +52,6 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
     private Function function;
     private ExpressionParser parser;
     private JTabbedPane tab = new JTabbedPane();
-    private JScrollPane sp;
     
     private boolean start = true;
     private ArrayList<String> funkcija;
@@ -79,14 +77,14 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
         ActionListener bin_naredba = new GraphingGUI.AkcijaBinarneOperacije();
         ActionListener unar_naredba = new GraphingGUI.AkcijaUnarneOperacije();
         ActionListener mem = new GraphingGUI.AkcijaMemorije();
+        ActionListener eval_naredba = new GraphingGUI.AkcijaEvaluacije();
         
-        setUpButtons(ekran, unos, spremnik, tab, pisanje, brisanje, bin_naredba, unar_naredba, mem);
+        setUpButtons(ekran, unos, spremnik, tab, pisanje, brisanje, bin_naredba, unar_naredba, mem, eval_naredba);
         
         unos.add(spremnik, BorderLayout.CENTER);
         prikaz.add(nacrtaj, BorderLayout.CENTER);
         tab.add("Unos",unos);
         tab.add("Graf",prikaz);
-        tab.add("Memorija",sp);
         /**
          * kaze da ovo nije sigurna operacija, ali ne znam gdje drugdje staviti (moglo
          * bi bit problema s testovima, a on je to stavio u main, al ja ne znam kak to stavit u main)
@@ -107,7 +105,10 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
             popUp p = new popUp(unos, url, iskoristenaImena, ekran, evaluateAt, evaluatedFunction);
         }
     }
-    
+    /**
+     * ActionListener odgovoran za pisanje na ekran
+     * @author Ivana
+     */
     private class AkcijaPisanja implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent event){
@@ -118,30 +119,38 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
             }
             ekran.setText(ekran.getText()+unos);
             
-            if(unos.equals("π")){
-                String pi=Double.toString(Math.PI);
-                screen+=pi;
-                ekran.setText(screen);
-                textBox=screen;
-            }else if(unos.equals("e")){
-                String const_e=Double.toString(Math.E);
-                screen+=const_e;
-                ekran.setText(screen);
-                textBox=screen;
-            }else if(unos.equals("=")){
-                function=parser.parse(textBox);
+            switch (unos) {
+                case "π":
+                    String pi=Double.toString(Math.PI);
+                    screen+=pi;
+                    ekran.setText(screen);
+                    textBox=screen;
+                    break;
+                case "e":
+                    String const_e=Double.toString(Math.E);
+                    screen+=const_e;
+                    ekran.setText(screen);
+                    textBox=screen;
+                    break;
+                case "=":
+                    function=parser.parse(textBox);
                     if(function==null){
-			textBox="";
+                        textBox="";
                     }
-                screen="";
-            }else{
-                screen+=unos;
-                ekran.setText(screen);
-                textBox=screen;
+                    screen="";
+                    break;
+                default:
+                    screen+=unos;
+                    ekran.setText(screen);
+                    textBox=screen;
+                    break;
             }
         }
     }
-    
+    /**
+     * ActionListener odgovoran za brisanje sadržaja ekrana.
+     * @author Ivana
+     */
     private class AkcijaBrisanja implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent event) {
@@ -171,7 +180,10 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
             }
         }
     }
-    
+    /**
+     * ActionListener odgovoran za obradu unesene binarne operacije.
+     * @author Ivana
+     */
     private class AkcijaBinarneOperacije implements ActionListener{  
         @Override
         public void actionPerformed(ActionEvent event) {
@@ -191,7 +203,6 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
                             if(function==null){
                                 textBox="";
                             }
-                        
                         screen="";
                     }else{
                         ekran.setText(ekran.getText()+zadnjaBinarnaOperacija);
@@ -217,6 +228,7 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
         }
         
         public String operation(String operacija){
+<<<<<<< HEAD
             switch(operacija) {
                 case "+":
                     return "+";
@@ -242,9 +254,49 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
                     JOptionPane.showMessageDialog(spremnik, output, "Rezultat evaluacije", JOptionPane.INFORMATION_MESSAGE);
             }
             return "";
+=======
+            return switch (operacija) {
+                case "+" -> "+";
+                case "-" -> "-";
+                case "*" -> "*";
+                case "/" -> "/";
+                case "draw" -> "=";
+                case "x^y" -> "^";
+                case "x^(1/y)" -> "^(1/";
+                default -> "";
+            };
+>>>>>>> 775008046cafd593683dea042ea241069a778477
         }
     }
-    
+    /**
+     * ActionListener odgovoran za evaluaciju funkcije u točki zadanoj od strane korisnika.
+     * @author Ivana
+     */
+    private class AkcijaEvaluacije implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            evaluateAt = JOptionPane.showInputDialog(spremnik, "Unesite x:", "Evaluacija funkcije", JOptionPane.QUESTION_MESSAGE);
+            if((!"".equals(evaluateAt)) && (evaluateAt!=null)){
+                double value;
+                try{
+                    value = Double.parseDouble(evaluateAt);
+                }catch(NumberFormatException ex){
+                    JOptionPane.showMessageDialog(spremnik, "Unos mora biti broj!", "Pogrešan unos", JOptionPane.OK_CANCEL_OPTION);
+                    return;
+                }
+                Function f=parser.parse(textBox);
+                evaluatedFunction=f.evaluateAt(value, 0.0, 0.0);
+                String fja = "f(x) = " + ekran.getText();
+                String output = fja + "\n" + "f("+evaluateAt+")="+evaluatedFunction;
+                JOptionPane.showMessageDialog(spremnik, output, "Rezultat evaluacije", JOptionPane.INFORMATION_MESSAGE);        
+            }
+        }
+    }
+    /**
+     * ActionListener odgovoran za obradu unesene unarne operacije.
+     * @author Ivana
+     */
     private class AkcijaUnarneOperacije implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent event) {
@@ -254,56 +306,37 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
             screen+=zadnjaUnarnaOperacija;
             ekran.setText(screen);
         }
-        
         public String operation(String operacija){
-            switch(operacija){
-                case "sin":
-                    return "sin(";
-                case "arcsin":
-                    return "asin(";
-                case "cos":
-                    return "cos(";
-                case "arccos":
-                    return "acos(";
-                case "tg":
-                    return "tan(";
-                case "arctg":
-                    return "atan(";
-                case "ctg":
-                    return "cot(";
-                case "arcctg":
-                    return "arcctan(";
-                case "1/x":
-                    return "1/(";
-                case "lnx":
-                    return "ln(";
-                case "logx":
-                    return "log(";
-                case "10^x":
-                    return "10^(";
-                case "e^x":
-                    return "e^(";
-                case "|x|":
-                    return "abs(";
-                case "⌈x⌉":
-                    return "ceil(";
-                case "⌊x⌋":
-                    return "floor(";
-                case "√x":
-                    return "sqrt(";  
-                default:
-                    return "";
-            }
+            return switch (operacija) {
+                case "sin" -> "sin(";
+                case "arcsin" -> "asin(";
+                case "cos" -> "cos(";
+                case "arccos" -> "acos(";
+                case "tg" -> "tan(";
+                case "arctg" -> "atan(";
+                case "ctg" -> "cot(";
+                case "arcctg" -> "arcctan(";
+                case "1/x" -> "1/(";
+                case "lnx" -> "ln(";
+                case "logx" -> "log(";
+                case "10^x" -> "10^(";
+                case "e^x" -> "e^(";
+                case "|x|" -> "abs(";
+                case "⌈x⌉" -> "ceil(";
+                case "⌊x⌋" -> "floor(";
+                case "√x" -> "sqrt(";
+                default -> "";
+            };
         }
     }
     
     /**
-     * pokušaj integracije grafa i unosa
-     * @Ivana
+     * Prozor za crtanje grafa funkcije unesene na ekran.
+     * @author Ivana
      */
-    public class IntegratedDrawFunctionScreen extends JPanel implements MouseWheelListener, /*KeyListener,*/ Runnable{
+    public class IntegratedDrawFunctionScreen extends JPanel implements MouseWheelListener, Runnable{
         public static final int WIDTH = 800;
-	public static final int HEIGHT = 400;
+	public static final int HEIGHT = 510;
 
 	private BufferedImage buff;
 	private Graphics2D g2d;

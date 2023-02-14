@@ -31,7 +31,6 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import java.sql.SQLException;
@@ -52,7 +51,6 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
     private final JPanel spremnik = new JPanel();
     private final JPanel unos = new JPanel();
     private final JPanel prikaz = new JPanel();
-    private final JScrollPane sp = new JScrollPane();
     private String textBox;
     private final IntegratedDrawFunctionScreen nacrtaj = new IntegratedDrawFunctionScreen();;
     
@@ -76,17 +74,17 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
     private String evaluateAt="";
     
     private int kojiEkran=1;
-    
+    /**
+     * Postavljanje dizajna polinomnog kalkulatora.
+     * @author Ivana
+     */
     public PolynomialGUI(){
-        //nema se sta testirat:
         setUpDatabase(url);
         
-        //omogucava resize
         this.setLayout(new BorderLayout());
         unos.setLayout(new FlowLayout(FlowLayout.LEFT));
         prikaz.setLayout(new BorderLayout());
         
-        //nema se sta testirat:
         setUpDisplaysDesign(ekran1, ekran2, display, unos, spremnik);
         
         ActionListener pisanje = new PolynomialGUI.AkcijaPisanja();
@@ -110,7 +108,6 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
         JButton jButton5 = new javax.swing.JButton();
         JButton jButton6 = new javax.swing.JButton();
         
-        //nema se sta testirat:
         setUpVisuals(spremnik, jTextField1, jButton1, jButton2, jButton3, jButton4, jButton5, jButton6, jRadioButton1, jRadioButton2, jRadioButton3, jRadioButton4, jRadioButton5);
         
         jRadioButton1.addActionListener(pisanje);
@@ -133,7 +130,6 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
         tab=new JTabbedPane();
         tab.add("Unos",unos);
         tab.add("Graf",prikaz);
-        tab.add("Memorija",sp);
         
         new Thread(nacrtaj).start();
         
@@ -151,8 +147,10 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
             }
         });
     }
-    
-//nema se sta testirat:
+    /**
+     * ActionListener odgovoran za dodavanje posebnih vrijednosti na ekran.
+     * @author Ivana
+     */
     private class AkcijaPisanja implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent event){
@@ -161,20 +159,32 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
                 textBox=ekran1.getText();
                 start=false;
             }
-            if(!unos.equals("π") && !unos.equals("e"))
-                ekran1.setText(ekran1.getText()+unos);
             
             switch (unos) {
                 case "π":
                     String pi=Double.toString(Math.PI);
                     screen+=pi;
-                    ekran1.setText(ekran1.getText()+pi);
+                    if(kojiEkran==1)
+                        ekran1.setText(ekran1.getText()+pi);
+                    else if(kojiEkran==2)
+                        ekran2.setText(ekran2.getText()+pi);
+                    else{
+                        JOptionPane.showMessageDialog(spremnik, "Kliknite na ekran na koji želite unesti odabranu vrijednost.", "Uputa", JOptionPane.INFORMATION_MESSAGE);
+                        return;
+                    }
                     textBox=screen;
                     break;
                 case "e":
                     String const_e=Double.toString(Math.E);
                     screen+=const_e;
-                    ekran1.setText(ekran1.getText()+const_e);
+                    if(kojiEkran==1)
+                        ekran1.setText(ekran1.getText()+const_e);
+                    else if(kojiEkran==2)
+                        ekran2.setText(ekran2.getText()+const_e);
+                    else{
+                        JOptionPane.showMessageDialog(spremnik, "Kliknite na ekran na koji želite unesti odabranu vrijednost.", "Uputa", JOptionPane.INFORMATION_MESSAGE);
+                        return;
+                    }
                     textBox=screen;
                     break;
                 default:
@@ -185,7 +195,10 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
             }
         }
     }
-    
+    /**
+     * ActionListener odgovaran za obradu odabrane polinomne operacije.
+     * @author Ivana
+     */
     private class AkcijaPolinomneOperacije implements ActionListener{  
         @Override
         public void actionPerformed(ActionEvent event) {
@@ -197,18 +210,16 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
                 
             PolyOps p = new PolyOps();
             clanovi1 = p.dohvati(ekran1.getText());
-            //sam kopiram u pomocnu listu jer se inače prebrišu
             ArrayList<String> clanoviCopy = new ArrayList<>();
             for(String i:clanovi1)
                 clanoviCopy.add(i);
                     
             p = new PolyOps();
             clanovi2 = p.dohvati(ekran2.getText());
-        //ove tu stvari su samo lijepi ispis, mislim da se nema sto testirat        
             if(polyOp==0){
-                ArrayList<String> clanoviRes = p.polyAdd(clanoviCopy, clanovi2);
+                ArrayList<String> clanoviRes = p.polyAdd(clanoviCopy, clanovi2, spremnik);
                 if(clanoviRes==null){
-                    JOptionPane.showMessageDialog(spremnik, "Greška","Greška! Vraćena je null vrijednost", JOptionPane.WARNING_MESSAGE);
+                    return;
                 }
                 String res="";
                 if(clanoviRes.isEmpty()==false){
@@ -230,28 +241,30 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
                         else
                             reverse.add("-"+i);
                 }
-                ArrayList<String> clanoviRes = p.polyAdd(clanoviCopy, reverse);
+                ArrayList<String> clanoviRes = p.polyAdd(clanoviCopy, reverse, spremnik);
                 if(clanoviRes==null){
-                    JOptionPane.showMessageDialog(spremnik, "Greška","Greška! Vraćena je null vrijednost", JOptionPane.WARNING_MESSAGE);
+                    return;
                 }
                 String res="";
                 if(clanoviRes.isEmpty()==false){
                     res+=clanoviRes.get(0);
                     clanoviRes.remove(0);
                     for(String clan:clanoviRes)
-                    if(clan.charAt(0)!='-')
+                    if(clan.charAt(0)!='-'){
                         res+="+"+clan;
-                    else
+                    }
+                    else{
                         res+=clan;
+                    }
                     display.setText(res);
                 }
-                else
+                else{
                     display.setText("0.0");
-                
+                }
             }else{
-                ArrayList<String> clanoviRes = p.polyMulti(clanoviCopy, clanovi2);
+                ArrayList<String> clanoviRes = p.polyMulti(clanoviCopy, clanovi2, spremnik);
                 if(clanoviRes==null){
-                    JOptionPane.showMessageDialog(spremnik, "Greška","Greška! Vraćena je null vrijednost", JOptionPane.WARNING_MESSAGE);
+                    return;
                 }
                 String res="";
                 if(clanoviRes.isEmpty()==false){
@@ -268,26 +281,40 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
         }
         
         public int operation(String operacija){
-            switch(operacija) {
-                case "zbrajanje":
-                    return 0;
-                case "oduzimanje":
-                    return 1;
-                case "množenje":
-                    return 2;
-            }
-            return -1;
+            return switch (operacija) {
+                case "zbrajanje" -> 0;
+                case "oduzimanje" -> 1;
+                case "množenje" -> 2;
+                default -> -1;
+            };
         }
     }
-    
+    /**
+     * ActionListener odgovaran za obradu evaluacije polinoma u odabranoj točki.
+     * @author Ivana
+     */
     private class AkcijaEvaluacije implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent event){
-            //mislim da se ovdje nema sta testirat
             evaluateAt = jTextField1.getText();
+<<<<<<< HEAD
             Function f=parser.parse(ekran1.getText());
             evaluatedFunction=f.evaluateAt(Double.parseDouble(evaluateAt));
             display.setText(Double.toString(evaluatedFunction));
+=======
+            if((!"".equals(evaluateAt)) && (evaluateAt!=null)){
+                double value;
+                try{
+                    value = Double.parseDouble(evaluateAt);
+                }catch(NumberFormatException ex){
+                    JOptionPane.showMessageDialog(spremnik, "Unos mora biti broj!", "Pogrešan unos", JOptionPane.OK_CANCEL_OPTION);
+                    return;
+                }
+                Function f=parser.parse(ekran1.getText());
+                evaluatedFunction=f.evaluateAt(value, 0.0, 0.0);
+                display.setText(Double.toString(evaluatedFunction));
+            }
+>>>>>>> 775008046cafd593683dea042ea241069a778477
         }
     }
     
@@ -306,7 +333,10 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
             String operacija=ulaz;
         }
     }
-    //nema se sta testirat
+    /**
+     * ActionListener odgovaran za održavanje grafa prvog polinoma.
+     * @author Ivana
+     */
     private class AkcijaCrtanja implements ActionListener{
     @Override
         public void actionPerformed(ActionEvent event) {
@@ -352,26 +382,22 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
         }
         
         public String operation(String operacija){
-            switch(operacija) {
-                case "+":
-                    return "+";
-                case "-":
-                    return "-";
-                case "*":
-                    return "*";
-                case "/":
-                    return "/";
-                case "graf":
-                    return "=";
-                case "x^y":
-                    return "^";
-                case "x^(1/y)":
-                    return "^(1/";
-            }
-            return "";
+            return switch (operacija) {
+                case "+" -> "+";
+                case "-" -> "-";
+                case "*" -> "*";
+                case "/" -> "/";
+                case "graf" -> "=";
+                case "x^y" -> "^";
+                case "x^(1/y)" -> "^(1/";
+                default -> "";
+            };
         }
     }
-    //nema se sta testirat?
+    /**
+     * ActionListener odgovoran za dohvaćanje odabrane spremljene vrijednosti iz memorije kalkulatora
+     * @author Ivana
+     */
     private class AkcijaUzimanja implements ActionListener{
             @Override
         public void actionPerformed(ActionEvent event) {
@@ -388,7 +414,8 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
                Statement stmt = conn.createStatement();
                result = stmt.executeQuery(sql);
             }catch(SQLException e){
-               System.out.println(e.getMessage());
+               JOptionPane.showMessageDialog(spremnik, e.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+               return;
             }
             try {
                 while(result.next()){
@@ -400,14 +427,20 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
                         }else if(kojiEkran==2){
                             ekran2.setText(polinom);
                         }
-                        //System.out.println("ime= "+ime);
-                        //System.out.println("f= "+polinom);
+                        return;
                     }
-                }    
-            }catch (SQLException ex){}
+                }
+                JOptionPane.showMessageDialog(spremnik, "Ne postoji spremljeni polinom s imenom "+trazeni+".", "Greška", JOptionPane.ERROR_MESSAGE);
+            }catch (SQLException ex){
+                JOptionPane.showMessageDialog(spremnik, ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
         }
     }
-    //nema se sta testirat?
+    /**
+     * ActionListener odgovoran za obradu zahtjeva za spremanjem polinoma u memoriju kalkulatora.
+     * @author Ivana
+     */
     private class AkcijaSpremanja implements ActionListener{
             @Override
         public void actionPerformed(ActionEvent event) {
@@ -427,27 +460,28 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
                     JOptionPane.showMessageDialog(spremnik, "Već ste spremili nešto pod tim imenom. Odaberite drugo ime.", "Greška", JOptionPane.ERROR_MESSAGE);
                 }
             }
-            //kod polinoma cu zasad omoguciti sam spremanje polinoma, ne i njegove evaluirane vrijednosti 
             String sql ="INSERT INTO Polinomi (Ime, Polinom) VALUES ('"+name+"','"+ekran1.getText()+"');";
             Connection conn=null;
             ResultSet result = null; 
             try{
                 conn = DriverManager.getConnection(url);
-                System.out.println("Connection established");
                 Statement stmt = conn.createStatement();
                 stmt.execute(sql);
             }catch(SQLException e){
-               System.out.println(e.getMessage());
+               JOptionPane.showMessageDialog(spremnik, e.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+               return;
             }
         }
     }
-    //nema se sta testirat?
+    /**
+     * ActionListener odgovoran za prikaz memorije kalkulatora.
+     * @author Ivana
+     */
     class AkcijaPregledaMemorije implements ActionListener{
 
         @Override
         public void actionPerformed(ActionEvent e) {
             String output ="Ime"+"\t"+"Polinom"+"\n";
-        System.out.println(output);
             try{
                 Class.forName("org.sqlite.JDBC");
             } catch (ClassNotFoundException ex){
@@ -460,7 +494,8 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
                Statement stmt = conn.createStatement();
                result = stmt.executeQuery(sql);
             }catch(SQLException ev){
-               System.out.println(ev.getMessage());
+               JOptionPane.showMessageDialog(spremnik, ev.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+               return;
             }
             try {
                 while(result.next()){
@@ -470,11 +505,17 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
                         output+=ime+"\t"+polinom+"\n";
                 }
             }    
-            catch (SQLException ex){}
+            catch (SQLException ex){
+                JOptionPane.showMessageDialog(spremnik, ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             JOptionPane.showMessageDialog(spremnik, new JTextArea(output));
     }
     }
-    //sve vezano za ovo Dorotea vec rekla testirat
+    /**
+     * Prozor za crtanje grafa funkcije unesene na ekran.
+     * @author Ivana
+     */
     public class IntegratedDrawFunctionScreen extends JPanel implements MouseWheelListener, /*KeyListener,*/ Runnable{
         public static final int WIDTH = 800;
 	public static final int HEIGHT = 400;
