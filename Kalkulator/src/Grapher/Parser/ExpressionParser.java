@@ -157,8 +157,6 @@ public class ExpressionParser {
                             error.makeError("Parsing of the function \"" + expr + "\" failed.");
                             return null;
 			}
-                        System.out.println("root:" +root);
-                        System.out.println("x:" +x);
 			return new Function(root, x);
 		}
 		error.makeError("Parsing of the function \""+expr+"\" failed.");
@@ -232,9 +230,6 @@ public class ExpressionParser {
                     TokenString left=tokens.split(0,location);
                     TokenString right=tokens.split(location+1,tokens.getLength());
                     ret=new Sum(doOrderOfOperations(left),doOrderOfOperations(right));
-                    System.out.println("left= "+left.toString());
-                    System.out.println("right= "+right.toString());
-                    System.out.println("ret= "+ret.toString());
 		}else{
                     location=scanFromRight(tokens,TokenType.MINUS);
                     if(location!=-1){

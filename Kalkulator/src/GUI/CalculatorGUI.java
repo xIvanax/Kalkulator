@@ -57,8 +57,6 @@ public class CalculatorGUI extends JPanel{
         ActionListener brisanje = new AkcijaBrisanja();
         ActionListener bin_naredba = new AkcijaBinarneOperacije();
         ActionListener unar_naredba = new AkcijaUnarneOperacije();
-        KeyListener s_tipkovnice = new InputTipkovnice();
-        ekran.addKeyListener(s_tipkovnice);
         unos.add(ekran, BorderLayout.NORTH);
         
         String[] zaglavlje={"Funkcija"};
@@ -90,53 +88,12 @@ public class CalculatorGUI extends JPanel{
         this.add(tab);
         
     }
-    /**
-     * @Ivana
-     * InputTipkovnice potreban je za registriranje brojeva unesenih putem tipkovnice
-     * umjesto putem gumbi
-     */
-    private class InputTipkovnice implements KeyListener{
-        String unos="";
-        
-        @Override
-        public void keyTyped(KeyEvent event) {
-            unos += event.getKeyChar();
-            System.out.println("Unos: "+unos);
-            if(start){
-                ekran.setText("");
-                start=false;
-            }
-        }
-        /**
-         * @Ivana
-         * sljedeca je funkcija pokusaj implementacije funkcije da je pritisak tipke enter
-         * ekvivalentan pritisku gumba za jednakost, ali ne radi
-         * @param event 
-         */
-        @Override
-        public void keyPressed(KeyEvent event) {
-            if(event.getKeyChar()=='\n'){
-                if(start){
-                //System.out.println("Sad je start true");
-                zadnjaBinarnaOperacija="=";
-                }
-                else{
-                    
-                }
-            }
-        }
-
-        @Override
-        public void keyReleased(KeyEvent event) {
-        }
-        
-}
+    
     private class AkcijaPisanja implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent event) {
             String unos = event.getActionCommand();
             if(start){
-                //System.out.println("sad je start true");
                 ekran.setText("");
                 start=false;
             }
@@ -202,7 +159,6 @@ public class CalculatorGUI extends JPanel{
         public void actionPerformed(ActionEvent event) {
             String operacija = event.getActionCommand();
             if(start){
-                //System.out.println("Sad je start true");
                 if(operacija.equals("-")){
                     ekran.setText(operacija);
                     start=false;
@@ -211,7 +167,6 @@ public class CalculatorGUI extends JPanel{
                     zadnjaBinarnaOperacija=operacija;
             }
             else{
-                //System.out.println("Sad je start false i promijenit cu ga true");
                 racunaj(Double.parseDouble(ekran.getText()));
                 
                 zadnjaBinarnaOperacija=operacija;

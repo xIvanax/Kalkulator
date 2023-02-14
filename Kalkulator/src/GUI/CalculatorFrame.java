@@ -103,11 +103,11 @@ public class CalculatorFrame extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==standardni){
-            System.out.println("Odabrali ste standardni kalkulator."); 
+            //System.out.println("Odabrali ste standardni kalkulator."); 
         }else if(e.getSource()==graficki){
-            System.out.println("Odabrali ste grafički kalkulator.");
+            //System.out.println("Odabrali ste grafički kalkulator.");
         }else if(e.getSource()==pol){
-            System.out.println("Odabrali ste polinomni kalkulator.");
+            //System.out.println("Odabrali ste polinomni kalkulator.");
         }
     }
     

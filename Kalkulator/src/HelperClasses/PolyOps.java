@@ -58,9 +58,6 @@ public class PolyOps {
                     resPoly.add(noviClan);
                 sum=0.0;
             }
-            System.out.println("originalni polinom = "+poly);
-            System.out.println("novi polinom = "+resPoly);
-            
             return resPoly;
         }
         /**
@@ -636,24 +633,18 @@ public class PolyOps {
                                 }
                             }
                     }
-            //System.out.println("list= "+list);
             String rezultat="";
             StringBuilder sb = new StringBuilder();
             for(String str:list){
-                //System.out.println("prije sb="+sb);
                 sb.append(str).append(" ");
-                //System.out.println("str="+str);
-                //System.out.println("kasnije sb="+sb);
             }
             rezultat=sb.substring(0, sb.length() - 1);
-            //System.out.println("rezultat=" +rezultat);
             return rezultat;
         }
         
         public String pozivUredi(String ulaz, JPanel parent){
             list.clear();
             uredi(ulaz, parent);
-            System.out.println("list= "+list);
             String prettyPrint="";
             int prvi=1;
             for(String i:list){
@@ -670,7 +661,36 @@ public class PolyOps {
                         prvi=0;
                 }
             }
-            System.out.println("pretty= "+prettyPrint);
             return prettyPrint;
+        }
+        /**
+         * Pretvara zapis oblika npr 2x+3x^2 u 2*x+3*x^2
+         * @param poly polinom reprezentiran kao lista njegovih članova
+         * @return polinom u formatu sa *
+         * @author Ivana
+         */
+        public ArrayList<String> starFormat(ArrayList<String> poly){
+            ArrayList<String> pomocni = new ArrayList<>();
+            for(String i: poly){
+                if(!i.contains("x")){
+                    pomocni.add(i);
+                }else if(i.contains("x")){
+                    if(i.contains("*"))
+                        pomocni.add(i);
+                    else if(i.charAt(0)!='x'){
+                        String razdvoji[] = i.split("x");
+                        String pretvoren ="";
+                        if(razdvoji.length==2)
+                            pretvoren+=razdvoji[0] + "*x" + razdvoji[1];
+                        else
+                            pretvoren+=razdvoji[0] + "*x";
+                        
+                        pomocni.add(pretvoren);
+                    }
+                    else
+                        pomocni.add(i);
+                }
+            }
+            return pomocni;
         }
 }

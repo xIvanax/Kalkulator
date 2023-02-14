@@ -26,7 +26,6 @@ public class Function {
          * @return 
          */
 	public double evaluateAt(double x){
-            System.out.println("evaluiram u x = "+x+", rezultat je "+root.getValue());
 		this.x.set(x);
 		return root.getValue();
 	}
