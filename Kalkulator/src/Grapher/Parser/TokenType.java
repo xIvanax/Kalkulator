@@ -5,9 +5,8 @@
 package Grapher.Parser;
 
 /**
- * poanta ove klase je da svim mogućnostima kalkulatora pridružujemo enum tip,
- * dodala sam sve funkcije koje je @Dorotea navela među gumbima
- * @author ivana
+ * Klasa svim mogućnostima kalkulatora pridružuje enum tip.
+ * @author Ivana
  */
 public enum TokenType {
 	OPEN_PARENTHESES("("),
@@ -25,15 +24,13 @@ public enum TokenType {
 	FLOOR("floor"),
 	LOG("log"),
 	NTHROOT("^(1/"),
-	SQUARE_ROOT("sqrt"),
 	ABSOLUTE_VALUE("abs"),
-	COMMA(","), //mislim da nam ni ovo ne treba
 	X("x"),
 	NUMBER(""),
         PI("π"),
         E("e"),
         SQUARE("square"),
-        FRACTION("fraction"),//odnosi se na 1/x
+        FRACTION("fraction"),
         ARCSINE("asin"),
         ARCCOSINE("acos"),
         ARCTAN("atan"),
@@ -43,7 +40,7 @@ public enum TokenType {
         POWER("^");
 	
 	public static final TokenType[] FUNCTIONS={
-			SINE, COSINE, TANGENT, COTANGENT, SQUARE_ROOT,
+			SINE, COSINE, TANGENT, COTANGENT,
 			CEILING, FLOOR, LOG, ABSOLUTE_VALUE, NTHROOT, SQUARE,
                         FRACTION, ARCSINE, ARCCOSINE, ARCTAN, ARCCTAN, NATURAL_LOG, POWER10, POWER};
 	

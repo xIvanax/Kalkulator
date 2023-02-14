@@ -5,15 +5,20 @@
 package Grapher.Parser;
 
 /**
- *
+ * Klasa koja igra ulogu proizvoljnog error-a.
  * @author ivana
  */
 public class Error {
-	
-	public Error() {
-		
-	}
-	
+	/**
+         * Prazan konstruktor.
+         * @author Ivana
+         */
+	public Error() {}
+	/**
+         * Funkcija ispisuje proizvoljnu poruku error-a.
+         * @param msg poruka koju želimo prikazati kao error
+         * @author Ivana
+         */
 	public void makeError(String msg){
 		System.out.println(msg);
 	}
