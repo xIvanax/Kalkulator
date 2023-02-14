@@ -40,6 +40,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import javax.swing.JTextArea;
 import HelperClasses.PolyOps;
+import java.util.concurrent.ExecutionException;
+import javax.swing.SwingWorker;
 /**
  * Polinomni kalkulator
  * @author Ivana
@@ -74,12 +76,15 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
     private String evaluateAt="";
     
     private int kojiEkran=1;
+    
+    JButton jButton5;
+    JButton jButton1;
     /**
      * Postavljanje dizajna polinomnog kalkulatora.
      * @author Ivana
      */
     public PolynomialGUI(){
-        setUpDatabase(url);
+        setUpDatabase(url, unos);
         
         this.setLayout(new BorderLayout());
         unos.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -103,9 +108,9 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
         JRadioButton jRadioButton5 = new javax.swing.JRadioButton();
         JButton jButton3 = new javax.swing.JButton();
         JButton jButton4 = new javax.swing.JButton();
-        JButton jButton1 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         JButton jButton2 = new javax.swing.JButton();
-        JButton jButton5 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
         JButton jButton6 = new javax.swing.JButton();
         
         setUpVisuals(spremnik, jTextField1, jButton1, jButton2, jButton3, jButton4, jButton5, jButton6, jRadioButton1, jRadioButton2, jRadioButton3, jRadioButton4, jRadioButton5);
@@ -209,13 +214,13 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
             ArrayList<String> clanovi2 = new ArrayList<>();
                 
             PolyOps p = new PolyOps();
-            clanovi1 = p.dohvati(ekran1.getText());
+            clanovi1 = p.starFormat(p.dohvati(ekran1.getText()));
             ArrayList<String> clanoviCopy = new ArrayList<>();
             for(String i:clanovi1)
                 clanoviCopy.add(i);
                     
             p = new PolyOps();
-            clanovi2 = p.dohvati(ekran2.getText());
+            clanovi2 = p.starFormat(p.dohvati(ekran2.getText()));
             if(polyOp==0){
                 ArrayList<String> clanoviRes = p.polyAdd(clanoviCopy, clanovi2, spremnik);
                 if(clanoviRes==null){
@@ -297,9 +302,21 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
         @Override
         public void actionPerformed(ActionEvent event){
             evaluateAt = jTextField1.getText();
-            Function f=parser.parse(ekran1.getText());
-            evaluatedFunction=f.evaluateAt(Double.parseDouble(evaluateAt));
-            display.setText(Double.toString(evaluatedFunction));
+            PolyOps p = new PolyOps();
+            ArrayList<String> clanovi1 = p.starFormat(p.dohvati(ekran1.getText()));
+            String res="";
+                if(clanovi1.isEmpty()==false){
+                    res+=clanovi1.get(0);
+                    clanovi1.remove(0);
+                    for(String clan:clanovi1)
+                    if(clan.charAt(0)!='-'){
+                        res+="+"+clan;
+                    }
+                    else{
+                        res+=clan;
+                    }
+                }
+            Function f;
             if((!"".equals(evaluateAt)) && (evaluateAt!=null)){
                 double value;
                 try{
@@ -308,7 +325,7 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
                     JOptionPane.showMessageDialog(spremnik, "Unos mora biti broj!", "Pogrešan unos", JOptionPane.OK_CANCEL_OPTION);
                     return;
                 }
-                f=parser.parse(ekran1.getText());
+                f=parser.parse(res);
                 evaluatedFunction=f.evaluateAt(value);
                 display.setText(Double.toString(evaluatedFunction));
             }
@@ -318,13 +335,24 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
     private class AkcijaDerivacije implements ActionListener{  
         @Override
         public void actionPerformed(ActionEvent event) {
-            PolyOps p = new PolyOps();
+            PolyOps p1 = new PolyOps();
             
-            String ulaz=ekran1.getText();
-            
-            ulaz = p.pozivUredi(ulaz, spremnik);
-            ArrayList<String> pom = p.combineLikeTerms(p.dohvati(ulaz), spremnik);
-            System.out.println("pom= "+pom);
+            ArrayList<String> clanovi1 = p1.starFormat(p1.dohvati(ekran1.getText()));
+            String ulaz="";
+                if(clanovi1.isEmpty()==false){
+                    ulaz+=clanovi1.get(0);
+                    clanovi1.remove(0);
+                    for(String clan:clanovi1)
+                    if(clan.charAt(0)!='-'){
+                        ulaz+="+"+clan;
+                    }
+                    else{
+                        ulaz+=clan;
+                    }
+                }
+             PolyOps p = new PolyOps();
+             ArrayList<String> als = p.dohvati(ulaz);
+            ArrayList<String> pom = p.combineLikeTerms(als, spremnik);
             String res="";
                 if(pom.isEmpty()==false){
                     res+=pom.get(0);
@@ -336,7 +364,6 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
                         res+=clan;
                 }
             ulaz=res;
-            System.out.println("res= "+res);
             String izlaz=p.deriviraj(ulaz, prikaz);
             if(izlaz.length()>1)
                 if(izlaz.charAt(izlaz.length()-1)=='+' || izlaz.charAt(izlaz.length()-1)=='-'){
@@ -420,35 +447,51 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
                 Class.forName("org.sqlite.JDBC");
             } catch (ClassNotFoundException ex){
             }
-            String sql ="SELECT Ime, Polinom FROM Polinomi";
-            Connection conn=null;
-            ResultSet result = null; 
-            try{
-               conn = DriverManager.getConnection(url);
-               Statement stmt = conn.createStatement();
-               result = stmt.executeQuery(sql);
-            }catch(SQLException e){
-               JOptionPane.showMessageDialog(spremnik, e.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
-               return;
-            }
-            try {
-                while(result.next()){
-                    String ime=result.getString("Ime");
-                    if(ime.equals(trazeni)){
-                        String polinom=result.getString("Polinom");
-                        if(kojiEkran==1){
-                            ekran1.setText(polinom);
-                        }else if(kojiEkran==2){
-                            ekran2.setText(polinom);
-                        }
-                        return;
+            
+            jButton5.setEnabled(false);
+            
+            SwingWorker<ResultSet, Void> worker = new SwingWorker<ResultSet, Void>(){
+                @Override
+                protected ResultSet doInBackground() throws Exception{
+                    String sql ="SELECT Ime, Polinom FROM Polinomi";
+                    Connection conn=null;
+                    ResultSet result = null; 
+                    try{
+                       conn = DriverManager.getConnection(url);
+                       Statement stmt = conn.createStatement();
+                       result = stmt.executeQuery(sql);
+                    }catch(SQLException e){
+                       JOptionPane.showMessageDialog(spremnik, e.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
                     }
+                    return result;
                 }
-                JOptionPane.showMessageDialog(spremnik, "Ne postoji spremljeni polinom s imenom "+trazeni+".", "Greška", JOptionPane.ERROR_MESSAGE);
-            }catch (SQLException ex){
-                JOptionPane.showMessageDialog(spremnik, ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+                @Override 
+                protected void done(){
+                    ResultSet result;
+                    try{
+                        result=get();
+                        while(result.next()){
+                            String ime=result.getString("Ime");
+                            if(ime.equals(trazeni)){
+                                String polinom=result.getString("Polinom");
+                                if(kojiEkran==1){
+                                    ekran1.setText(polinom);
+                                }else if(kojiEkran==2){
+                                    ekran2.setText(polinom);
+                                }
+                                jButton5.setEnabled(true);
+                                return;
+                            }
+                        }
+                        JOptionPane.showMessageDialog(spremnik, "Ne postoji spremljeni polinom s imenom "+trazeni+".", "Greška", JOptionPane.ERROR_MESSAGE);
+                    }catch (SQLException | InterruptedException | ExecutionException ex){
+                        JOptionPane.showMessageDialog(spremnik, ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+                    }
+                    jButton5.setEnabled(true);
+                }
+        
+            };
+            worker.execute();
         }
     }
     /**

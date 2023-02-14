@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
@@ -28,7 +29,7 @@ public interface GraphingInterface {
      * @param url link na bazu podataka koja igra ulogu memorije kalkulatora
      * @author Ivana
      */
-    public default void setUpDatabase(String url){
+    public default void setUpDatabase(String url, JPanel parent){
         String sql1 ="DELETE FROM Funkcije;";
         String sql2 ="VACUUM;";
         try {
@@ -42,7 +43,7 @@ public interface GraphingInterface {
             stmt.execute(sql1);
             stmt.execute(sql2);
         }catch(SQLException e){
-            System.out.println(e.getMessage());
+            JOptionPane.showMessageDialog(parent, e.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
         }
     };
     /**

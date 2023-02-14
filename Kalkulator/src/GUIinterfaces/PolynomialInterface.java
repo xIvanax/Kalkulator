@@ -14,11 +14,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
 /**
@@ -31,7 +30,7 @@ public interface PolynomialInterface {
      * @param url link na bazu podataka kalkulatora
      * @author Ivana
      */
-    public default void setUpDatabase(String url){
+    public default void setUpDatabase(String url, JPanel f){
         String sql1 ="DELETE FROM Polinomi;";
         String sql2 ="VACUUM;";
         try {
@@ -45,7 +44,7 @@ public interface PolynomialInterface {
             stmt.execute(sql1);
             stmt.execute(sql2);
         }catch(SQLException e){
-            System.out.println(e.getMessage());
+            JOptionPane.showMessageDialog(f, e.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
         }
     };
     /**
