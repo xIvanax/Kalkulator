@@ -28,6 +28,68 @@ public class PolyOps {
             this.clanovi=clanovi;
         }
         /**
+         * Izbacuje ponavljanja članova s istim eksponentom te ih spaja u jedan.
+         * @param poly polinom reprezentiran preko liste svojih clanova
+         * @param parent  prozor na koji će se "zakačiti" poruka o grešci
+         * @return polinom bez ponavljanja koeficijenata
+         * @author Ivana
+         */
+        public ArrayList<String> combineLikeTerms(ArrayList<String> poly, JPanel parent){
+            double deg = maxDegree(poly, parent);
+            ArrayList<String> resPoly = new ArrayList<>();
+            ArrayList<Double> stupnjevi = listOfDegrees(poly, parent);
+            for(double i:stupnjevi){
+                double sum=0.0;
+                for(String clan:poly){
+                    if(i==coefAndExp(clan,parent)[1]){
+                        sum+=coefAndExp(clan,parent)[0];
+                    }
+                }
+                String noviClan;
+                if(i>=0)
+                    if(i==0.0)
+                        noviClan = Double.toString(sum);
+                    else
+                        noviClan = Double.toString(sum) + "*x^" + Double.toString(i);
+                else
+                    noviClan = Double.toString(sum) + "*x^(" + Double.toString(i) + ")";
+                if(sum!=0.0)
+                    resPoly.add(noviClan);
+                sum=0.0;
+            }
+            System.out.println("originalni polinom = "+poly);
+            System.out.println("novi polinom = "+resPoly);
+            
+            return resPoly;
+        }
+        /**
+         * Vraća stupanj polinoma.
+         * @param poly polinom reprezentiran preko liste svojih clanova
+         * @param parent prozor na koji će se "zakačiti" poruka o grešci.
+         * @return stupanj polinoma
+         * @author Ivana
+         */
+        public double maxDegree(ArrayList<String> poly, JPanel parent){
+            PolySorter ps = new PolySorter(parent);
+            ps.sortPolynomial(poly);
+            return coefAndExp(poly.get(poly.size()-1), parent)[1];
+        }
+        /**
+         * Vraća listu svih različitih stupnjeva u polinomu.
+         * @param poly polinom reprezentiran preko liste svojih clanova
+         * @param parent prozor na koji će se "zakačiti" poruka o grešci. 
+         * @return lista različitih stupnjeva u polinomu
+         * @author Ivana
+         */
+        public ArrayList<Double> listOfDegrees(ArrayList<String> poly, JPanel parent){
+            ArrayList<Double> stupnjevi = new ArrayList<>();
+            for(String i:poly){
+                if(!stupnjevi.contains(coefAndExp(i, parent)[1]))
+                    stupnjevi.add(coefAndExp(i,parent)[1]);
+            }
+            return stupnjevi;
+        }
+        /**
          * Provjerava jesu li sve zagrade zatvorene i vraća lokaciju char-a token.
          * @param ulaz String u kojem provjeravamo broj zagrada
          * @param token char za koji provjeravamo nalazi li se u Stringu ulaz
@@ -97,6 +159,10 @@ public class PolyOps {
             ArrayList<String> resClanovi = new ArrayList<>();
             ArrayList<ArrayList<String>> svi = new ArrayList<>();
             double coef, exp, coef2, exp2;
+            
+            poly1=combineLikeTerms(poly1, parent);
+            poly2=combineLikeTerms(poly2, parent);
+            
             for(String expr1:poly1){
                 double info[] = new double[3];
                 info = coefAndExp(expr1, parent);
@@ -137,6 +203,11 @@ public class PolyOps {
             for(ArrayList<String> i:svi){
                 resClanovi=polyAdd(i,resClanovi, parent);
             }
+            
+            resClanovi=combineLikeTerms(resClanovi,parent);
+            PolySorter ps = new PolySorter(parent);
+            ps.sortPolynomial(resClanovi);
+            
             return resClanovi;
         }
         /**
@@ -154,7 +225,8 @@ public class PolyOps {
             double coef2=0, exp2=0, konstanta2=0;
             int flag=0; 
             int eksponentJeRazlomakIliNegativan=0;
-            
+            poly1 = combineLikeTerms(poly1,parent);
+            poly2 = combineLikeTerms(poly2, parent);
             for(String expr1:poly1){
                 double info[] = new double[3];
                 info = coefAndExp(expr1, parent);
@@ -246,6 +318,11 @@ public class PolyOps {
                         output.add(i);
                     else
                         output.add(i.split("\\*")[0]);
+            
+            output=combineLikeTerms(output, parent);
+            PolySorter ps = new PolySorter(parent);
+            ps.sortPolynomial(output);
+            
             return output;
         }
         /**
@@ -254,7 +331,7 @@ public class PolyOps {
          * @return polje double: na indeksu 0 je koeficijent, 1 je eksponent, 2 je li eksponent pozitivan
          * @author Ivana
          */    
-        public double[] coefAndExp(String expr1, JPanel parent){
+        public static double[] coefAndExp(String expr1, JPanel parent){
             double[] ret = new double[3];
             double coef=0, exp=0, konstanta=0;
             
