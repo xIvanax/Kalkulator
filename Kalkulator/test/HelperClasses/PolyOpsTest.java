@@ -157,13 +157,13 @@ public class PolyOpsTest {
      * Test of uredi method, of class PolyOps.
      */
     @Test
-    public void testUredi(){
+    public void testPozivUredi(){
         PolyOps po=new PolyOps();
-        //String s="x+((x-3)+2*x^(3/2))";
-        String s="2*x-3+(x+x)";
+        String s="(3+x^3)-(x+x)";
         JPanel parent=new JPanel();
-        String result=po.uredi(s,parent);
-        String expected="x+x";
+        String result=po.pozivUredi(s,parent);
+        System.out.println("rezultat je: "+result);
+        String expected="3+x^3-x-x";
         assertEquals(expected,result);
     }
 }

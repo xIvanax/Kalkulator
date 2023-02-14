@@ -512,6 +512,8 @@ public class PolyOps {
          * @author Dorotea
          */
         public String deriviraj(String ulaz,JPanel parent){
+            String t=pozivUredi(ulaz,parent);
+            ulaz=t;
             String rezultat="";
             int location=scanFromRight(ulaz,'+');
             if(location!=-1){
@@ -539,13 +541,16 @@ public class PolyOps {
                     rezultat+=Der(ulaz,parent);
                 }
             }
+            
             if(rezultat.charAt(rezultat.length()-1)=='+' || rezultat.charAt(rezultat.length()-1)=='-'){
                 rezultat=rezultat.substring(0,rezultat.length()-1);
             }
-            return rezultat;
-        }        
-
-        /**
+            
+          return rezultat;  
+        }   
+    
+    
+       /**
          * 
          * @param expr koji je polinom
          * @return vraca koliko parova zagrada se nalazi u stringu
@@ -553,6 +558,7 @@ public class PolyOps {
          * inace vraca broj parova otvorenih i zatvorenih zagrada
          * @author Dorotea
          */
+        
         public int zagrade(String expr){
             int brojac=0,z=0;
             for(int i=0; i<expr.length(); i++){
@@ -601,10 +607,11 @@ public class PolyOps {
          * Sljedeća funkcija je po konstrukciji slična funkciji doOrderOfOperations iz EXPressionParser-a
          * @param ulaz je polinom koji zelimo "urediti" tj zapisati bez nepotrebnih zagrada npr. (x+x) je jednostavno x+x
          * @param parent  prozor na koji će se "zakačiti" poruka o grešci
+         * @param pozitivan je varijabl au kojoj provjeravamo je li koeficijent negativan, 1 ako je pozitivan, 0 ako je negativan
          * @return String koji sadrži derivaciju unesenog polinoma
          * @author Dorotea
          */
-        public String uredi(String ulaz, JPanel parent){
+        public String uredi(String ulaz,int pozitivan, JPanel parent){
             //ArrayList<String> list=new ArrayList<>();
             int location;
             int z=zagrade(ulaz);
@@ -613,28 +620,69 @@ public class PolyOps {
                     if(location!=-1){
                         String left=ulaz.substring(0,location);
                         String right=ulaz.substring(location+1,ulaz.length());
-                        uredi(left,parent);
-                        uredi(right,parent);
+                        if(pozitivan==1)
+                            uredi(left,1,parent);
+                        else if(pozitivan==0)
+                            uredi(left,0,parent);
+                        if(pozitivan==1)
+                            uredi(right,1,parent);
+                        else if(pozitivan==0)
+                            uredi(right,0,parent);
                     }else{
-                            if(z>1){
+                        if(z>1){
                             int[] zag=par(ulaz);
                             if(zag[1]==ulaz.length()-1){
                                 String left=ulaz.substring(zag[0]+1,zag[1]);
-                                uredi(left,parent);
+                                if(pozitivan==1)
+                                    uredi(left,1,parent);
+                                else if(pozitivan==0)
+                                    uredi(left,0,parent);
                             }else{
                                 String left=ulaz.substring(zag[0]+1,zag[1]);
                                 String right=ulaz.substring(zag[1]+1,ulaz.length());
-                                uredi(left,parent);
-                                uredi(right,parent);
+                                if(pozitivan==1)
+                                    uredi(left,1,parent);
+                                else if(pozitivan==0)
+                                    uredi(left,0,parent);
+                                if(pozitivan==1)
+                                    uredi(right,1,parent);
+                                else if(pozitivan==0)
+                                    uredi(right,0,parent);
                             }
+                        }else{
+                            if(ulaz.length()>=2 && ulaz.charAt(ulaz.length()-1)==')' && ulaz.charAt(0)=='('){
+                                String str=ulaz.substring(1,ulaz.length()-1);
+                                if(pozitivan==1)
+                                    uredi(str,1,parent);
+                                else if(pozitivan==0)
+                                    uredi(str,0,parent); 
                             }else{
-                                if(ulaz.length()>=2 && ulaz.charAt(ulaz.length()-1)==')' && ulaz.charAt(0)=='('){
-                                    String str=ulaz.substring(1,ulaz.length()-1);
-                                    uredi(str,parent); 
+                                location=scanFromRight(ulaz,'-');
+                                if(location!=-1){
+                                    String left=ulaz.substring(0,location);
+                                    String right=ulaz.substring(location+1,ulaz.length());
+                                    if(pozitivan==1)
+                                        uredi(left,1,parent);
+                                    else if(pozitivan==0)
+                                        uredi(left,0,parent);
+                                    if(pozitivan==1)
+                                        uredi(right,0,parent);
+                                    else if(pozitivan==0)
+                                        uredi(right,1,parent);
+                                }else if(location==0){
+                                    String right=ulaz.substring(location+1,ulaz.length());
+                                    if(pozitivan==1)
+                                        uredi(right,0,parent);
+                                    else if(pozitivan==0)
+                                        uredi(right,1,parent);
                                 }else{
-                                    list.add(ulaz);
+                                    if(pozitivan==1)
+                                        list.add(ulaz);
+                                    else if(pozitivan==0)
+                                        list.add("-"+ulaz);
                                 }
                             }
+                        }
                     }
             //System.out.println("list= "+list);
             String rezultat="";
@@ -652,11 +700,13 @@ public class PolyOps {
         
         public String pozivUredi(String ulaz, JPanel parent){
             list.clear();
-            uredi(ulaz, parent);
+            uredi(ulaz,1, parent);
             System.out.println("list= "+list);
             String prettyPrint="";
             int prvi=1;
             for(String i:list){
+                if(i.equals(""))
+                    continue;
                 if(i.charAt(0)!='-'){
                     if(prvi!=1)
                         prettyPrint+="+"+i;
