@@ -8,15 +8,12 @@ import Grapher.Expressions.AbsoluteValue;
 import Grapher.Expressions.Acos;
 import Grapher.Expressions.Arcctan;
 import Grapher.Expressions.Ceiling;
-import Grapher.Expressions.Cosecant;
 import Grapher.Expressions.Cosine;
 import Grapher.Expressions.Cotangent;
 import Grapher.Expressions.Difference;
 import Grapher.Expressions.Floor;
-import Grapher.Parser.Error;
 import Grapher.Expressions.Function;
 import Grapher.Expressions.Log;
-import Grapher.Expressions.Modulo;
 import Grapher.Expressions.NthRoot;
 import Grapher.Expressions.Quantity;
 import Grapher.Expressions.Variable;
@@ -30,9 +27,7 @@ import Grapher.Expressions.Power;
 import Grapher.Expressions.Power10;
 import Grapher.Expressions.Product;
 import Grapher.Expressions.Quotient;
-import Grapher.Expressions.Secant;
 import Grapher.Expressions.Sine;
-import Grapher.Expressions.SquareRoot;
 import Grapher.Expressions.Sum;
 import Grapher.Expressions.Tangent;
 import static Grapher.Parser.TokenType.LOG;
@@ -44,32 +39,31 @@ public class ExpressionParser {
     
 	private Error error;
 	private Variable x;
-        //mislim da nam sljedece dvije varijable nisu potrebne
-	private Variable y;
-	private Variable z;
-	
+	/**
+         * Konstruktor bez parametara koji inicijalizira varijable error i x.
+         * @author Ivana
+         */
 	public ExpressionParser(){
 		error=new Error();
 		x=new Variable();
-		y=new Variable();
-		z=new Variable();
         }
-	
         /**
-        * @author Dorotea
-        * Sljedeća funkcija uneseni izraz(expr) raščlanjuje na manje blokove(tokene) radi lakše manipulacije
-        */
+         * Metoda uneseni izraz(expr) raščlanjuje na manje blokove(tokene) radi lakše manipulacije.
+         * Primjer: x+3-10^(x) pretvara u X PLUS NUMBER<3> MINUS NUMBER<10> RAISED_TO OPEN_PARENTHESES X CLOSE_PARENTHESES
+         * @param expr String koji raščlanjujemo na token-e.
+         * @return TokenString 
+         * @author Dorotea
+         */
 	public TokenString tokenize(String expr){
 		TokenString tkString=new TokenString();
 		
 		String name="";
 		String number="";
-		int numDecimals=0;//ako je broj decimalan onda pamtimo koliko decimala ima
+		int numDecimals=0;
 		for(int i=0; i<expr.length(); i++) {
 			char currentChar=expr.charAt(i);
 			boolean special=false;//provjera je li znak 'specijalan', 0 oznacava da je specijalan
                         //1 da nije (tj alfa-numericki je) 
-			
                         /**
                         * @author Dorotea
                         * Za svaki char određujemo koji je tip tokena(je li slovo, broj, neki specijalni znak)
@@ -77,15 +71,10 @@ public class ExpressionParser {
 			if(Character.isAlphabetic(currentChar)) {
 				if(currentChar=='x'){
                                     tkString.addToken(new Token(TokenType.X));
-				}else if(currentChar=='y'){
-                                    tkString.addToken(new Token(TokenType.Y));
-				}else if(currentChar=='z'){
-                                    tkString.addToken(new Token(TokenType.Z));
 				}else{
                                     name+=currentChar;
 				}
-				special=true;//dakle znak nije 'specijalan'
-                                
+				special=true;
 			}else if(name.length()>0){
 				TokenType type=getTokenTypeByName(name);
 				if(type==null) {
@@ -110,14 +99,12 @@ public class ExpressionParser {
 				number = "";
 				numDecimals = 0;
 			}
-			
+                        
 			if(!special && !(currentChar==' ')){
 				if(currentChar=='(')
                                     tkString.addToken(new Token(TokenType.OPEN_PARENTHESES));
 				else if(currentChar==')')
                                     tkString.addToken(new Token(TokenType.CLOSE_PARENTHESES));
-				else if(currentChar==',')
-                                    tkString.addToken(new Token(TokenType.COMMA));
 				else if(currentChar=='+')
                                     tkString.addToken(new Token(TokenType.PLUS));
 				else if(currentChar=='-')
@@ -128,21 +115,17 @@ public class ExpressionParser {
                                     tkString.addToken(new Token(TokenType.DIVIDED_BY));
 				else if(currentChar=='^')
                                     tkString.addToken(new Token(TokenType.RAISED_TO));
-				else if(currentChar=='%')
-                                    tkString.addToken(new Token(TokenType.MODULO));
 				else{
                                     error.makeError("The character '"+currentChar+"' is not allowed!");
                                     return null;
 				}
 			}
 		}
-                
                 /**
                 * @author Dorotea
                 * Kada dođemo do kraja expr, moguće je da nismo pohranili neki broj ili znak
                 * pa to dodatno provjeravamo i radimo
                 */
-                
 		if(name.length()>0){
                     TokenType type=getTokenTypeByName(name);
                     if(type==null){
@@ -152,16 +135,18 @@ public class ExpressionParser {
                     tkString.addToken(new Token(type));
                     name="";
 		}
-                
 		if(number.length()>0){
                     tkString.addToken(new Token(TokenType.NUMBER, number));
                     number = "";
                     numDecimals = 0;
 		}
-		
 		return tkString;
 	}
-        
+        /**
+         * 
+         * @param expr String koji parse-amo
+         * @return 
+         */
 	public Function parse(String expr){
 		TokenString tokens=tokenize(expr);
 		if(tokens!=null){
@@ -172,7 +157,9 @@ public class ExpressionParser {
                             error.makeError("Parsing of the function \"" + expr + "\" failed.");
                             return null;
 			}
-			return new Function(root, x, y, z);
+                        System.out.println("root:" +root);
+                        System.out.println("x:" +x);
+			return new Function(root, x);
 		}
 		error.makeError("Parsing of the function \""+expr+"\" failed.");
 		return null;
@@ -221,7 +208,7 @@ public class ExpressionParser {
             return -1;
 	}
         
-        private TokenType getTokenTypeByName(String name) {
+        public TokenType getTokenTypeByName(String name) {
             TokenType[] values=TokenType.FUNCTIONS;
             for(TokenType v:values){
                 if(v.name.equals(name))
@@ -229,22 +216,25 @@ public class ExpressionParser {
             }
             return null;
 	}
-	
-	private Quantity doOrderOfOperations(TokenString tokens){
-		/**
-                * @author Dorotea
-		* Redosljed računskih operacija promatramo u smjeru obrnutom od uobičajnog
-		* Zbrajanje, oduzimanje, djeljenje, množenje, potenciranje, je li neka funkcija(npr lnx), zagrade, varijable(npr. x), brojevi 
-		**/
-		int location=0;	// lokacija željenog operatora
+	/**
+         * Redosljed računskih operacija promatramo u smjeru suprotnom od uobičajenog, dakle:
+         * zbrajanje, oduzimanje, dijeljenje, množenje, potenciranje, funkcija, zagrade, varijable, brojevi.
+         * @param tokens
+         * @return 
+         * @author Dorotea
+         */
+	public Quantity doOrderOfOperations(TokenString tokens){
+		int location=0;
 		Quantity ret=new Number(0.0);
 		
 		location=scanFromRight(tokens,TokenType.PLUS);
-		if(location!=-1){//dakle, ako postoji token toga tipa u tokens
-                    /*Uzimamo sve što se nalazi lijevo i sve što se nalazi desno od traženog tokena*/
+		if(location!=-1){
                     TokenString left=tokens.split(0,location);
                     TokenString right=tokens.split(location+1,tokens.getLength());
                     ret=new Sum(doOrderOfOperations(left),doOrderOfOperations(right));
+                    System.out.println("left= "+left.toString());
+                    System.out.println("right= "+right.toString());
+                    System.out.println("ret= "+ret.toString());
 		}else{
                     location=scanFromRight(tokens,TokenType.MINUS);
                     if(location!=-1){
@@ -264,12 +254,6 @@ public class ExpressionParser {
 				TokenString right=tokens.split(location+1,tokens.getLength());
 				ret=new Product(doOrderOfOperations(left),doOrderOfOperations(right));
                             }else{
-                                location=scanFromRight(tokens,TokenType.MODULO);
-                                if(location!=-1) {
-				TokenString left=tokens.split(0,location);
-				TokenString right=tokens.split(location+1,tokens.getLength());
-				ret=new Modulo(doOrderOfOperations(left),doOrderOfOperations(right));
-                                }else{
                                     location=scanFromRight(tokens,TokenType.RAISED_TO);
                                     if(location!=-1) {
 					TokenString left=tokens.split(0,location);
@@ -292,29 +276,17 @@ public class ExpressionParser {
                                             if(location!=-1){
 						ret=x;
                                             }else{
-						location=scanFromRight(tokens, TokenType.Y);
-						if(location!=-1){
-                                                    ret = y;
-						}else{
-                                                    location=scanFromRight(tokens,TokenType.Z);
-                                                    if(location!=-1){
-							ret=z;
-                                                    }else{
-                                                        location=scanFromRight(tokens,TokenType.NUMBER);
-							if(location!=-1) {
-                                                            ret=new Number(Double.parseDouble(tokens.tokenAt(location).data));
-							}
-                                                    }
+						location=scanFromRight(tokens,TokenType.NUMBER);
+						if(location!=-1) {
+                                                    ret=new Number(Double.parseDouble(tokens.tokenAt(location).data));
 						}
                                             }
 					}
                                     }
-				}
                             }
 			}
                     }
 		}
-		
             return ret;
 	}
 
@@ -323,10 +295,6 @@ public class ExpressionParser {
 	int start=0;
 	for(int i=0; i<paramString.getLength(); i++){
             Token t=paramString.tokenAt(i);
-            if(t.type==TokenType.COMMA){
-		params.add(paramString.split(start,i));
-		start=i+1;
-            }
 	}
 	params.add(paramString.split(start,paramString.getLength()));
 		
@@ -349,12 +317,6 @@ public class ExpressionParser {
                     return new Tangent(param1);
 		case COTANGENT:
                     return new Cotangent(param1);
-		case SECANT:
-                    return new Secant(param1);
-                case COSECANT:
-                    return new Cosecant(param1);
-		case SQUARE_ROOT:
-                    return new SquareRoot(param1);
                 case ARCSINE:
                     return new Asin(param1);
                 case ARCCOSINE:
@@ -402,14 +364,17 @@ public class ExpressionParser {
 		}
 		return -1;
 	}
-	
+	/**
+         * Izbacuje unarni minus i zamjenjuje ga na način da npr. -x postane (0-1)*x.
+         * @param tokens TokenString
+         * @author Ivana
+         */
 	private void substituteUnaryMinus(TokenString tokens) {
 		Token prev = null;
 		for (int i = 0; i < tokens.getLength(); i++) {
 			Token t = tokens.tokenAt(i);
 			if (t.type == TokenType.MINUS) {
 				if (prev == null || !(prev.type == TokenType.NUMBER || prev.type == TokenType.X || prev.type == TokenType.CLOSE_PARENTHESES)) {
-					// Ex: -x becomes (0-1)*x
 					tokens.remove(i);
 					tokens.insert(i, new Token(TokenType.TIMES));
 					tokens.insert(i, new Token(TokenType.CLOSE_PARENTHESES));
@@ -423,11 +388,11 @@ public class ExpressionParser {
 			prev = t;
 		}
 	}
-        
         /**
-        * @author Dorotea
-        * Sljedeća funkcija provjerava nalazi li se u TokenString-u jednak broj otvorenih i zatvorenih operacija
-        */
+         * Provjerava nalazi li se u TokenString-u jednak broj otvorenih i zatvorenih operacija.
+         * @param tokens TokenString
+         * @author Dorotea
+         */
 	private void checkParentheses(TokenString tokens){
             int openParentheses=0;
             for(int i=0; i<tokens.getLength(); i++){

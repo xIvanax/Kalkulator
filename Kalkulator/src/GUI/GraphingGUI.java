@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import GUIinterfaces.GraphingInterface;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -24,7 +25,6 @@ import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
@@ -33,29 +33,25 @@ import Grapher.Expressions.Function;
 import Grapher.Parser.ExpressionParser;
 import java.util.Vector;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableModel;
+import HelperClasses.popUp;
 
 /**
- *
+ * Grafički kalkulator
  * @author Dorotea
  */
-public class GraphingGUI extends JPanel{ 
-    private JPanel spremnik;
-    private JPanel unos;
-    private JPanel prikaz;
-    private JPanel memorija;
+public class GraphingGUI extends JPanel implements GraphingInterface{ 
+    private final String url="jdbc:sqlite:baza.db";
+    private ArrayList<String> iskoristenaImena = new ArrayList<>();
+    
+    private JPanel spremnik = new JPanel();
+    private JPanel unos = new JPanel();
+    private JPanel prikaz = new JPanel();
     private String textBox;
-    private IntegratedDrawFunctionScreen nacrtaj;
-    public JTextField ekran;
-    private JTable tablica;
+    private IntegratedDrawFunctionScreen nacrtaj = new IntegratedDrawFunctionScreen();
+    public JTextField ekran = new JTextField();
     private Function function;
     private ExpressionParser parser;
-    private JTabbedPane tab;
-    private JScrollPane sp;
+    private JTabbedPane tab = new JTabbedPane();
     
     private boolean start = true;
     private ArrayList<String> funkcija;
@@ -63,105 +59,32 @@ public class GraphingGUI extends JPanel{
     private String zadnjaUnarnaOperacija="";
     private String screen="";
     private Vector<String> vec;
-    //ovdje cu spremat rezultate evaluacije pa cemo smislit gdje cemo prikazat evaluaciju
-    //sama evaluacija odvija se pritiskom na gumb "eval" koji se tretira kao binarna operacija, ali skroz je svejedno kak se tretira
-    /**
-     * napisala ovaj gore komentar i ove dole dvije varijable
-     * @Ivana
-     */
+    
     private double evaluatedFunction;
     private String evaluateAt="";
     
     public GraphingGUI(){
-        nacrtaj=new IntegratedDrawFunctionScreen();
-        unos=new JPanel();
-        prikaz=new JPanel();
-        memorija=new JPanel();
+        //nema se sta testirat:
+        setUpDatabase(url);
         
-        //omogucava resize
         this.setLayout(new BorderLayout());
         unos.setLayout(new BorderLayout());
         prikaz.setLayout(new BorderLayout());
-        memorija.setLayout(new BorderLayout());
-        
-        //slicno kao u CalCulatorGUI implementiramo unos funkcije koju crtamo
-        //napravljene su neke promjene, npr. nema vise %, te su dodane nove mogucnosti
-        ekran = new JTextField();
-        ekran.setText("");
-        ekran.setSize(800, 100);
-        ekran.setPreferredSize(new Dimension(800,100));
-        ekran.setEnabled(true);
-        ekran.setFont(ekran.getFont().deriveFont(Font.BOLD, 28f));
-        
-        unos.add(ekran, BorderLayout.NORTH);
-        spremnik=new JPanel();
-        
-        //lista u kojoj će se prikazivati sve funkcije unesene od trenutka pokretanja kalkulatora
-        //prikazuju se samo funkcije unesene u grafičkom dijelu kalkulatora
-        String[] zaglavlje={"Funkcija"};
-        DefaultTableModel tm=new DefaultTableModel(zaglavlje,0);
-        tablica=new JTable(tm);
-        tablica.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-        sp=new JScrollPane(tablica);
-        /**
-         * ja sam dodala tu gumbe za spremanje polinoma, deriviranje i potenciranje sam da od nekud krenem,
-         * vidim da imamo zaseban 
-         */
         spremnik.setLayout(new GridLayout(6,7));
         
         ActionListener pisanje = new GraphingGUI.AkcijaPisanja();
         ActionListener brisanje = new GraphingGUI.AkcijaBrisanja();
         ActionListener bin_naredba = new GraphingGUI.AkcijaBinarneOperacije();
         ActionListener unar_naredba = new GraphingGUI.AkcijaUnarneOperacije();
+        ActionListener mem = new GraphingGUI.AkcijaMemorije();
+        ActionListener eval_naredba = new GraphingGUI.AkcijaEvaluacije();
         
-        dodajGumb("⌈x⌉",unar_naredba); dodajGumb("⌊x⌋",unar_naredba);
-        dodajGumb("√x",unar_naredba); dodajGumb("x^(1/y)",bin_naredba);
-        dodajGumb("π",pisanje); dodajGumb("e",pisanje); 
-        dodajGumb("C",brisanje);
-        
-        dodajGumb("x",pisanje); dodajGumb("1/x",unar_naredba);
-        dodajGumb("|x|",unar_naredba); dodajGumb("(",pisanje);
-        dodajGumb(")",pisanje); dodajGumb("D",brisanje); 
-        //obrisan gumb CE jer nema smisla u ovom kontekstu/dizajnu kalkulatora (ja mislim, ak ti mislis da ima
-        //lako ga vratim - sad sam ga zamijenila s gumbom eval pomocu kojeg cemo napravit evaluation funckije
-        //zapravo ce funkcionirat isto kao "=" u obicnom kalkulatoru
-        
-        /**
-         * ovaj komentar iznad napisala
-         * @Ivana
-         */
-        dodajGumb("eval",bin_naredba);
-        
-        dodajGumb("x^y",bin_naredba); dodajGumb("7",pisanje);
-        dodajGumb("8",pisanje); dodajGumb("9",pisanje);
-        dodajGumb("/",bin_naredba); dodajGumb("sin",unar_naredba); 
-        dodajGumb("arcsin",unar_naredba);
-        
-        dodajGumb("10^x",unar_naredba); dodajGumb("4",pisanje);
-        dodajGumb("5",pisanje); dodajGumb("6",pisanje);
-        dodajGumb("*",bin_naredba); dodajGumb("cos",unar_naredba); 
-        dodajGumb("arccos",unar_naredba);
-        
-        dodajGumb("logx",unar_naredba); dodajGumb("1",pisanje);
-        dodajGumb("2",pisanje); dodajGumb("3",pisanje);
-        dodajGumb("-",bin_naredba); dodajGumb("tg",unar_naredba); 
-        dodajGumb("arctg",unar_naredba);
-        //preimenovala sam gumb "=" u "draw"
-        /**
-         * ovaj komentar iznad napisala
-         * @Ivana
-         */
-        dodajGumb("lnx",unar_naredba); dodajGumb("0",pisanje);
-        dodajGumb(".",pisanje); dodajGumb("draw",bin_naredba);
-        dodajGumb("+",bin_naredba); dodajGumb("ctg",unar_naredba); 
-        dodajGumb("arcctg",unar_naredba);
+        setUpButtons(ekran, unos, spremnik, tab, pisanje, brisanje, bin_naredba, unar_naredba, mem, eval_naredba);
         
         unos.add(spremnik, BorderLayout.CENTER);
         prikaz.add(nacrtaj, BorderLayout.CENTER);
-        tab=new JTabbedPane();
         tab.add("Unos",unos);
         tab.add("Graf",prikaz);
-        tab.add("Memorija",sp);
         /**
          * kaze da ovo nije sigurna operacija, ali ne znam gdje drugdje staviti (moglo
          * bi bit problema s testovima, a on je to stavio u main, al ja ne znam kak to stavit u main)
@@ -170,101 +93,73 @@ public class GraphingGUI extends JPanel{
         new Thread(nacrtaj).start();
         
         this.add(tab);
-        
-        tablica.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
-            public void valueChanged(ListSelectionEvent event) {
-                ekran.setText(tablica.getValueAt(tablica.getSelectedRow(), 0).toString());
-            }
-        });
     }
     
-    private void dodajGumb(String oznaka, ActionListener slusac){
-        JButton gumb = new JButton(oznaka);
-        gumb.addActionListener(slusac);
-        spremnik.add(gumb);
+    /**
+     * ActionListener odgovoran za poziv skočnog prozora.
+     * @author Ivana
+     */
+    private class AkcijaMemorije implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            popUp p = new popUp(unos, url, iskoristenaImena, ekran, evaluateAt, evaluatedFunction);
+        }
     }
     /**
-     * @Ivana
-     * @return što je trenutno na ekranu
+     * ActionListener odgovoran za pisanje na ekran
+     * @author Ivana
      */
-    public String readScreen(){
-        if(this.ekran==null)
-            return "";
-        return ekran.getText();
-    }
-    
     private class AkcijaPisanja implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent event){
             String unos=event.getActionCommand();
             if(start){
-                //ovo nam vise ne treba jer je dizajn drukciji nego kod standardnog kalkulatora,
-                //ne vidi se u svakom trenu samo jedna znamenka nego cijeli niz znakova
-                //ekran.setText("");
-                /**
-                * ovaj komentar iznad napisala
-                * @Ivana
-                */
                 textBox=ekran.getText();
-                //System.out.println("sad je start true i textbox= "+textBox);
                 start=false;
             }
-            
-            //System.out.println("*unos="+unos+" ekran="+ekran.getText());
-            //updateanje ekrana kao prije:
             ekran.setText(ekran.getText()+unos);
-            //System.out.println("**unos="+unos+" ekran="+ekran.getText());
             
-            if(unos.equals("π")){
-                String pi=Double.toString(Math.PI);
-                screen+=pi;
-                ekran.setText(screen);
-                textBox=screen;
-            }else if(unos.equals("e")){
-                String const_e=Double.toString(Math.E);
-                screen+=const_e;
-                ekran.setText(screen);
-                textBox=screen;
-            }else if(unos.equals("=")){
-                function=parser.parse(textBox);
+            switch (unos) {
+                case "π":
+                    String pi=Double.toString(Math.PI);
+                    screen+=pi;
+                    ekran.setText(screen);
+                    textBox=screen;
+                    break;
+                case "e":
+                    String const_e=Double.toString(Math.E);
+                    screen+=const_e;
+                    ekran.setText(screen);
+                    textBox=screen;
+                    break;
+                case "=":
+                    function=parser.parse(textBox);
                     if(function==null){
-			textBox="";
+                        textBox="";
                     }
-                screen="";
-            }else{
-                screen+=unos;
-                ekran.setText(screen);
-                textBox=screen;
+                    screen="";
+                    break;
+                default:
+                    screen+=unos;
+                    ekran.setText(screen);
+                    textBox=screen;
+                    break;
             }
-            
-            /*if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
-			if (textBox.length() > 0) {
-				textBox = textBox.substring(0, textBox.length() - 1);
-			}
-		} else if (Character.isLetterOrDigit(e.getKeyChar()) || e.getKeyChar() == '^' || e.getKeyChar() == '-' ||
-				e.getKeyChar() == '+' || e.getKeyChar() == '*' || e.getKeyChar() == '/' || e.getKeyChar() == '(' ||
-				e.getKeyChar() == ')' || e.getKeyChar() == '%' || e.getKeyChar() == ',' || e.getKeyChar() == '.') {
-			textBox += e.getKeyChar();
-		} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-			function = parser.parse(textBox);
-			if (function == null) {
-				textBox = "";
-			}
-		}*/
         }
     }
+    /**
+     * ActionListener odgovoran za brisanje sadržaja ekrana.
+     * @author Ivana
+     */
     private class AkcijaBrisanja implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent event) {
             String unos = event.getActionCommand();
             switch (unos) {
                 case "D":
-                    //brise se samo zadnji znak
                     String str = ekran.getText();
-                    //nema unosa pa nemamo što brisati:
                     if("".equals(str))
                         break;
-                    //na ekran stavljam sadrzaj ekrana bez zadnjeg znaka i updateam "screen":
                     if(str.length()>1){
                         ekran.setText(str.substring(0, str.length()-1));
                         screen=ekran.getText();
@@ -272,12 +167,9 @@ public class GraphingGUI extends JPanel{
                         ekran.setText("");
                         screen="";
                     }
-                    //System.out.println("Nakon pritiske gumba D screen="+screen);
                     break;
                 case "C":
-                    //brišem cijeli input kalkulatora (back to square one)
                     start = true;
-                    //rezultat=0.0;
                     zadnjaBinarnaOperacija="=";
                     zadnjaUnarnaOperacija="";
                     screen="";
@@ -288,14 +180,16 @@ public class GraphingGUI extends JPanel{
             }
         }
     }
-    
+    /**
+     * ActionListener odgovoran za obradu unesene binarne operacije.
+     * @author Ivana
+     */
     private class AkcijaBinarneOperacije implements ActionListener{  
         @Override
         public void actionPerformed(ActionEvent event) {
             String op=event.getActionCommand();
             String operacija=operation(op);
             if(start){
-                //System.out.println("Sad je start true");
                 if(operacija.equals("-") && "".equals(ekran.getText())){
                     ekran.setText(operacija);
                     start=false;
@@ -309,15 +203,9 @@ public class GraphingGUI extends JPanel{
                             if(function==null){
                                 textBox="";
                             }
-                        
-                        vec=new Vector<>();
-                        vec.add(textBox);
-                        DefaultTableModel tm=(DefaultTableModel) tablica.getModel();
-                        tm.addRow(vec);
                         screen="";
                     }else{
                         ekran.setText(ekran.getText()+zadnjaBinarnaOperacija);
-                        //System.out.println("***ekran="+ekran.getText());
                         screen=ekran.getText();
                     }
                 }
@@ -326,62 +214,62 @@ public class GraphingGUI extends JPanel{
                 zadnjaBinarnaOperacija=operacija;
                 
                 if(zadnjaBinarnaOperacija.equals("=")){
-                    //System.out.println("screen nakon pritiska ="+screen);
                    textBox=ekran.getText();
                    function=parser.parse(textBox);
                         if(function==null){
                             textBox="";
                         }
-                    vec=new Vector<>();
-                    vec.add(textBox);
-                    DefaultTableModel tm=(DefaultTableModel) tablica.getModel();
-                    tm.addRow(vec);
                     screen="";
                 }else{
                     ekran.setText(ekran.getText()+zadnjaBinarnaOperacija);
-                    //System.out.println("** **ekran="+ekran.getText());
                     screen=ekran.getText();
                 }
             }
         }
         
         public String operation(String operacija){
-            switch(operacija) {
-                case "+":
-                    return "+";
-                case "-":
-                    return "-";
-                case "*":
-                    return "*";
-                case "/":
-                    return "/";
-                case "draw":
-                    return "=";
-                case "x^y":
-                    return "^";
-                case "x^(1/y)":
-                    return "^(1/";
-                case "eval":
-                    evaluateAt = JOptionPane.showInputDialog(spremnik, "Unesite x:", "Evaluacija funkcije", JOptionPane.QUESTION_MESSAGE);
-                    Function f=parser.parse(textBox);
-                    evaluatedFunction=f.evaluateAt(Double.parseDouble(evaluateAt), 0.0, 0.0);
-                    String fja = "f(x) = " + ekran.getText();
-                    String output = fja + "\n" + "f("+evaluateAt+")="+evaluatedFunction;
-                    System.out.println("f("+evaluateAt+")="+evaluatedFunction);
-                    JOptionPane.showMessageDialog(spremnik, output, "Rezultat evaluacije", JOptionPane.INFORMATION_MESSAGE);
-                    /**
-                     * rekao je da "omogućimo korištenje vrijednosti funkcije u nekim zadanim izrazima, ali
-                     * ne kužim baš kak to misli, u svakom slučaju, evaluirana vrijednost je tu spremljena u evaluatedFunction
-                     * pa ak ti kužiš šta misli javi
-                     * @Ivana
-                     */
-            }
-            return "";
+            return switch (operacija) {
+                case "+" -> "+";
+                case "-" -> "-";
+                case "*" -> "*";
+                case "/" -> "/";
+                case "draw" -> "=";
+                case "x^y" -> "^";
+                case "x^(1/y)" -> "^(1/";
+                default -> "";
+            };
         }
     }
-    
+    /**
+     * ActionListener odgovoran za evaluaciju funkcije u točki zadanoj od strane korisnika.
+     * @author Ivana
+     */
+    private class AkcijaEvaluacije implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            evaluateAt = JOptionPane.showInputDialog(spremnik, "Unesite x:", "Evaluacija funkcije", JOptionPane.QUESTION_MESSAGE);
+            if((!"".equals(evaluateAt)) && (evaluateAt!=null)){
+                double value;
+                try{
+                    value = Double.parseDouble(evaluateAt);
+                }catch(NumberFormatException ex){
+                    JOptionPane.showMessageDialog(spremnik, "Unos mora biti broj!", "Pogrešan unos", JOptionPane.OK_CANCEL_OPTION);
+                    return;
+                }
+                Function f=parser.parse(textBox);
+                evaluatedFunction=f.evaluateAt(value);
+                String fja = "f(x) = " + ekran.getText();
+                String output = fja + "\n" + "f("+evaluateAt+")="+evaluatedFunction;
+                JOptionPane.showMessageDialog(spremnik, output, "Rezultat evaluacije", JOptionPane.INFORMATION_MESSAGE);        
+            }
+        }
+    }
+    /**
+     * ActionListener odgovoran za obradu unesene unarne operacije.
+     * @author Ivana
+     */
     private class AkcijaUnarneOperacije implements ActionListener{
-        //double unaryResult=rezultat;
         @Override
         public void actionPerformed(ActionEvent event) {
             String op=event.getActionCommand();
@@ -390,70 +278,46 @@ public class GraphingGUI extends JPanel{
             screen+=zadnjaUnarnaOperacija;
             ekran.setText(screen);
         }
-        
         public String operation(String operacija){
-            switch(operacija){
-                case "sin":
-                    return "sin(";
-                case "arcsin":
-                    return "asin(";
-                case "cos":
-                    return "cos(";
-                case "arccos":
-                    return "acos(";
-                case "tg":
-                    return "tan(";
-                case "arctg":
-                    return "atan(";
-                case "ctg":
-                    return "cot(";
-                case "arcctg":
-                    return "arcctan(";
-                case "1/x":
-                    return "1/(";
-                case "lnx":
-                    return "ln(";
-                case "logx":
-                    return "log(";
-                case "10^x":
-                    return "10^(";
-                case "e^x":
-                    return "e^(";
-                case "|x|":
-                    return "abs(";
-                case "⌈x⌉":
-                    return "ceil(";
-                case "⌊x⌋":
-                    return "floor(";
-                case "√x":
-                    return "sqrt(";  
-                default:
-                    return "";
-            }
+            return switch (operacija) {
+                case "sin" -> "sin(";
+                case "arcsin" -> "asin(";
+                case "cos" -> "cos(";
+                case "arccos" -> "acos(";
+                case "tg" -> "tan(";
+                case "arctg" -> "atan(";
+                case "ctg" -> "cot(";
+                case "arcctg" -> "arcctan(";
+                case "1/x" -> "1/(";
+                case "lnx" -> "ln(";
+                case "logx" -> "log(";
+                case "10^x" -> "10^(";
+                case "e^x" -> "e^(";
+                case "|x|" -> "abs(";
+                case "⌈x⌉" -> "ceil(";
+                case "⌊x⌋" -> "floor(";
+                case "√x" -> "sqrt(";
+                default -> "";
+            };
         }
     }
+    
     /**
-     * pokušaj integracije grafa i unosa
-     * @Ivana
+     * Prozor za crtanje grafa funkcije unesene na ekran.
+     * @author Ivana
      */
-    public class IntegratedDrawFunctionScreen extends JPanel implements MouseWheelListener, /*KeyListener,*/ Runnable{
+    public class IntegratedDrawFunctionScreen extends JPanel implements MouseWheelListener, Runnable{
         public static final int WIDTH = 800;
-	public static final int HEIGHT = 400;
+	public static final int HEIGHT = 510;
 
 	private BufferedImage buff;
 	private Graphics2D g2d;
-	
-	//private ExpressionParser parser;
-	//private Function function;
-	
+        
 	private double windowX, windowY, windowWidth, windowHeight;
 	private Point mousePt;
 	
-	//private String textBox;
-	
 	public IntegratedDrawFunctionScreen() {
             addMouseWheelListener(this);
-            //addKeyListener(this);
             this.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
@@ -492,9 +356,8 @@ public class GraphingGUI extends JPanel{
 		windowWidth = windowHeight * WIDTH / HEIGHT;
             }
 	
-	// Time variables
-	private double yVar=0.0;	// Constantly increasing
-	private double zVar=0.0;	// Cycles smoothly from -1 to 1
+	private double yVar=0.0;	
+	private double zVar=0.0;	
 	private synchronized void updateDT(double dt) {
 		yVar += dt;
 		zVar = Math.sin(yVar);
@@ -515,13 +378,12 @@ public class GraphingGUI extends JPanel{
 				double xx = toRealX(x);
 				
 				double yy = 0.0;
-				if (function != null) yy = function.evaluateAt(xx, yVar, zVar);
+				if (function != null) yy = function.evaluateAt(xx);
                                 String check = Double.toString(yy);
 				double scaledX = x;
 				double scaledY = toScreenY(yy);
 				scaledY = Math.min(Math.max(scaledY, -5), HEIGHT + 5);
-                                //
-				//funkcija evaluirana u x je yy
+                                
                                 if(!"Infinity".equals(check)){
                                     xs.add(scaledX);
                                     ys.add(scaledY);
@@ -583,35 +445,7 @@ public class GraphingGUI extends JPanel{
 			}
 		}
 	}
-/*
-	@Override
-	public void keyTyped(KeyEvent e) {
-		
-	}
 
-	@Override
-	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
-			if (textBox.length() > 0) {
-				textBox = textBox.substring(0, textBox.length() - 1);
-			}
-		} else if (Character.isLetterOrDigit(e.getKeyChar()) || e.getKeyChar() == '^' || e.getKeyChar() == '-' ||
-				e.getKeyChar() == '+' || e.getKeyChar() == '*' || e.getKeyChar() == '/' || e.getKeyChar() == '(' ||
-				e.getKeyChar() == ')' || e.getKeyChar() == '%' || e.getKeyChar() == ',' || e.getKeyChar() == '.') {
-			textBox += e.getKeyChar();
-		} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-			function = parser.parse(textBox);
-			if (function == null) {
-				textBox = "";
-			}
-		}
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		
-	}
-	*/
 	private double bottom() {
 		return windowY - halfWindowHeight();
 	}

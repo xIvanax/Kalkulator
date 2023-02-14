@@ -5,7 +5,7 @@
 package Grapher.Expressions;
 
 /**
- *
+ * 
  * @author ivana
  */
 public abstract class Quantity {

@@ -403,12 +403,20 @@ public class PolyOps {
         }
         /**
          * 
+<<<<<<< HEAD
          * @param expr koji je zapravo jedan clan u polinomu
          * @return vraca derivaciju unesenog clana
          * @param parent  prozor na koji će se "zakačiti" poruka o grešci
          * @author Dorotea
          */
         public String Der(String expr,JPanel parent){
+=======
+         * @param expr
+         * @return
+         * @author Dorotea
+         */
+        public String Der(String expr){
+>>>>>>> 9d3c59fc29178d3194babda68fb76d2617197075
             String res="";
             double coef=0, exp=0;
             //prvo odredujem koliko iznosi koeficijent
@@ -428,16 +436,31 @@ public class PolyOps {
                 parenthesis=1;
 
             for(int i=0; i<expr.length(); i++){
+<<<<<<< HEAD
                 if(expr.charAt(i)=='('){
                     jednako--;
                 }else if(expr.charAt(i)=='('){
                     jednako++;
+=======
+                if(i==')'){
+                    jednako++;
+                }else if(i=='('){
+                    jednako--;
+>>>>>>> 9d3c59fc29178d3194babda68fb76d2617197075
                 }     
             }
 
             if(jednako!=0){
+<<<<<<< HEAD
                 JOptionPane.showMessageDialog(parent, "Niste zatvorili sve zagrade!", "Greška", JOptionPane.ERROR_MESSAGE);
                 return null;
+=======
+                /**
+                 * mislim da bi se ovo trebalo nekak handleat jer ovak i ak ne valja broj zagrada se nis ne dogodi neg kod sam nastavi ko da sve valja
+                 * @Ivana
+                 */
+                System.out.println("Niste zatvorili sve zagrade!");
+>>>>>>> 9d3c59fc29178d3194babda68fb76d2617197075
             }
 
             /**
@@ -450,7 +473,11 @@ public class PolyOps {
                 int start=expr.indexOf("(");
                 int finish=expr.indexOf(")");
                 
+<<<<<<< HEAD
                 String izmeduZagrada=expr.substring(start+1, finish);
+=======
+                String izmeduZagrada = expr.substring(start+1, finish);
+>>>>>>> 9d3c59fc29178d3194babda68fb76d2617197075
                 int q=-1;
                 if(expr.substring(start+1, finish).contains(("/"))){
                     q=expr.substring(start+1, finish).indexOf("/");
@@ -502,28 +529,45 @@ public class PolyOps {
         
         /**
          * Sljedeća funkcija je po konstrukciji slična funkciji doOrderOfOperations iz EXPressionParser-a
+<<<<<<< HEAD
          * @param ulaz je polinom koji zelimo derivirati
          * @param parent  prozor na koji će se "zakačiti" poruka o grešci
          * @return String koji sadrži derivaciju unesenog polinoma
          * @author Dorotea
          */
         public String deriviraj(String ulaz,JPanel parent){
+=======
+         * @param ulaz
+         * @return String koji sadrži derivaciju unesenog polinoma
+         * @author Dorotea
+         */
+        public String deriviraj(String ulaz){
+>>>>>>> 9d3c59fc29178d3194babda68fb76d2617197075
             String rezultat="";
             int location=scanFromRight(ulaz,'+');
             if(location!=-1){
                 String left=ulaz.substring(0,location);
                 String right=ulaz.substring(location+1,ulaz.length());
+<<<<<<< HEAD
                 rezultat+=deriviraj(left,parent)+"+"+Der(right,parent);
+=======
+                rezultat+=deriviraj(left)+"+"+Der(right);
+>>>>>>> 9d3c59fc29178d3194babda68fb76d2617197075
             }else{
                 location=scanFromRight(ulaz,'-');
                 if(location!=-1){
                     if(location==0){
                         String right=ulaz.substring(location+1,ulaz.length());
+<<<<<<< HEAD
                         rezultat+="-"+Der(right,parent);
+=======
+                        rezultat+="-"+Der(right);
+>>>>>>> 9d3c59fc29178d3194babda68fb76d2617197075
                     }else{
                         String left=ulaz.substring(0,location);
                         String right=ulaz.substring(location+1,ulaz.length());
                         if(left.isEmpty()){
+<<<<<<< HEAD
                             rezultat+=Der(right,parent);
                         }
                         else{
@@ -532,12 +576,23 @@ public class PolyOps {
                     } 
                 }else{
                     rezultat+=Der(ulaz,parent);
+=======
+                            rezultat+=Der(right);
+                        }
+                        else{
+                            rezultat+=deriviraj(left)+"-"+Der(right);
+                        }
+                    } 
+                }else{
+                    rezultat+=Der(ulaz);
+>>>>>>> 9d3c59fc29178d3194babda68fb76d2617197075
                 }
             }
             
             if(rezultat.charAt(rezultat.length()-1)=='+' || rezultat.charAt(rezultat.length()-1)=='-'){
                 rezultat=rezultat.substring(0,rezultat.length()-1);
             }
+<<<<<<< HEAD
             return rezultat;
         }        
 
@@ -658,4 +713,10 @@ public class PolyOps {
             System.out.println(rezultat);
             return rezultat;
         }
+=======
+           
+        
+            return rezultat;
+        }        
+>>>>>>> 9d3c59fc29178d3194babda68fb76d2617197075
 }

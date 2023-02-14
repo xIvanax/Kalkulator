@@ -12,15 +12,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -29,7 +25,6 @@ import javax.swing.table.DefaultTableModel;
  */
 public class CalculatorGUI extends JPanel{
     private JPanel spremnik;
-    private JPanel memorija;
     private JPanel unos;
     private JTabbedPane tab;
     private JScrollPane sp;
@@ -38,20 +33,15 @@ public class CalculatorGUI extends JPanel{
     private double rezultat=0.0;
     private String zadnjaBinarnaOperacija="=";
     private String zadnjaUnarnaOperacija="";
-    private Vector<String> vec;
-    private JTable tablica;
-    JButton jednako = new JButton();
     /**
      * @Ivana
      * u konstruktoru raspoređujemo gumbe i aktiviramo ActionListeners
      */
     public CalculatorGUI(){
         unos=new JPanel();
-        memorija=new JPanel();
         
         this.setLayout(new BorderLayout());
         unos.setLayout(new BorderLayout());
-        memorija.setLayout(new BorderLayout());
         
         ekran = new JTextField();
         ekran.setSize(800, 100);
@@ -73,9 +63,6 @@ public class CalculatorGUI extends JPanel{
         
         String[] zaglavlje={"Funkcija"};
         DefaultTableModel tm=new DefaultTableModel(zaglavlje,0);
-        tablica=new JTable(tm);
-        tablica.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-        sp=new JScrollPane(tablica);
     
         dodajGumb("7",pisanje); dodajGumb("8",pisanje);
         dodajGumb("9",pisanje); dodajGumb("/",bin_naredba);
@@ -100,14 +87,8 @@ public class CalculatorGUI extends JPanel{
         
         tab=new JTabbedPane();
         tab.add("Unos",unos);
-        tab.add("Memorija",sp);
         this.add(tab);
         
-        tablica.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
-            public void valueChanged(ListSelectionEvent event) {
-                ekran.setText(tablica.getValueAt(tablica.getSelectedRow(), 0).toString());
-            }
-        });
     }
     /**
      * @Ivana
@@ -207,8 +188,7 @@ public class CalculatorGUI extends JPanel{
      */
     private void dodajGumb(String oznaka, ActionListener slusac){
         JButton gumb = new JButton(oznaka);
-        if(oznaka=="=")
-            jednako=gumb;
+        
         gumb.addActionListener(slusac);
         spremnik.add(gumb);
     }
@@ -226,23 +206,14 @@ public class CalculatorGUI extends JPanel{
                 if(operacija.equals("-")){
                     ekran.setText(operacija);
                     start=false;
-                }else if(operacija.endsWith("=")){
-                    vec=new Vector<>();
-                    vec.add(Double.toString(rezultat));
-                    DefaultTableModel tm=(DefaultTableModel) tablica.getModel();
-                    tm.addRow(vec);
                 }
-                else zadnjaBinarnaOperacija=operacija;
+                else 
+                    zadnjaBinarnaOperacija=operacija;
             }
             else{
                 //System.out.println("Sad je start false i promijenit cu ga true");
                 racunaj(Double.parseDouble(ekran.getText()));
-                if(operacija.endsWith("=")){
-                    vec=new Vector<>();
-                    vec.add(Double.toString(rezultat));
-                    DefaultTableModel tm=(DefaultTableModel) tablica.getModel();
-                    tm.addRow(vec);
-                }
+                
                 zadnjaBinarnaOperacija=operacija;
                 start=true;
             }
