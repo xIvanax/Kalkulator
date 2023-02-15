@@ -408,7 +408,7 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
 			g2d.drawLine(yAxisX, 0, yAxisX, HEIGHT);
 			
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			g2d.setColor(new Color(50, 50, 180));
+			g2d.setColor(new Color(252, 3, 3));
 			g2d.setStroke(new BasicStroke(3.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND));
 			g2d.drawPolyline(xa, ya, xa.length);
 

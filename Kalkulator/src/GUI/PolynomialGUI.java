@@ -594,35 +594,47 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            String output ="Ime"+"\t"+"Polinom"+"\n";
             try{
                 Class.forName("org.sqlite.JDBC");
             } catch (ClassNotFoundException ex){
             }
-            String sql ="SELECT Ime, Polinom FROM Polinomi";
-            Connection conn=null;
-            ResultSet result = null; 
-            try{
-               conn = DriverManager.getConnection(url);
-               Statement stmt = conn.createStatement();
-               result = stmt.executeQuery(sql);
-            }catch(SQLException ev){
-               JOptionPane.showMessageDialog(spremnik, ev.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
-               return;
-            }
-            try {
-                while(result.next()){
-                    String ime=result.getString("Ime");
-                    String polinom=result.getString("Polinom");
-                    if(ime!=null)
-                        output+=ime+"\t"+polinom+"\n";
+            
+            SwingWorker<ResultSet, Void> worker = new SwingWorker<ResultSet, Void>(){
+                @Override
+                protected ResultSet doInBackground() throws Exception{
+                    String sql ="SELECT Ime, Polinom FROM Polinomi";
+                    Connection conn=null;
+                    ResultSet result = null; 
+                    try{
+                       conn = DriverManager.getConnection(url);
+                       Statement stmt = conn.createStatement();
+                       result = stmt.executeQuery(sql);
+                    }catch(SQLException ev){
+                       JOptionPane.showMessageDialog(spremnik, ev.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+                    }
+                    return result;
                 }
-            }    
-            catch (SQLException ex){
-                JOptionPane.showMessageDialog(spremnik, ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            JOptionPane.showMessageDialog(spremnik, new JTextArea(output));
+                 @Override 
+                protected void done(){
+                    String output ="Ime"+"\t"+"Polinom"+"\n";
+                    ResultSet result;
+                    try {
+                        result=get();
+                        while(result.next()){
+                            String ime=result.getString("Ime");
+                            String polinom=result.getString("Polinom");
+                            if(ime!=null)
+                                output+=ime+"\t"+polinom+"\n";
+                        }
+                    }    
+                    catch (SQLException | InterruptedException | ExecutionException ex){
+                        JOptionPane.showMessageDialog(spremnik, ex.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    JOptionPane.showMessageDialog(spremnik, new JTextArea(output));
+                }
+            };
+            worker.execute();
     }
     }
     /**
@@ -631,7 +643,7 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
      */
     public class IntegratedDrawFunctionScreen extends JPanel implements MouseWheelListener, /*KeyListener,*/ Runnable{
         public static final int WIDTH = 800;
-	public static final int HEIGHT = 400;
+	public static final int HEIGHT = 510;
 
 	private BufferedImage buff;
 	private Graphics2D g2d;
@@ -729,7 +741,7 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
 			g2d.drawLine(yAxisX, 0, yAxisX, HEIGHT);
 			
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			g2d.setColor(new Color(50, 50, 180));
+			g2d.setColor(new Color(252, 3, 3));
 			g2d.setStroke(new BasicStroke(3.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND));
 			g2d.drawPolyline(xa, ya, xa.length);
 
