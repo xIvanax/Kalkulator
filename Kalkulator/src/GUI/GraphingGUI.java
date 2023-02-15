@@ -34,6 +34,7 @@ import Grapher.Parser.ExpressionParser;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import HelperClasses.popUp;
+import javax.swing.SwingWorker;
 
 /**
  * Grafički kalkulator
@@ -86,12 +87,8 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
         prikaz.add(nacrtaj, BorderLayout.CENTER);
         tab.add("Unos",unos);
         tab.add("Graf",prikaz);
-        /**
-         * kaze da ovo nije sigurna operacija, ali ne znam gdje drugdje staviti (moglo
-         * bi bit problema s testovima, a on je to stavio u main, al ja ne znam kak to stavit u main)
-         * @Ivana
-         */
-        new Thread(nacrtaj).start();
+        
+        nacrtaj.start();
         
         this.add(tab);
     }
@@ -308,7 +305,7 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
      * Prozor za crtanje grafa funkcije unesene na ekran.
      * @author Ivana
      */
-    public class IntegratedDrawFunctionScreen extends JPanel implements MouseWheelListener, Runnable{
+    public class IntegratedDrawFunctionScreen extends JPanel implements MouseWheelListener{
         public static final int WIDTH = 800;
 	public static final int HEIGHT = 510;
 
@@ -425,9 +422,11 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
 		g.drawImage(buff, 0, 0, null);
 	}
 	
-	@Override
-	public void run() {
-		boolean running = true;
+	private void start(){
+            SwingWorker<Double, Void> radnik = new SwingWorker<Double, Void>(){
+                @Override
+                protected Double doInBackground(){
+                    boolean running = true;
 		
 		long oldTime = 0;
 		double dt = 0.0;
@@ -446,7 +445,11 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
                             e.printStackTrace();
 			}
 		}
-	}
+                    return dt;
+                }
+            };
+            radnik.execute();
+        }
 
 	private double bottom() {
 		return windowY - halfWindowHeight();
