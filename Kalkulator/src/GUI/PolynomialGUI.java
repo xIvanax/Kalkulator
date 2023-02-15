@@ -139,7 +139,7 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
         tab.add("Unos",unos);
         tab.add("Graf",prikaz);
         
-        new Thread(nacrtaj).start();
+        nacrtaj.start();
         
         this.add(tab);
         
@@ -641,7 +641,7 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
      * Prozor za crtanje grafa funkcije unesene na ekran.
      * @author Ivana
      */
-    public class IntegratedDrawFunctionScreen extends JPanel implements MouseWheelListener, /*KeyListener,*/ Runnable{
+    public class IntegratedDrawFunctionScreen extends JPanel implements MouseWheelListener{
         public static final int WIDTH = 800;
 	public static final int HEIGHT = 510;
 
@@ -758,9 +758,11 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
 		g.drawImage(buff, 0, 0, null);
 	}
 	
-	@Override
-	public void run() {
-		boolean running = true;
+	private void start(){
+            SwingWorker<Double, Void> radnik = new SwingWorker<Double, Void>(){
+                @Override
+                protected Double doInBackground(){
+                    boolean running = true;
 		
 		long oldTime = 0;
 		double dt = 0.0;
@@ -779,7 +781,11 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
                             e.printStackTrace();
 			}
 		}
-	}
+                    return dt;
+                }
+            };
+            radnik.execute();
+        }
 
 	private double bottom() {
 		return windowY - halfWindowHeight();
