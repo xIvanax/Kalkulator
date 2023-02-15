@@ -113,12 +113,11 @@ public class PolyOpsTest {
      * Test of deriviraj method, of class PolyOps.
      */
     @Test
-    public void testDeriviraj(){
+    public void testUrediDeriviraj(){
         PolyOps po=new PolyOps();
         JPanel parent=new JPanel();
         String s="3*x^4+2*x^3+x+1";
-        String result=po.deriviraj(s,parent);
-
+        String result=po.urediDeriviraj(s,parent);
         String expected="12.0*x^3.0+6.0*x^2.0+1.0";
         assertEquals(expected,result);
     }
@@ -162,8 +161,47 @@ public class PolyOpsTest {
         String s="(3+x^3)-(x+x)";
         JPanel parent=new JPanel();
         String result=po.pozivUredi(s,parent);
-        System.out.println("rezultat je: "+result);
         String expected="3+x^3-x-x";
+        assertEquals(expected,result);
+    }
+
+    /**
+     * Test of starFormat method, of class PolyOps.
+     */
+    @Test
+    public void testStarFormat(){
+        PolyOps po=new PolyOps();
+        String s="2x+3x^2";
+        JPanel parent=new JPanel();
+        ArrayList<String> list=po.dohvati(s);
+        ArrayList<String> result=po.starFormat(list);
+        ArrayList<String> expected=new ArrayList<>();
+        expected.add("3*x^2");
+        expected.add("2*x");
+        assertEquals(expected,result);
+    }
+
+    /**
+     * Test of polyPot method, of class PolyOps.
+     */
+    @Test
+    public void testPolyPot() {
+        PolyOps po=new PolyOps();
+        JPanel parent=new JPanel();
+        String s="x+1";
+        //String s="3*x-2";
+        ArrayList<String> list=po.dohvati(s);
+        ArrayList<String> result=po.polyPot(list,3,parent);
+        ArrayList<String> expected=new ArrayList<>();
+        expected.add("1.0");
+        expected.add("3.0*x^1.0");
+        expected.add("3.0*x^2.0");
+        expected.add("1.0*x^3.0");
+//        expected.add("-8.0");
+//        expected.add("36.0*x^1.0");
+//        expected.add("-54.0*x^2.0");
+//        expected.add("27.0*x^3.0");
+        System.out.println("Rezultat je: "+result);
         assertEquals(expected,result);
     }
 }

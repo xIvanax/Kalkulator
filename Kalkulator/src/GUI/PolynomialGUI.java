@@ -266,7 +266,7 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
                 else{
                     display.setText("0.0");
                 }
-            }else{
+            }else if(polyOp==2){
                 ArrayList<String> clanoviRes = p.polyMulti(clanoviCopy, clanovi2, spremnik);
                 if(clanoviRes==null){
                     return;
@@ -282,6 +282,33 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
                         res+=clan;
                 display.setText(res);
                 }else display.setText("0.0");
+            }else if(polyOp==3){
+                String potencija=jTextField1.getText();
+                
+                if((!"".equals(potencija)) && (potencija!=null)){
+                    int value;
+                    try{
+                        value=Integer.parseInt(potencija);
+                    }catch(NumberFormatException ex){
+                        JOptionPane.showMessageDialog(spremnik, "Unos mora biti prirodan broj!", "Pogrešan unos", JOptionPane.OK_CANCEL_OPTION);
+                        return;
+                    }
+                    ArrayList<String> clanoviRes=p.polyPot(clanoviCopy,value,spremnik);
+                    if(clanoviRes==null){
+                        return;
+                    }
+                    String res="";
+                    if(clanoviRes.isEmpty()==false){
+                        res+=clanoviRes.get(0);
+                        clanoviRes.remove(0);
+                        for(String clan:clanoviRes)
+                            if(clan.charAt(0)!='-')
+                                res+="+"+clan;
+                            else
+                                res+=clan;
+                        display.setText(res);
+                    }else display.setText("0.0");
+                }
             }
         }
         
@@ -290,6 +317,7 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
                 case "zbrajanje" -> 0;
                 case "oduzimanje" -> 1;
                 case "množenje" -> 2;
+                case "potenciranje" -> 3;
                 default -> -1;
             };
         }
@@ -332,6 +360,10 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
         }
     }
     
+    /**
+     * ActionListener odgovaran za deriviranje prvog polinoma.
+     * @author Ivana
+     */
     private class AkcijaDerivacije implements ActionListener{  
         @Override
         public void actionPerformed(ActionEvent event) {
@@ -364,15 +396,8 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
                         res+=clan;
                 }
             ulaz=res;
-            String izlaz=p.deriviraj(ulaz, prikaz);
-            if(izlaz.length()>1)
-                if(izlaz.charAt(izlaz.length()-1)=='+' || izlaz.charAt(izlaz.length()-1)=='-'){
-                    display.setText(izlaz.substring(0,izlaz.length()-1));
-                }else if(izlaz.charAt(0)=='+'){
-                    display.setText(izlaz.substring(1,izlaz.length()));
-                }else{
-                    display.setText(izlaz);
-                }
+            String izlaz=p.urediDeriviraj(ulaz, prikaz);
+            display.setText(izlaz);
             String operacija=ulaz;
         }
     }

@@ -399,6 +399,27 @@ public class PolyOps {
             ret[1]=exp;
             return ret;
         }
+        
+        /**
+         * funkcija uzima dva polinoma reprezentirana preko svoje liste clanova i vraca njihov umnozak u obliku liste clanova
+         * @param poly clanovi polinoma kojeg potenciramo
+         * @param potencija na koji polinom poly potenciramo
+         * @param parent JPanel na koji će se "zakačiti" poruka upozorenja ako korisnik nešto pogrešno unese         * @return rezultat mnozenja u obliku liste clanova
+         * @author Dorotea
+         */
+        public ArrayList<String> polyPot(ArrayList<String> poly, int potencija, JPanel parent){
+            ArrayList<String> p1=new ArrayList<>();
+            ArrayList<String> temp=new ArrayList<>();
+            p1=poly;
+            for(int i=0; i<potencija-1;i++){
+                temp=polyMulti(p1,poly,parent);
+                System.out.println("Ovdje printam temp"+temp);
+                p1=temp;
+                System.out.println("Ovdje printam p1"+p1);
+            }
+            return p1;
+        }
+        
         /**
          * 
          * @param expr koji je zapravo jedan clan u polinomu
@@ -416,7 +437,7 @@ public class PolyOps {
                 coef=Double.parseDouble(expr.substring(0, location));
             }else if(expr.contains("x") && !(expr.contains("*"))){//ako je koeficijent jednak 1
                 coef=1;
-            }else if(!(expr.contains("x") && !(expr.contains("*")))){//ako je jednak konstanti
+            }else if(!(expr.contains("x") && (expr.contains("*")))){//ako je jednak konstanti
                 coef=Double.parseDouble(expr);
                 return res; //derivacija konstante je 0, pa ostavljam da string ostaje prazan
             }
@@ -437,7 +458,6 @@ public class PolyOps {
             if(jednako!=0){
                 JOptionPane.showMessageDialog(parent, "Niste zatvorili sve zagrade!", "Greška", JOptionPane.ERROR_MESSAGE);
                 return null;
-
             }
 
             /**
@@ -536,9 +556,26 @@ public class PolyOps {
                     rezultat+=Der(ulaz,parent);
                 }
             }
-            
-          return rezultat;  
-        }   
+            return rezultat;  
+        }
+        
+        /**
+         * Sljedeća funkcija poziva funkciju deriviraj te provjerava nalazi li se na početku ili kraju stringa nepotrebni znakovi
+         * @param ulaz je polinom koji zelimo derivirati
+         * @param parent  prozor na koji će se "zakačiti" poruka o grešci
+         * @return String koji sadrži derivaciju unesenog polinoma
+         * @author Dorotea
+         */
+        public String urediDeriviraj(String ulaz,JPanel parent){
+            PolyOps po=new PolyOps();
+            String str=po.deriviraj(ulaz, parent);
+            if(str.charAt(str.length()-1)=='+' || str.charAt(str.length()-1)=='-'){
+                str=str.substring(0,str.length()-1);
+            }else if(str.charAt(0)=='+'){
+                str=str.substring(1,str.length());
+            }
+            return str;
+        }
     
     
        /**
@@ -599,11 +636,9 @@ public class PolyOps {
          * @param ulaz je polinom koji zelimo "urediti" tj zapisati bez nepotrebnih zagrada npr. (x+x) je jednostavno x+x
          * @param parent  prozor na koji će se "zakačiti" poruka o grešci
          * @param pozitivan je varijabl au kojoj provjeravamo je li koeficijent negativan, 1 ako je pozitivan, 0 ako je negativan
-         * @return String koji sadrži derivaciju unesenog polinoma
          * @author Dorotea
          */
-        public String uredi(String ulaz,int pozitivan, JPanel parent){
-            //ArrayList<String> list=new ArrayList<>();
+        public void uredi(String ulaz,int pozitivan, JPanel parent){
             int location;
             int z=zagrade(ulaz);
         
@@ -649,7 +684,13 @@ public class PolyOps {
                                     uredi(str,0,parent); 
                             }else{
                                 location=scanFromRight(ulaz,'-');
-                                if(location!=-1){
+                                if(location==0){
+                                    String right=ulaz.substring(location+1,ulaz.length());
+                                    if(pozitivan==1)
+                                        uredi(right,0,parent);
+                                    else if(pozitivan==0)
+                                        uredi(right,1,parent);
+                                }else if(location>0){
                                     String left=ulaz.substring(0,location);
                                     String right=ulaz.substring(location+1,ulaz.length());
                                     if(pozitivan==1)
@@ -660,44 +701,32 @@ public class PolyOps {
                                         uredi(right,0,parent);
                                     else if(pozitivan==0)
                                         uredi(right,1,parent);
-                                }else if(location==0){
-                                    String right=ulaz.substring(location+1,ulaz.length());
-                                    if(pozitivan==1)
-                                        uredi(right,0,parent);
-                                    else if(pozitivan==0)
-                                        uredi(right,1,parent);
                                 }else{
-                                    if(pozitivan==1)
+                                    if(pozitivan==1){
                                         list.add(ulaz);
-                                    else if(pozitivan==0)
+                                    }
+                                    else if(pozitivan==0){
                                         list.add("-"+ulaz);
+                                    }
                                 }
                             }
                         }
                     }
-            //System.out.println("list= "+list);
-            String rezultat="";
-            StringBuilder sb = new StringBuilder();
-            for(String str:list){
-                //System.out.println("prije sb="+sb);
-                sb.append(str).append(" ");
-                //System.out.println("str="+str);
-                //System.out.println("kasnije sb="+sb);
-            }
-            rezultat=sb.substring(0, sb.length() - 1);
-            //System.out.println("rezultat=" +rezultat);
-            return rezultat;
+            
         }
         
+        /**
+         * @param ulaz je polinom koji zelimo "urediti" tj zapisati bez nepotrebnih zagrada npr. (x+x) je jednostavno x+x
+         * @param parent  prozor na koji će se "zakačiti" poruka o grešci
+         * @return String koji sadrži derivaciju unesenog polinoma
+         * @author Dorotea
+         */
         public String pozivUredi(String ulaz, JPanel parent){
             list.clear();
             uredi(ulaz,1, parent);
-            System.out.println("list= "+list);
             String prettyPrint="";
             int prvi=1;
             for(String i:list){
-                if(i.equals(""))
-                    continue;
                 if(i.charAt(0)!='-'){
                     if(prvi!=1)
                         prettyPrint+="+"+i;
@@ -711,7 +740,6 @@ public class PolyOps {
                         prvi=0;
                 }
             }
-            System.out.println("pretty= "+prettyPrint);
             return prettyPrint;
         }
         
