@@ -11,15 +11,11 @@ Upute za pocetak (ono sto sam uspjela pohvatati):
 - smješten rad s bazom podataka unutar swing worker dretve
 - napravljeno je prepoznavanje polinoma i bez unosa zvjezdica
 - polinomni kalkulator sada zna sta bi sa polinomom tipa x+((x-3)+2*x^(3/2))
-- napravljena je funkcija za potenciranje i testirana je i radi
-
-# Problem:
-- iako sam stavila radio button u onaj NewJFrame prilikom pokretanja se ne pojavljuje i ne znam kako to poraviti pa nisam mogla testirati kako radi potenciranje u aplikaciji
+- napravljena je funkcija za potenciranje polinoma i testirana je i radi
+- obradila slučajeve na polinomnom kalkulatoru kad korisnik npr nista ne upise u jedan ekran, a pozove npr zbrajanje ili npr pozove bilo sta nad praznim ekranom
+- obradila slučajeve na polinomnom kalkulatoru kad korisnik npr nista ne upise u jedan ekran, a pozove npr zbrajanje ili npr pozove bilo sta nad praznim ekranom
 
 # Što još treba napraviti?
-- treba obraditi slučajeve na polinomnom kalkulatoru kad korisnik npr nista ne upise u jedan ekran, a pozove npr zbrajanje ili npr pozove bilo sta nad praznim ekranom
-- testovi/Jenkins - ovo je napravljeno za sve sto znam, nisam napravila za ExpressionParser jer ne znam raditi s Quantity
-- treba srediti kod (napraviti sučelja, napraviti funkcije za dijelove koda koji se ponavljaju, anotirati sve da bi mogli imati javadoc)
 - pohvatat skroz kod za grapher
 - na kraju proći detaljno sve zahtjeve za projekt koje je prof stavio na web i provjeriti jesmo li ispunile obavezne zahtjeve
 
