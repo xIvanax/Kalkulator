@@ -336,8 +336,8 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
         @Override
         public void actionPerformed(ActionEvent event) {
             PolyOps p1 = new PolyOps();
-            
-            ArrayList<String> clanovi1 = p1.starFormat(p1.dohvati(ekran1.getText()));
+            String t=p1.pozivUredi(ekran1.getText(), spremnik);
+            ArrayList<String> clanovi1 = p1.starFormat(p1.dohvati(t));
             String ulaz="";
                 if(clanovi1.isEmpty()==false){
                     ulaz+=clanovi1.get(0);
@@ -350,8 +350,8 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
                         ulaz+=clan;
                     }
                 }
-             PolyOps p = new PolyOps();
-             ArrayList<String> als = p.dohvati(ulaz);
+            PolyOps p = new PolyOps();
+            ArrayList<String> als = p.dohvati(t);
             ArrayList<String> pom = p.combineLikeTerms(als, spremnik);
             String res="";
                 if(pom.isEmpty()==false){
@@ -368,6 +368,8 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
             if(izlaz.length()>1)
                 if(izlaz.charAt(izlaz.length()-1)=='+' || izlaz.charAt(izlaz.length()-1)=='-'){
                     display.setText(izlaz.substring(0,izlaz.length()-1));
+                }else if(izlaz.charAt(0)=='+'){
+                    display.setText(izlaz.substring(1,izlaz.length()));
                 }else{
                     display.setText(izlaz);
                 }

@@ -509,8 +509,6 @@ public class PolyOps {
          * @author Dorotea
          */
         public String deriviraj(String ulaz,JPanel parent){
-            String t=pozivUredi(ulaz,parent);
-            ulaz=t;
             String rezultat="";
             int location=scanFromRight(ulaz,'+');
             if(location!=-1){
@@ -537,10 +535,6 @@ public class PolyOps {
                 }else{
                     rezultat+=Der(ulaz,parent);
                 }
-            }
-            
-            if(rezultat.charAt(rezultat.length()-1)=='+' || rezultat.charAt(rezultat.length()-1)=='-'){
-                rezultat=rezultat.substring(0,rezultat.length()-1);
             }
             
           return rezultat;  
