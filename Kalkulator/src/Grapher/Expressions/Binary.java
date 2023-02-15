@@ -5,7 +5,7 @@
 package Grapher.Expressions;
 
 /**
- *
+ * Apstraktna klasa za binarne operacije, nasljeđuje Quantity.
  * @author Ivana
  */
 public abstract class Binary extends Quantity {

@@ -5,7 +5,7 @@
 package Grapher.Expressions;
 
 /**
- *
+ * Zbroj, nasljeđuje Binary.
  * @author Ivana
  */
 public class Sum extends Binary {
@@ -18,8 +18,6 @@ public class Sum extends Binary {
 	public double getValue() {
 		double val1 = realValue(q1);
 		double val2 = realValue(q2);
-                System.out.println("val1= "+val1);
-                System.out.println("val2= "+val2);
 		return val1 + val2;
 	}
 }

@@ -16,7 +16,8 @@ public class PolyOps {
         ArrayList<String> clanovi;
         ArrayList<String> list=new ArrayList<>();
         /**
-         * prazan konstruktor
+         * Prazan konstruktor.
+         * @author Ivana
          */
         public PolyOps(){
             clanovi = new ArrayList<>();
@@ -401,7 +402,7 @@ public class PolyOps {
         }
         
         /**
-         * funkcija uzima dva polinoma reprezentirana preko svoje liste clanova i vraca njihov umnozak u obliku liste clanova
+         * Funkcija uzima dva polinoma reprezentirana preko svoje liste clanova i vraca njihov umnozak u obliku liste clanova
          * @param poly clanovi polinoma kojeg potenciramo
          * @param potencija na koji polinom poly potenciramo
          * @param parent JPanel na koji će se "zakačiti" poruka upozorenja ako korisnik nešto pogrešno unese         * @return rezultat mnozenja u obliku liste clanova
@@ -413,9 +414,7 @@ public class PolyOps {
             p1=poly;
             for(int i=0; i<potencija-1;i++){
                 temp=polyMulti(p1,poly,parent);
-                System.out.println("Ovdje printam temp"+temp);
                 p1=temp;
-                System.out.println("Ovdje printam p1"+p1);
             }
             return p1;
         }

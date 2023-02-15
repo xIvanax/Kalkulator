@@ -5,7 +5,7 @@
 package Grapher.Expressions;
 
 /**
- *
+ * Umnožak, nasljeđuje Binary.
  * @author Ivana
  */
 public class Product extends Binary {

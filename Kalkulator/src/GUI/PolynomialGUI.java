@@ -106,6 +106,7 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
         JRadioButton jRadioButton3 = new javax.swing.JRadioButton();
         JRadioButton jRadioButton4 = new javax.swing.JRadioButton();
         JRadioButton jRadioButton5 = new javax.swing.JRadioButton();
+        JRadioButton jRadioButton6 = new javax.swing.JRadioButton();
         JButton jButton3 = new javax.swing.JButton();
         JButton jButton4 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
@@ -113,7 +114,8 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
         jButton5 = new javax.swing.JButton();
         JButton jButton6 = new javax.swing.JButton();
         
-        setUpVisuals(spremnik, jTextField1, jButton1, jButton2, jButton3, jButton4, jButton5, jButton6, jRadioButton1, jRadioButton2, jRadioButton3, jRadioButton4, jRadioButton5);
+        setUpVisuals(spremnik, jTextField1, jButton1, jButton2, jButton3, jButton4, jButton5, jButton6, 
+                jRadioButton1, jRadioButton2, jRadioButton3, jRadioButton4, jRadioButton5, jRadioButton6);
         
         jRadioButton1.addActionListener(pisanje);
         jRadioButton2.addActionListener(pisanje);
@@ -121,6 +123,7 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
         jRadioButton3.addActionListener(poli_naredba);
         jRadioButton4.addActionListener(poli_naredba);
         jRadioButton5.addActionListener(poli_naredba);
+        jRadioButton6.addActionListener(poli_naredba);
         
         jButton1.addActionListener(spremi_naredba);
         jButton2.addActionListener(eval_naredba);
@@ -212,6 +215,15 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
             
             ArrayList<String> clanovi1 = new ArrayList<>();
             ArrayList<String> clanovi2 = new ArrayList<>();
+            if(ekran1.getText()==null || "".equals(ekran1.getText()) || ekran2.getText()==null || "".equals(ekran2.getText()))
+                if(polyOp!=3){
+                    JOptionPane.showMessageDialog(spremnik, "Operacija koju ste odabrali se nije izvršila jer niste unesli oba polinoma.", "Greška", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            if(polyOp==3 && (ekran1.getText()==null || "".equals(ekran1.getText()))){
+                JOptionPane.showMessageDialog(spremnik, "Operacija koju ste odabrali se nije izvršila jer niste unesli polinom.", "Greška", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
                 
             PolyOps p = new PolyOps();
             clanovi1 = p.starFormat(p.dohvati(ekran1.getText()));
@@ -221,6 +233,7 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
                     
             p = new PolyOps();
             clanovi2 = p.starFormat(p.dohvati(ekran2.getText()));
+            
             if(polyOp==0){
                 ArrayList<String> clanoviRes = p.polyAdd(clanoviCopy, clanovi2, spremnik);
                 if(clanoviRes==null){
@@ -283,7 +296,7 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
                 display.setText(res);
                 }else display.setText("0.0");
             }else if(polyOp==3){
-                String potencija=jTextField1.getText();
+                String potencija = JOptionPane.showInputDialog(spremnik, "Unesite prirodan broj na koji želite potencirati prvi polinom:", "Uputa", JOptionPane.QUESTION_MESSAGE);
                 
                 if((!"".equals(potencija)) && (potencija!=null)){
                     int value;
@@ -329,6 +342,14 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
     private class AkcijaEvaluacije implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent event){
+            if(jTextField1.getText()==null || "".equals(jTextField1.getText())){
+                JOptionPane.showMessageDialog(spremnik, "Operacija koju ste odabrali se nije izvršila jer niste unesli vrijednost u kojoj želite evaluirati polinom.", "Greška", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if(ekran1.getText()==null || "".equals(ekran1.getText())){
+                JOptionPane.showMessageDialog(spremnik, "Operacija koju ste odabrali se nije izvršila jer niste unesli polinom.", "Greška", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             evaluateAt = jTextField1.getText();
             PolyOps p = new PolyOps();
             ArrayList<String> clanovi1 = p.starFormat(p.dohvati(ekran1.getText()));
@@ -367,6 +388,10 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
     private class AkcijaDerivacije implements ActionListener{  
         @Override
         public void actionPerformed(ActionEvent event) {
+            if(ekran1.getText()==null || "".equals(ekran1.getText())){
+                JOptionPane.showMessageDialog(spremnik, "Operacija koju ste odabrali se nije izvršila jer niste unesli polinom.", "Greška", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             PolyOps p1 = new PolyOps();
             String t=p1.pozivUredi(ekran1.getText(), spremnik);
             ArrayList<String> clanovi1 = p1.starFormat(p1.dohvati(t));
@@ -528,6 +553,10 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
     private class AkcijaSpremanja implements ActionListener{
             @Override
         public void actionPerformed(ActionEvent event) {
+            if(ekran1.getText()==null || "".equals(ekran1.getText())){
+                JOptionPane.showMessageDialog(spremnik, "Operacija koju ste odabrali se nije izvršila jer niste unesli polinom.", "Greška", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             try {
                 Class.forName("org.sqlite.JDBC");
             } catch (ClassNotFoundException ex) {}
@@ -640,7 +669,7 @@ public class PolynomialGUI extends JPanel implements PolynomialInterface{
             buff = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
             g2d = buff.createGraphics();
 		
-		parser = new ExpressionParser();
+		parser = new ExpressionParser(spremnik);
 		textBox = "";
 		function = parser.parse(textBox);
 		

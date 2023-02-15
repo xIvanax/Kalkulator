@@ -5,7 +5,7 @@
 package Grapher.Expressions;
 
 /**
- *
+ * Dijeljenje, nasljeđuje Binary.
  * @author Ivana
  */
 public class Quotient extends Binary {

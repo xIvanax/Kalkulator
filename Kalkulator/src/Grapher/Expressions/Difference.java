@@ -5,7 +5,7 @@
 package Grapher.Expressions;
 
 /**
- *
+ * Oduzimanje, nasljeđuje Binary.
  * @author Ivana
  */
 public class Difference extends Binary {

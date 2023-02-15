@@ -5,7 +5,7 @@
 package Grapher.Expressions;
 
 /**
- *
+ * N-ti korijen, nasljeđuje Binary.
  * @author Ivana
  */
 public class NthRoot extends Binary {

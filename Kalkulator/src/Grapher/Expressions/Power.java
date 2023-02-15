@@ -5,7 +5,7 @@
 package Grapher.Expressions;
 
 /**
- *
+ * Potencija, nasljeđuje Binary.
  * @author Ivana
  */
 public class Power extends Binary {

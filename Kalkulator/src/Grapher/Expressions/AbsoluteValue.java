@@ -5,7 +5,7 @@
 package Grapher.Expressions;
 
 /**
- *
+ *  Apsolutna vrijednost, nasljeđuje Unary.
  * @author Ivana
  */
 public class AbsoluteValue extends Unary {

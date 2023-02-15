@@ -84,12 +84,15 @@ public interface PolynomialInterface {
         unos.add(jLabel3);
         unos.add(display);
         
-        spremnik.setSize(770, 400);
-        spremnik.setPreferredSize(new Dimension(770,400));
+        spremnik.setSize(770, 500);
+        spremnik.setPreferredSize(new Dimension(770,500));
         spremnik.setLayout(new BorderLayout());
     }
     
-    public default void setUpVisuals(JPanel spremnik, JTextField jTextField1, JButton jButton1, JButton jButton2, JButton jButton3, JButton jButton4, JButton jButton5, JButton jButton6, JRadioButton jRadioButton1, JRadioButton jRadioButton2, JRadioButton jRadioButton3, JRadioButton jRadioButton4, JRadioButton jRadioButton5) {
+    public default void setUpVisuals(JPanel spremnik, JTextField jTextField1, JButton jButton1, 
+            JButton jButton2, JButton jButton3, JButton jButton4, JButton jButton5, JButton jButton6, 
+            JRadioButton jRadioButton1, JRadioButton jRadioButton2, JRadioButton jRadioButton3, 
+            JRadioButton jRadioButton4, JRadioButton jRadioButton5, JRadioButton jRadioButton6) {
         ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
         ButtonGroup buttonGroup2 = new javax.swing.ButtonGroup();
         JLabel jLabel4 = new javax.swing.JLabel();
@@ -119,6 +122,8 @@ public interface PolynomialInterface {
         jRadioButton4.setText("oduzimanje");
         buttonGroup2.add(jRadioButton5);
         jRadioButton5.setText("množenje");
+        buttonGroup2.add(jRadioButton6);
+        jRadioButton6.setText("potenciranje");
         
         jButton1.setText("spremi");
         jButton1.setToolTipText("spremanje prvog polinoma");
@@ -135,7 +140,7 @@ public interface PolynomialInterface {
         spremnik.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jRadioButton1)
@@ -144,7 +149,8 @@ public interface PolynomialInterface {
                     .addComponent(jLabel5)
                     .addComponent(jRadioButton4)
                     .addComponent(jRadioButton5)
-                    .addComponent(jRadioButton3))
+                    .addComponent(jRadioButton3)
+                    .addComponent(jRadioButton6))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -168,7 +174,7 @@ public interface PolynomialInterface {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addGap(2, 2, 2)
@@ -181,9 +187,10 @@ public interface PolynomialInterface {
                         .addComponent(jRadioButton3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jRadioButton4)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jRadioButton5)
-                    )
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jRadioButton5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jRadioButton6))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButton1)
@@ -193,17 +200,15 @@ public interface PolynomialInterface {
                         .addComponent(jButton4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel6)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    //.addComponent(jRadioButton5)
-                    .addComponent(jLabel7))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton2)
-                .addContainerGap(62, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2)))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
     }
 }

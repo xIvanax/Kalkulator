@@ -5,7 +5,7 @@
 package Grapher.Expressions;
 
 /**
- *
+ * Potencija broja 10, nasljeđuje Unary.
  * @author Dorotea
  */
 public class Power10 extends Unary{

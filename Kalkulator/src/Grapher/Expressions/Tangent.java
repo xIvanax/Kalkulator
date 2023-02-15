@@ -5,7 +5,7 @@
 package Grapher.Expressions;
 
 /**
- *
+ * Tangens, nasljeđuje Unary.
  * @author Ivana
  */
 public class Tangent extends Unary {
