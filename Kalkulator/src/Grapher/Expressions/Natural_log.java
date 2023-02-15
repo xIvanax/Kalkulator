@@ -5,7 +5,7 @@
 package Grapher.Expressions;
 
 /**
- *
+ * Prirodni logaritam, nasljeđuje Unary.
  * @author Dorotea
  */
 public class Natural_log extends Unary{

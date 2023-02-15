@@ -5,7 +5,7 @@
 package Grapher.Expressions;
 
 /**
- *
+ * Klasa unarnih operacija, nasljeđuje Quantity.
  * @author Ivana
  */
 public abstract class Unary extends Quantity {

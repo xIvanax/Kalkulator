@@ -50,6 +50,7 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
     private IntegratedDrawFunctionScreen nacrtaj = new IntegratedDrawFunctionScreen();
     public JTextField ekran = new JTextField();
     private Function function;
+    public String evaluatedFunctionF;
     private ExpressionParser parser;
     private JTabbedPane tab = new JTabbedPane();
     
@@ -102,7 +103,7 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
     private class AkcijaMemorije implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            popUp p = new popUp(unos, url, iskoristenaImena, ekran, evaluateAt, evaluatedFunction);
+            popUp p = new popUp(unos, url, iskoristenaImena, ekran, evaluateAt, evaluatedFunction, evaluatedFunctionF);
         }
     }
     /**
@@ -260,6 +261,7 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
                 Function f=parser.parse(textBox);
                 evaluatedFunction=f.evaluateAt(value);
                 String fja = "f(x) = " + ekran.getText();
+                evaluatedFunctionF = ekran.getText();
                 String output = fja + "\n" + "f("+evaluateAt+")="+evaluatedFunction;
                 JOptionPane.showMessageDialog(spremnik, output, "Rezultat evaluacije", JOptionPane.INFORMATION_MESSAGE);        
             }
@@ -346,7 +348,7 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
             buff = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
             g2d = buff.createGraphics();
 		
-		parser = new ExpressionParser();
+		parser = new ExpressionParser(spremnik);
 		textBox = "";
 		function = parser.parse(textBox);
 		

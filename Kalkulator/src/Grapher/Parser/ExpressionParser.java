@@ -31,20 +31,23 @@ import Grapher.Expressions.Sine;
 import Grapher.Expressions.Sum;
 import Grapher.Expressions.Tangent;
 import static Grapher.Parser.TokenType.LOG;
+import javax.swing.JPanel;
 /**
- *
+ * Klasa odgovorna za parsiranje izraza.
  * @author ivana
  */
 public class ExpressionParser {
     
 	private Error error;
 	private Variable x;
+        public JPanel parent;
 	/**
          * Konstruktor bez parametara koji inicijalizira varijable error i x.
          * @author Ivana
          */
-	public ExpressionParser(){
-		error=new Error();
+	public ExpressionParser(JPanel parent){
+                this.parent=parent;
+		error=new Error(parent);
 		x=new Variable();
         }
         /**
@@ -143,9 +146,10 @@ public class ExpressionParser {
 		return tkString;
 	}
         /**
-         * 
+         * Metoda za parseanje String-a, odnosno prepoznavanje funkcije iz String-a.
          * @param expr String koji parse-amo
-         * @return 
+         * @return Function dobiven iz String-a expr
+         * @author Ivana
          */
 	public Function parse(String expr){
 		TokenString tokens=tokenize(expr);
@@ -157,8 +161,6 @@ public class ExpressionParser {
                             error.makeError("Parsing of the function \"" + expr + "\" failed.");
                             return null;
 			}
-                        System.out.println("root:" +root);
-                        System.out.println("x:" +x);
 			return new Function(root, x);
 		}
 		error.makeError("Parsing of the function \""+expr+"\" failed.");
@@ -166,11 +168,11 @@ public class ExpressionParser {
 	}
         
         /**
-         * @author Dorotea
-         * String u kojemu je zapisana funkcija pretrazujemo s desna na lijevo.
+         * String u kojemu je zapisana funkcija pretrazujemo s desna na lijevo, kontroliramo broj zagrada i vražamo indeks token-a tipa Type.
          * @param tokens TokenString tj. lista tokena
          * @param type tip tokena
          * @return lokacija prvog tokena tipa type
+         * @author Dorotea
          */
         public int scanFromRight(TokenString tokens, TokenType type){
             int openParentheses=0;
@@ -186,7 +188,13 @@ public class ExpressionParser {
             }
             return -1;
 	}
-        
+        /**
+         * Analogno kao drugi scanFromRight, samo što sada imamo polje TokenType-ova umjesto jednog TokenType-a.
+         * @param tokens TokenString tj. lista tokena
+         * @param types polje tipova token-a
+         * @return indeks nekog od tipova iz polja types kojeg smo našli u TokenString-u tokens
+         * @author Ivana
+         */
         public int scanFromRight(TokenString tokens, TokenType[] types) {
             int openParentheses=0;
             for(int i=tokens.getLength()-1; i>=0; i--){
@@ -207,7 +215,12 @@ public class ExpressionParser {
             }
             return -1;
 	}
-        
+        /**
+         * Vraća tip token-a na temelju njegovog imena.
+         * @param name ime tokena
+         * @return tip tokena
+         * @author Ivana
+         */
         public TokenType getTokenTypeByName(String name) {
             TokenType[] values=TokenType.FUNCTIONS;
             for(TokenType v:values){
@@ -219,8 +232,8 @@ public class ExpressionParser {
 	/**
          * Redosljed računskih operacija promatramo u smjeru suprotnom od uobičajenog, dakle:
          * zbrajanje, oduzimanje, dijeljenje, množenje, potenciranje, funkcija, zagrade, varijable, brojevi.
-         * @param tokens
-         * @return 
+         * @param tokens TokenString, odnosno lista tokena
+         * @return Quantity, odnosno rezultat provednih operacija
          * @author Dorotea
          */
 	public Quantity doOrderOfOperations(TokenString tokens){
@@ -232,9 +245,6 @@ public class ExpressionParser {
                     TokenString left=tokens.split(0,location);
                     TokenString right=tokens.split(location+1,tokens.getLength());
                     ret=new Sum(doOrderOfOperations(left),doOrderOfOperations(right));
-                    System.out.println("left= "+left.toString());
-                    System.out.println("right= "+right.toString());
-                    System.out.println("ret= "+ret.toString());
 		}else{
                     location=scanFromRight(tokens,TokenType.MINUS);
                     if(location!=-1){
@@ -289,7 +299,13 @@ public class ExpressionParser {
 		}
             return ret;
 	}
-
+    /**
+     * 
+     * @param paramString
+     * @param type
+     * @return 
+     * @author Ivana
+     */
     private Quantity parseFunctionParams(TokenString paramString, TokenType type){
 	List<TokenString> params=new ArrayList<>();
 	int start=0;
@@ -299,7 +315,6 @@ public class ExpressionParser {
 	params.add(paramString.split(start,paramString.getLength()));
 		
 	if(params.size()==0) return null;
-		
 	if(params.size()==1){
             Quantity param1=doOrderOfOperations(params.get(0));
             switch(type){
@@ -348,7 +363,13 @@ public class ExpressionParser {
 	}
 	return null;
     }
-
+        /**
+         * Vraća "kraj" funkcije
+         * @param tokens TokenString tj. lista tokena
+         * @param location lokacija od koje započinjemo pretragu
+         * @return -1 ako nađe još neku otvorenu zagrade prije zatvorene, inače vraća indeks zadnje zagrade
+         * @author Ivana
+         */
 	private int getFunctionParamsEnd(TokenString tokens, int location) {
 		int openParentheses = 0;
 		for (int i = location; i < tokens.getLength(); i++) {
@@ -389,8 +410,8 @@ public class ExpressionParser {
 		}
 	}
         /**
-         * Provjerava nalazi li se u TokenString-u jednak broj otvorenih i zatvorenih operacija.
-         * @param tokens TokenString
+         * Provjerava nalazi li se u TokenString-u jednak broj otvorenih i zatvorenih zagrada.
+         * @param tokens TokenString tj. lisat tokena
          * @author Dorotea
          */
 	private void checkParentheses(TokenString tokens){

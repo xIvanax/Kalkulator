@@ -5,7 +5,7 @@
 package Grapher.Expressions;
 
 /**
- *
+ * Logaritam, nasljeđuje Unary.
  * @author Ivana
  */
 public class Log extends Unary {

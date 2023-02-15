@@ -5,7 +5,7 @@
 package Grapher.Expressions;
 
 /**
- *
+ * Arkus kosinus, nasljeđuje Unary.
  * @author Dorotea
  */
 public class Acos extends Unary{

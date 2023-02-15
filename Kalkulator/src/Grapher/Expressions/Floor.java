@@ -5,7 +5,7 @@
 package Grapher.Expressions;
 
 /**
- *
+ * Cjelobrojno zaokruživanje na dolje, nasljeđuje Unary.
  * @author Ivana
  */
 public class Floor extends Unary {

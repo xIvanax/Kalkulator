@@ -5,7 +5,7 @@
 package Grapher.Expressions;
 
 /**
- *
+ * Arkus kotangens, nasljeđuje Unary.
  * @author Dorotea
  */
 public class Arcctan extends Unary{

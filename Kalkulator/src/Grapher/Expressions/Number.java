@@ -5,7 +5,7 @@
 package Grapher.Expressions;
 
 /**
- *
+ * Broj, nasljeđuje Quantity.
  * @author Ivana
  */
 public class Number extends Quantity {

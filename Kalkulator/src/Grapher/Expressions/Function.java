@@ -21,12 +21,12 @@ public class Function {
 		this.x=x;
 	}
 	/**
-         * 
-         * @param x
-         * @return 
+         * Evaluira funkciju u točki x.
+         * @param x double točka evaluacije
+         * @return evaluirana vrijednost
+         * @author Ivana
          */
 	public double evaluateAt(double x){
-            System.out.println("evaluiram u x = "+x+", rezultat je "+root.getValue());
 		this.x.set(x);
 		return root.getValue();
 	}

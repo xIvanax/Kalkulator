@@ -5,7 +5,7 @@
 package Grapher.Expressions;
 
 /**
- *
+ * Kotangens, nasljeđuje Unary.
  * @author Ivana
  */
 public class Cotangent extends Unary {

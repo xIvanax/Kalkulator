@@ -7,6 +7,7 @@ package Grapher.Parser;
 import Grapher.Expressions.Function;
 import Grapher.Expressions.Quantity;
 import static Grapher.Parser.TokenType.ARCSINE;
+import javax.swing.JPanel;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -21,7 +22,7 @@ public class ExpressionParserTest {
     
     @Test
     public void tokenizeTest(){
-        ExpressionParser ep=new ExpressionParser();
+        ExpressionParser ep=new ExpressionParser(new JPanel());
         System.out.println("Test funkcije tokenize");
         String s="7*ln(x)+tan(x)-3x";
         TokenString expected=new TokenString();
@@ -53,7 +54,7 @@ public class ExpressionParserTest {
     */
     @Test
     public void scanFromRightTest(){
-        ExpressionParser ep=new ExpressionParser();
+        ExpressionParser ep=new ExpressionParser(new JPanel());
         System.out.println("Test funkcije scanFromRight");
         String s="7*ln(x)+tan(x)-3x";
         TokenString ts=ep.tokenize(s);
@@ -68,7 +69,7 @@ public class ExpressionParserTest {
     */
     @Test
     public void scanFromRight(){
-        ExpressionParser ep=new ExpressionParser();
+        ExpressionParser ep=new ExpressionParser(new JPanel());
         System.out.println("Test funkcije scanFromRight");
         String s="sin(x)+cos(x)+x";
         TokenString ts=ep.tokenize(s);
@@ -83,7 +84,7 @@ public class ExpressionParserTest {
     
     @Test
     public void getTokenTypeByNameTest(){
-        ExpressionParser ep=new ExpressionParser();
+        ExpressionParser ep=new ExpressionParser(new JPanel());
         System.out.println("Test funkcije scanFromRight");
         String s="asin";
         TokenType result=ep.getTokenTypeByName(s);
@@ -93,7 +94,7 @@ public class ExpressionParserTest {
     
     @Test
     public void parseTest(){
-        ExpressionParser ep=new ExpressionParser();
+        ExpressionParser ep=new ExpressionParser(new JPanel());
         System.out.println("Test funkcije doOrderOfOperations");
         String s="sin(x)+cos(x)+x";
         Function result=ep.parse(s);

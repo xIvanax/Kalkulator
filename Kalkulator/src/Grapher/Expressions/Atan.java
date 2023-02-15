@@ -5,7 +5,7 @@
 package Grapher.Expressions;
 
 /**
- *
+ * Arkus tangens, nasljeđuje Unary.
  * @author Dorotea
  */
 public class Atan extends Unary{

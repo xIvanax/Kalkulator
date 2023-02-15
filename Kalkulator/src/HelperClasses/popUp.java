@@ -4,6 +4,7 @@
  */
 package HelperClasses;
 
+import Grapher.Expressions.Function;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,7 +39,7 @@ public class popUp extends JFrame implements ActionListener{
     JPanel f;
     JPanel p;
     PopupFactory pf;
- 
+    String evaluatedFunctionF;
     /**
      * Konstruktor u kojem se postavljaju komponente pop-up prozora i stvara se poveznica s grafičkim kalkualtorom.
      * @param f prozor roditelj
@@ -49,8 +50,9 @@ public class popUp extends JFrame implements ActionListener{
      * @param eF vrijednost funkcije evaluirane u eA
      * @author Ivana
      */
-    public popUp(JPanel f, String url, ArrayList<String> iskoristenaImena, JTextField ekran, String eA, double eF)
-    {
+    public popUp(JPanel f, String url, ArrayList<String> iskoristenaImena, JTextField ekran, String eA, double eF, String evaluatedFunctionF)
+    {   
+        this.evaluatedFunctionF = evaluatedFunctionF;
         this.f=f;
         this.url=url;
         this.iskoristenaImena=iskoristenaImena;
@@ -95,7 +97,7 @@ public class popUp extends JFrame implements ActionListener{
         String d = e.getActionCommand();
         if (d.equals("Prikaži")) {
             po.hide();
-                String output ="Ime"+"\t"+"Funkcija"+"\t"+"Tocka_evaluacije"+"\t"+"Rezultat"+"\n";
+            String output ="Ime"+"\t"+"Funkcija"+"\t"+"Tocka_evaluacije"+"\t"+"Rezultat"+"\n";
             try{
                 Class.forName("org.sqlite.JDBC");
             } catch (ClassNotFoundException ex){
@@ -137,7 +139,8 @@ public class popUp extends JFrame implements ActionListener{
                Statement stmt = conn.createStatement();
                result = stmt.executeQuery(sql);
             }catch(SQLException ev){
-               System.out.println(ev.getMessage());
+               JOptionPane.showMessageDialog(f, ev.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+               return;
             }
             try {
                 while(result.next()){
@@ -156,6 +159,10 @@ public class popUp extends JFrame implements ActionListener{
             
             po = pf.getPopup(f, p, 180, 100);
         }else if (d.equals("Spremi")){
+            if(evaluateAt==null || "".equals(evaluateAt)){
+                JOptionPane.showMessageDialog(f, "Operacija koju ste odabrali se nije izvršila jer niste unesli točku evaluacije.", "Greška", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             po.hide();
             try {
                 Class.forName("org.sqlite.JDBC");
@@ -173,7 +180,7 @@ public class popUp extends JFrame implements ActionListener{
                     JOptionPane.showMessageDialog(f, "Već ste spremili nešto pod tim imenom. Odaberite drugo ime.", "Greška", JOptionPane.ERROR_MESSAGE);
                 }
             }
-            String sql ="INSERT INTO Funkcije (Ime, Funkcija, Tocka_evaluacije, Rezultat) VALUES ('"+name+"','"+ekran.getText()+"','"+evaluateAt+"','"+evaluatedFunction+"');";
+            String sql ="INSERT INTO Funkcije (Ime, Funkcija, Tocka_evaluacije, Rezultat) VALUES ('"+name+"','"+evaluatedFunctionF+"','"+evaluateAt+"','"+evaluatedFunction+"');";
             Connection conn=null;
             ResultSet result = null; 
             try{
@@ -181,7 +188,8 @@ public class popUp extends JFrame implements ActionListener{
                 Statement stmt = conn.createStatement();
                 stmt.execute(sql);
             }catch(SQLException ev){
-               System.out.println(ev.getMessage());
+               JOptionPane.showMessageDialog(f, ev.getMessage(), "Greška", JOptionPane.ERROR_MESSAGE);
+               return;
             }
             po = pf.getPopup(f, p, 180, 100);
         }else if(d.equals("Odustani")){

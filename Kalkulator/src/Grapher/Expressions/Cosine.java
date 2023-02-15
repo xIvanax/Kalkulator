@@ -5,7 +5,7 @@
 package Grapher.Expressions;
 
 /**
- *
+ * Kosinus, nasljeđuje Unary.
  * @author Ivana
  */
 public class Cosine extends Unary {

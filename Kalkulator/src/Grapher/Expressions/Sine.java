@@ -5,7 +5,7 @@
 package Grapher.Expressions;
 
 /**
- *
+ * Sinus, nasljeđuje Unary.
  * @author Ivana
  */
 public class Sine extends Unary {

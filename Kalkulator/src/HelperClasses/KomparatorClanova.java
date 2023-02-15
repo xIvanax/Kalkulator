@@ -8,7 +8,7 @@ import HelperClasses.PolyOps;
 import java.util.Comparator;
 import javax.swing.JPanel;
 /**
- *
+ * Omogućuje usporedbu članova polinoma (reprezentiranih u obliku String-a) na temelju njihovog eksponenta.
  * @author Ivana
  */
 public class KomparatorClanova implements Comparator<String>{
