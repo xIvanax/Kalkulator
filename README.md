@@ -10,7 +10,7 @@ Upute za pocetak (ono sto sam uspjela pohvatati):
 - riješen je problem krivo formatiranog inputa i outputa u polinomnom kalkulatoru (za polyAdd, polyMulti) - sad sve radi "prirodno" i output je sortiran po potencijama (funkcija combineLikeTerms i klasa PolySorter)
 - smješten rad s bazom podataka unutar swing worker dretve
 - napravljeno je prepoznavanje polinoma i bez unosa zvjezdica
-- polinomni kalkulator ne zna sta bi sa polinomom tipa x+((x-3)+2*x^(3/2))
+- polinomni kalkulator sada zna sta bi sa polinomom tipa x+((x-3)+2*x^(3/2))
 - napravljena je funkcija za potenciranje i testirana je i radi
 
 # Problem:
