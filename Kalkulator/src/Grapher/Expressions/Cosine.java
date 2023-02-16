@@ -9,11 +9,19 @@ package Grapher.Expressions;
  * @author Ivana
  */
 public class Cosine extends Unary {
-	
+	/**
+         * Konstruktor koji prima parametar q
+         * @param q Quantity
+         * @author Ivana
+         */
 	public Cosine(Quantity q) {
 		super(q);
 	}
-
+        /**
+         * Vraća rezultat unarne operacije
+         * @return rezultt unarne operacije
+         * @author Ivana
+         */
 	@Override
 	public double getValue() {
 		double val = realValue(q);

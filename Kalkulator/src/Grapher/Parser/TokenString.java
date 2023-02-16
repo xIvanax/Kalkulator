@@ -17,7 +17,7 @@ public class TokenString{
 	private List<Token> tokens;
 	/**
          * Konstruktor bez parametara, samo incijalizira varijablu tokens.
-         * @Ivana
+         * @author Ivana
          */
 	public TokenString(){
 		tokens=new ArrayList<>();
@@ -25,7 +25,7 @@ public class TokenString{
 	/**
          * Inicijalizira varijablu this.tokens na parametar tokens.
          * @param tokens lista token-a
-         * @Ivana
+         * @author Ivana
          */
 	private TokenString(List<Token> tokens) {
 		this.tokens=tokens;
@@ -33,7 +33,7 @@ public class TokenString{
 	/**
          * Dodaje parametar token u listu tokens.
          * @param token Token koji dodajemo u tokens
-         * @Ivana
+         * @author Ivana
          */
 	public void addToken(Token token){
 		tokens.add(token);
@@ -42,7 +42,7 @@ public class TokenString{
          * Vraća token iz liste tokens na indeksu i.
          * @param i indeks token-a
          * @return token
-         * @Ivana
+         * @author Ivana
          */
 	public Token tokenAt(int i){
 		return tokens.get(i);
@@ -50,7 +50,7 @@ public class TokenString{
 	/**
          * Vraća duljinu liste tokens.
          * @return duljina liste tokens
-         * @Ivana
+         * @author Ivana
          */
 	public int getLength(){
 		return tokens.size();
@@ -60,7 +60,7 @@ public class TokenString{
          * @param start početni indeks
          * @param stop krajnji indeks
          * @return TokenString tj. lista elemenata između početnog i krajnjeg indeksa.
-         * @Ivana
+         * @author Ivana
          */
 	public TokenString split(int start, int stop){
 		start=Math.max(0,start);
@@ -76,7 +76,7 @@ public class TokenString{
          * Ubacuje token na indeks i u listu tokens.
          * @param i indeks 
          * @param token token koji želimo ubaciti
-         * @Ivana
+         * @author Ivana
          */
 	public void insert(int i, Token token){
 		tokens.add(i,token);
@@ -85,7 +85,7 @@ public class TokenString{
          * Briše token iz liste tokens na indeksu i.
          * @param i indeks
          * @return token koji smo izbacili
-         * @Ivana
+         * @author Ivana
          */
 	public Token remove(int i){
 		return tokens.remove(i);
@@ -93,7 +93,7 @@ public class TokenString{
 	/**
          * Overridea metodu toString
          * @return string reprezentacija token-a.
-         * @Ivana
+         * @author Ivana
          */
 	@Override
 	public String toString(){

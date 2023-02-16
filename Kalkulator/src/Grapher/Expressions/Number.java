@@ -11,11 +11,19 @@ package Grapher.Expressions;
 public class Number extends Quantity {
 	
 	protected double num;
-	
+	/**
+         * KOnstruktor koji inicijalizira num
+         * @param num double
+         * @author Ivana
+         */
 	public Number(double num){
             this.num = num;
 	}
-
+        /**
+         * Vraća vrijednost num-a
+         * @return num
+         * @author Ivana
+         */
 	@Override
 	public double getValue(){
             return num;

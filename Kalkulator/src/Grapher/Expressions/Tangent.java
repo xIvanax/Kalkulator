@@ -9,11 +9,19 @@ package Grapher.Expressions;
  * @author Ivana
  */
 public class Tangent extends Unary {
-	
+	/**
+         * Konstruktor koji prima parametar q
+         * @param q Quantity
+         * @author Ivana
+         */
 	public Tangent(Quantity q) {
 		super(q);
 	}
-
+        /**
+         * Vraća vrijednost tangensa.
+         * @return vrijednost
+         * @author Ivana
+         */
 	@Override
 	public double getValue() {
 		double val = realValue(q);

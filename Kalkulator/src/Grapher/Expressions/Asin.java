@@ -9,11 +9,19 @@ package Grapher.Expressions;
  * @author Dorotea
  */
 public class Asin extends Unary{
-
+        /**
+         * Konstruktor koji prima parametar q
+         * @param q Quantity
+         * @author Ivana
+         */
     public Asin(Quantity q) {
         super(q);
     }
-
+    /**
+     * Vraća vrijednosta arkus sinusa
+     * @return vrijednosta arkus sinusa
+     * @author Ivana
+     */
     @Override
     public double getValue() {
         double val=realValue(q);

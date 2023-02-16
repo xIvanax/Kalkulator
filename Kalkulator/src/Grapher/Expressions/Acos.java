@@ -9,11 +9,19 @@ package Grapher.Expressions;
  * @author Dorotea
  */
 public class Acos extends Unary{
-
+        /**
+         * Konstruktor koji prima parametar q
+         * @param q Quantity
+         * @author Ivana
+         */
     public Acos(Quantity q){
         super(q);
     }
-    
+    /**
+     * Vraća vrijednost arkus kosinusa
+     * @return vrijednost arkus kosinusa
+     * @author Ivana
+     */
     @Override
     public double getValue() {
         double val=realValue(q);

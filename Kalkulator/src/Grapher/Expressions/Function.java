@@ -13,8 +13,8 @@ public class Function {
 	private Variable x;
 	/**
          * Konstruktor koji inicijalizira varijable root i x.
-         * @param root
-         * @param x 
+         * @param root y vrijednost
+         * @param x x vrijednost
          */
 	public Function(Quantity root, Variable x) {
 		this.root=root;

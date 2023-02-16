@@ -9,11 +9,19 @@ package Grapher.Expressions;
  * @author Ivana
  */
 public class Cotangent extends Unary {
-	
+	/**
+         * Konstruktor koji prima parametar q
+         * @param q Quantity
+         * @author Ivana
+         */
 	public Cotangent(Quantity q) {
 		super(q);
 	}
-
+        /**
+         * Vraža vrijednost kotangensa.
+         * @return vrijednost kotangensa
+         * @author Ivana
+         */
 	@Override
 	public double getValue() {
 		double val = realValue(q);

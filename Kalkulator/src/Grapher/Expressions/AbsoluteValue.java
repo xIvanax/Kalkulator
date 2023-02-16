@@ -9,11 +9,19 @@ package Grapher.Expressions;
  * @author Ivana
  */
 public class AbsoluteValue extends Unary {
-	
+	/**
+         * Konstruktor koji prima parametar q
+         * @param q Quantity
+         * @author Ivana
+         */
 	public AbsoluteValue(Quantity q) {
 		super(q);
 	}
-
+        /**
+         * Vraća apsolutnu vrijednost.
+         * @return apsolutna vrijednost
+         * @author Ivana
+         */
 	@Override
 	public double getValue() {
 		double val = realValue(q);

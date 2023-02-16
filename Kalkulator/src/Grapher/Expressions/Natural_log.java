@@ -9,11 +9,19 @@ package Grapher.Expressions;
  * @author Dorotea
  */
 public class Natural_log extends Unary{
-
+         /**
+         * KOnstruktor koji prima parametar x
+         * @param q Quantity
+         * @author Ivana
+         */
     public Natural_log(Quantity q){
         super(q);
     }
-    
+        /**
+         * Vraća vrijednost logaritma
+         * @return vrijednost prirodnog logaritma
+         * @author Ivana
+         */
     @Override
     public double getValue() {
         double val=realValue(q);

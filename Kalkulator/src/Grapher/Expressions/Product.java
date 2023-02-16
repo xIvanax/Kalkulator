@@ -9,11 +9,20 @@ package Grapher.Expressions;
  * @author Ivana
  */
 public class Product extends Binary {
-	
+	/**
+         * Inicijalizacija operanada
+         * @param q1 prvi operand
+         * @param q2 drugi operand
+         * @author Ivana
+         */
 	public Product(Quantity q1, Quantity q2) {
 		super(q1, q2);
 	}
-
+        /**
+         * Vraća vrijednost umnoška.
+         * @return vrijednost umnoška
+         * @author Ivana
+         */
 	@Override
 	public double getValue() {
 		double val1 = realValue(q1);

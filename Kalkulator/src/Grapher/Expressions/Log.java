@@ -9,10 +9,19 @@ package Grapher.Expressions;
  * @author Ivana
  */
 public class Log extends Unary {
+        /**
+         * KOnstruktor koji prima parametar x
+         * @param x Quantity
+         * @author Ivana
+         */
 	public Log(Quantity x) {
 		super(x);
 	}
-
+        /**
+         * Vraća vrijednost logaritma
+         * @return vrijednost logaritma
+         * @author Ivana
+         */
 	@Override
 	public double getValue() {
 		double val = realValue(q);

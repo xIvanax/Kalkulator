@@ -28,6 +28,7 @@ public interface GraphingInterface {
      * Čišćenje baze podataka na početku korištenja
      * @param url link na bazu podataka koja igra ulogu memorije kalkulatora
      * @author Ivana
+     * @param parent inicijalizacija prozora na koji će se zakačiti poruka o grešci
      */
     public default void setUpDatabase(String url, JPanel parent){
         String sql1 ="DELETE FROM Funkcije;";
