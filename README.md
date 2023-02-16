@@ -16,8 +16,7 @@ Upute za pocetak (ono sto sam uspjela pohvatati):
 - obradila slučajeve na polinomnom kalkulatoru kad korisnik npr nista ne upise u jedan ekran, a pozove npr zbrajanje ili npr pozove bilo sta nad praznim ekranom
 
 # Što još treba napraviti?
-- pohvatat skroz kod za grapher
-- na kraju proći detaljno sve zahtjeve za projekt koje je prof stavio na web i provjeriti jesmo li ispunile obavezne zahtjeve
+- gotove smo :)
 
 # Outdated novosti (tu sam iskopirala ovo što nam više nije bitno t.d. i ti i ja lakše vidimo prave novosti)
 Progress:
