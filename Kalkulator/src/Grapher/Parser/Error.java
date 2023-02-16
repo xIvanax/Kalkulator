@@ -13,9 +13,18 @@ import javax.swing.JPanel;
  */
 public class Error {
     JPanel parent;
+    /**
+     * Prazan konstruktor
+     * @author Ivana
+     */
 	public Error(){
             parent = new JPanel();
         }
+        /**
+         * Inicijalizacija prozora na koji će se "zakačiti" poruka o grešci
+         * @param parent JPanel
+         * @author Ivana
+         */
 	public Error(JPanel parent) {
             this.parent=parent;
         }

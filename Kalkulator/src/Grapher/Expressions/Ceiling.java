@@ -9,11 +9,19 @@ package Grapher.Expressions;
  * @author Ivana
  */
 public class Ceiling extends Unary {
-	
+	/**
+         * Konstruktor koji prima parametar q
+         * @param q Quantity
+         * @author Ivana
+         */
 	public Ceiling(Quantity q) {
 		super(q);
 	}
-
+        /**
+         * Vraća vrijednost zaokruživanja.
+         * @return double vrijednost zaokruživanja
+         * @author Ivana
+         */
 	@Override
 	public double getValue() {
 		double val=realValue(q);

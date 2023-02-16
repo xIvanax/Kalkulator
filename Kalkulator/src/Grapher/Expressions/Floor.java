@@ -9,11 +9,19 @@ package Grapher.Expressions;
  * @author Ivana
  */
 public class Floor extends Unary {
-	
+	/**
+         * Konsturktor koji prima parametar q
+         * @param q Quantity
+         * @author Ivana
+         */
 	public Floor(Quantity q) {
 		super(q);
 	}
-
+        /**
+         * Vraća vrijednost zaokruživanja
+         * @return vrijednost zaokruživanja
+         * @author Ivana
+         */
 	@Override
 	public double getValue() {
 		double val = realValue(q);

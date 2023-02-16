@@ -9,11 +9,19 @@ package Grapher.Expressions;
  * @author Ivana
  */
 public class Sine extends Unary {
-	
+    /**
+     * Inicijalizacija operanda q
+     * @param q Quantity
+     * @author Ivana
+     */
 	public Sine(Quantity q) {
 		super(q);
 	}
-
+    /**
+     * Vraća vrijednost sinusa
+     * @return vrijednost sinusa
+     * @author Ivana
+     */
 	@Override
 	public double getValue() {
 		double val = realValue(q);

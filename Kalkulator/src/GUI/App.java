@@ -7,10 +7,14 @@ package GUI;
 import javax.swing.JFrame;
 
 /**
- *
+ * Pokretanje kalkulatora.
  * @author Ivana
  */
 public class App {
+    /**
+     * Poziv konstrukcije kalkulatora.
+     * @param args argumenti 
+     */
     public static void main(String args[]){
         CalculatorFrame okvir=new CalculatorFrame();
         okvir.setSize(800, 600);

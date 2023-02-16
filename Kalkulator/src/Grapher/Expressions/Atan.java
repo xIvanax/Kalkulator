@@ -9,11 +9,19 @@ package Grapher.Expressions;
  * @author Dorotea
  */
 public class Atan extends Unary{
-
+        /**
+         * Konstruktor koji prima parametar q
+         * @param q Quantity
+         * @author Ivana
+         */
     public Atan(Quantity q){
         super(q);
     }
-    
+    /**
+     * Vraća vrijednost arkus tangensa.
+     * @return vrijednost arkus tangensa
+     * @author Ivana
+     */
     @Override
     public double getValue(){
         double val=realValue(q);

@@ -44,6 +44,7 @@ public class ExpressionParser {
 	/**
          * Konstruktor bez parametara koji inicijalizira varijable error i x.
          * @author Ivana
+         * @param parent inicijalizacija prozora na koji će se zakačiti poruka o grešci
          */
 	public ExpressionParser(JPanel parent){
                 this.parent=parent;
@@ -52,7 +53,7 @@ public class ExpressionParser {
         }
         /**
          * Metoda uneseni izraz(expr) raščlanjuje na manje blokove(tokene) radi lakše manipulacije.
-         * Primjer: x+3-10^(x) pretvara u X PLUS NUMBER<3> MINUS NUMBER<10> RAISED_TO OPEN_PARENTHESES X CLOSE_PARENTHESES
+         * Primjer: x+3-10^(x) pretvara u X PLUS NUMBER 3 MINUS NUMBER 10 RAISED_TO OPEN_PARENTHESES X CLOSE_PARENTHESES
          * @param expr String koji raščlanjujemo na token-e.
          * @return TokenString 
          * @author Dorotea
@@ -65,11 +66,15 @@ public class ExpressionParser {
 		int numDecimals=0;
 		for(int i=0; i<expr.length(); i++) {
 			char currentChar=expr.charAt(i);
-			boolean special=false;//provjera je li znak 'specijalan', 0 oznacava da je specijalan
-                        //1 da nije (tj alfa-numericki je) 
                         /**
-                        * @author Dorotea
+                         * Provjera je li znak 'specijalan', 0 oznacava da je specijalan,
+                         * 1 da nije (tj alfa-numericki je).
+                         * @author Dorotea
+                         */
+			boolean special=false;
+                        /**
                         * Za svaki char određujemo koji je tip tokena(je li slovo, broj, neki specijalni znak)
+                        * @author Dorotea
                         */
 			if(Character.isAlphabetic(currentChar)) {
 				if(currentChar=='x'){
@@ -125,9 +130,9 @@ public class ExpressionParser {
 			}
 		}
                 /**
-                * @author Dorotea
                 * Kada dođemo do kraja expr, moguće je da nismo pohranili neki broj ili znak
                 * pa to dodatno provjeravamo i radimo
+                * @author Dorotea
                 */
 		if(name.length()>0){
                     TokenType type=getTokenTypeByName(name);
@@ -300,11 +305,11 @@ public class ExpressionParser {
             return ret;
 	}
     /**
-     * 
-     * @param paramString
-     * @param type
-     * @return 
-     * @author Ivana
+     * Vraca vrijednost promatrane funkcije u ovisnosti o parametrima
+     * @param paramString polje koje sadrzi parametre promatrane funkcije
+     * @param type tip funkcije
+     * @return vraca vrijednost funkcije u danim parametrima
+     * @author Dorotea
      */
     private Quantity parseFunctionParams(TokenString paramString, TokenType type){
 	List<TokenString> params=new ArrayList<>();

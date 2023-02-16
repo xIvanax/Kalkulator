@@ -11,11 +11,19 @@ package Grapher.Expressions;
 public abstract class Unary extends Quantity {
 
 	protected Quantity q;
-	
+       /**
+        * Inicijalizacija operanda q
+        * @param q Quantity
+        * @author Ivana
+        */
 	public Unary(Quantity q) {
 		this.q = q;
 	}
-	
+	/**
+         * Apstraktna funckija za dohvaćanje vrijednosti
+         * @return double
+         * @author Ivana
+         */
 	@Override
 	public abstract double getValue();
 }

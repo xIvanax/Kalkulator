@@ -9,6 +9,11 @@ package Grapher.Expressions;
  * @author ivana
  */
 public abstract class Quantity {
+    /**
+     * Apstraktna funkcija za vraćanje vrijednosti
+     * @return double 
+     * @author Ivana
+     */
 	public abstract double getValue();
 	/**
          * Vraća vrijednost q ako nije null, Double.NaN inače.

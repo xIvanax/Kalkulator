@@ -9,11 +9,19 @@ package Grapher.Expressions;
  * @author Dorotea
  */
 public class Power10 extends Unary{
-
+    /**
+     * Inicijalizacija operanda q
+     * @param q Quantity
+     * @author Ivana
+     */
     public Power10(Quantity q){
         super(q);
     }
-    
+    /**
+     * Vraća vrijednost potencije broja 10
+     * @return vrijednost potencije broja 10
+     * @author Ivana
+     */
     @Override
     public double getValue() {
        double val=realValue(q);

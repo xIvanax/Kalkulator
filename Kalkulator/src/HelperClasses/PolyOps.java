@@ -153,6 +153,7 @@ public class PolyOps {
          * @param poly2 clanovi drugog polinoma
          * @param parent JPanel na koji će se "zakačiti" poruka upozorenja ako korisnik nešto pogrešno unese         * @return rezultat mnozenja u obliku liste clanova
          * @author Ivana
+        * @return polinom reprezentiran preko liste svojih clanova
          */
         public ArrayList<String> polyMulti(ArrayList<String> poly1, ArrayList<String> poly2, JPanel parent){
             ArrayList<String> resClanovi = new ArrayList<>();
@@ -326,7 +327,8 @@ public class PolyOps {
         }
         /**
          * funkcija vraca informacije o koeficijentu, eksponentu i je li eksponent pozitivan (1) ili je negativan/razlomak (0)
-         * @param expr1 
+         * @param expr1 string reprezentacija člana polinoma
+        * @param parent inicijalizacija prozora na koji će se zakačiti poruka o grešci
          * @return polje double: na indeksu 0 je koeficijent, 1 je eksponent, 2 je li eksponent pozitivan
          * @author Ivana
          */    
@@ -407,6 +409,7 @@ public class PolyOps {
          * @param potencija na koji polinom poly potenciramo
          * @param parent JPanel na koji će se "zakačiti" poruka upozorenja ako korisnik nešto pogrešno unese         * @return rezultat mnozenja u obliku liste clanova
          * @author Dorotea
+         * @return polinom reprezentiran listom članova
          */
         public ArrayList<String> polyPot(ArrayList<String> poly, int potencija, JPanel parent){
             ArrayList<String> p1=new ArrayList<>();

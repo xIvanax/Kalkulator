@@ -50,6 +50,7 @@ public class popUp extends JFrame implements ActionListener{
      * @param eA vrijednost u kojoj je funkcija evaluirana
      * @param eF vrijednost funkcije evaluirane u eA
      * @author Ivana
+     * @param evaluatedFunctionF funkcija u obliku String-a
      */
     public popUp(JPanel f, String url, ArrayList<String> iskoristenaImena, JTextField ekran, String eA, double eF, String evaluatedFunctionF)
     {   

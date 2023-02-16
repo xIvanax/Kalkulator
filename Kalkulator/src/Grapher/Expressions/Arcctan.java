@@ -9,10 +9,19 @@ package Grapher.Expressions;
  * @author Dorotea
  */
 public class Arcctan extends Unary{
+        /**
+         * Konstruktor koji prima parametar q
+         * @param q Quantity
+         * @author Ivana
+         */
     public Arcctan(Quantity q){
         super(q);
     }
-    
+    /**
+     * Vraća vrijednost kotangensa
+     * @return vrijednost kotangensa
+     * @author Ivana
+     */
     @Override
     public double getValue() {
         double val=realValue(q);

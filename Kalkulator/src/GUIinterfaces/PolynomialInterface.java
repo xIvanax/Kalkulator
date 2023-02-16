@@ -29,6 +29,7 @@ public interface PolynomialInterface {
      * Čišćenje baze podataka na početku korištenja
      * @param url link na bazu podataka kalkulatora
      * @author Ivana
+     * @param f prozor na koji će se "zakačiti" poruka o grešci
      */
     public default void setUpDatabase(String url, JPanel f){
         String sql1 ="DELETE FROM Polinomi;";
@@ -53,6 +54,8 @@ public interface PolynomialInterface {
      * @param ekran2 prostor za unos drugog polinoma
      * @param display prostor za prikaz rezultata raznih operacija
      * @author Ivana
+     * @param unos prostor za unos
+     * @param spremnik prostor za gumbe
      */
     public default void setUpDisplaysDesign(JTextField ekran1, JTextField ekran2, JTextField display, JPanel unos, JPanel spremnik) {
         ekran1.setText("");

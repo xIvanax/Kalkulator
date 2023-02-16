@@ -317,6 +317,10 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
 	
 	public IntegratedDrawFunctionScreen() {
             addMouseWheelListener(this);
+            /**
+             * Sljedeća dva listener-a omogućuju kretanje po sustavu pritiskom miša.
+             * @author Ivana
+             */
             this.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
@@ -361,7 +365,11 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
 		yVar += dt;
 		zVar = Math.sin(yVar);
 	}
-
+        /**
+         * Evaluacija točaka i crtanje samog grafa i koordinatnog sustava.
+         * @param g Graphics za crtanje
+         * @author Ivana
+         */
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -369,13 +377,11 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
 		g2d.setColor(Color.WHITE);
 		g2d.fillRect(0, 0, WIDTH, HEIGHT);
 
-		synchronized (this) {
 			List<Double> xs = new ArrayList<>();
 			List<Double> ys = new ArrayList<>();
 			
 			for (int x = 0; x < WIDTH; x++) {
 				double xx = toRealX(x);
-				
 				double yy = 0.0;
 				if (function != null) yy = function.evaluateAt(xx);
                                 String check = Double.toString(yy);
@@ -417,11 +423,13 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
 			
 			g2d.drawString("x", 0, xAxisY - 10);
 			g2d.drawString("y", yAxisX + 10, g2d.getFontMetrics().getHeight() - 20);
-		}
 		
 		g.drawImage(buff, 0, 0, null);
 	}
-	
+	/**
+         * Funkcija za poziv SwingWorker-a i iniciranje crtanja.
+         * @author Ivana
+         */
 	private void start(){
             SwingWorker<Double, Void> radnik = new SwingWorker<Double, Void>(){
                 @Override
@@ -450,39 +458,79 @@ public class GraphingGUI extends JPanel implements GraphingInterface{
             };
             radnik.execute();
         }
-
+        /**
+         * Vraća najnižu y koordinatu koju možemo vidjeti na prozoru za crtanje.
+         * @return double vrijednost najniže y koordinate
+         * @author Ivana
+         */
 	private double bottom() {
 		return windowY - halfWindowHeight();
 	}
-	
+	/**
+         * Vraća najdesniju x koordinatu koju možemo vidjeti na prozoru za crtanje.
+         * @return double vrijednost najdesnije x koordinate
+         * @author Ivana
+         */
 	private double right() {
 		return windowX - halfWindowWidth();
 	}
-	
+	/**
+         * Prijenos vrijednosti koordinate sa slike u double vrijednost.
+         * @param screenX 
+         * @return stvarna double vrijednost
+         * @author Ivana
+         */
 	private double toRealX(int screenX) {
 		return screenX / (double)WIDTH * windowWidth + right();
 	}
-	
+	/**
+         * Prijenos vrijednosti koordinate sa slike u double vrijednost.
+         * @param screenY 
+         * @return stvarna double vrijednost
+         * @author Ivana
+         */
 	private double toRealY(int screenY) {
 		return (HEIGHT - screenY) / (double)HEIGHT * windowHeight + bottom();
 	}
-	
+	/**
+         * Pretvara stvarnu vrijednost u koordinatnu vrijednost.
+         * @param realX
+         * @return koordinatna vrijednost
+         * @author Ivana
+         */
 	private int toScreenX(double realX) {
 		return (int) ((realX - right()) / windowWidth * WIDTH);
 	}
-	
+	/**
+         * Pretvara stvarnu vrijednost u koordinatnu vrijednost.
+         * @param realY
+         * @return koordinatna vrijednost
+         * @author Ivana
+         */
 	private int toScreenY(double realY) {
 		return HEIGHT - (int) ((realY - bottom()) / windowHeight * HEIGHT);
 	}
-	
+	/**
+         * Vraća polovicu širine prozora.
+         * @return polovica širine prozora
+         * @author Ivana
+         */
 	private double halfWindowWidth() {
 		return windowWidth / 2.0;
 	}
-	
+	/**
+         * Vraća polovicu visine prozora.
+         * @return polovica visine prozora
+         * @author Ivana
+         */
 	private double halfWindowHeight() {
 		return windowHeight / 2.0;
 	}
-
+        /**
+         * Omogućuje zoomiranje na grafu.
+         * @param e događaj pokretanja kotačića miša
+         * @author Ivana
+         */
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		double scale = Math.pow(1.15, e.getPreciseWheelRotation());

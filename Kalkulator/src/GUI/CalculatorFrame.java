@@ -15,7 +15,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
 /**
- *
+ * Konstrukcija prozora za kalkulatore
  * @author Dorotea, Ivana
  */
 public class CalculatorFrame extends JFrame implements ActionListener{
@@ -30,7 +30,8 @@ public class CalculatorFrame extends JFrame implements ActionListener{
     private JPanel stan; //standardni kalkulator
     private JPanel pol;
     /**
-     * @Dorotea
+     * Inicijalizacija komponenti
+     * @author Dorotea
      */
     public CalculatorFrame(){
         setTitle("Kalkulator");
@@ -97,8 +98,9 @@ public class CalculatorFrame extends JFrame implements ActionListener{
         pack();
     }
     /**
-     * @Dorotea
-     * @param e 
+     * Obrada događaj.
+     * @param e događaj
+     * @author Dorotea
      */
     @Override
     public void actionPerformed(ActionEvent e) {
